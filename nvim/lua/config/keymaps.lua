@@ -3,7 +3,6 @@
 -- Add any additional keymaps here
 --
 --
-
 -- Clipboard mappings
 vim.keymap.set("x", "<leader>p", [["_dP]])
 

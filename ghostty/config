@@ -19,8 +19,11 @@
 # ==========================
 # # The config file consists of simple key-value pairs,
 # # separated by equals signs.
-font-family = JetBrainsMono Nerd Font
+font-family = JetBrainsMonoNerdFont-SemiBold
+#font-family = JetBrainsMono Nerd Font
 theme = tokyonight-storm
+macos-option-as-alt = true
+font-size = 16
 
 # window-padding-x = 2
 #

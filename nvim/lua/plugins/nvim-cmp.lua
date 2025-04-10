@@ -42,6 +42,8 @@ return {
       keymap = {
         preset = "super-tab",
         ["super-tab"] = { "accept", "fallback" },
+        ["s"] = {},
+        ["<C-e>"] = {},
       },
 
       appearance = {
@@ -58,15 +60,23 @@ return {
             enabled = true,
           },
         },
+        menu = {
+          winblend = vim.o.pumblend,
+        },
 
         documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 400,
+          auto_show = false,
+          -- auto_show_delay_ms = 600,
         },
 
         ghost_text = { enabled = false },
       },
-      signature = { enabled = true },
+      signature = {
+        enabled = true,
+        window = {
+          winblend = vim.o.pumblend,
+        },
+      },
 
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
