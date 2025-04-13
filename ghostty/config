@@ -23,9 +23,9 @@ font-family = JetBrainsMonoNerdFont-SemiBold
 #font-family = JetBrainsMono Nerd Font
 theme = tokyonight-storm
 macos-option-as-alt = true
-font-size = 16
+font-size = 20
 
-# window-padding-x = 2
+#window-padding-x = 2
 #
 # # Spacing around the equals sign does not matter.
 # # All of these are identical:
@@ -48,8 +48,8 @@ font-size = 16
 # resize-overlay-duration = 4s 200ms
 #theme = "Solarized Dark - Patched"
 
-#background-opacity = 0.1
-background-blur-radius = 20
+#background-opacity = 0.98
+background-blur-radius = 30
 #background = #031219
 
 
