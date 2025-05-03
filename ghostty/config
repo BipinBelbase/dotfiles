@@ -53,7 +53,7 @@ background-blur-radius = 30
 #background = #031219
 
 
-cursor-style = block
+#cursor-style = block
 cursor-style-blink = true
 
 
