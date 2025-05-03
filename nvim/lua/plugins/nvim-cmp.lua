@@ -10,7 +10,6 @@ return {
   },
   {
     "saghen/blink.cmp",
-<<<<<<< Updated upstream
     -- optional: provides snippets for the snippet source
     dependencies = {
       "rafamadriz/friendly-snippets",
@@ -50,41 +49,20 @@ return {
       appearance = {
         -- 'mono' (default) for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
         -- Adjusts spacing to ensure icons are aligned
-=======
-    opts = {
-      appearance = {
-        use_nvim_cmp_as_default = false,
->>>>>>> Stashed changes
         nerd_font_variant = "mono",
       },
 
       -- (Default) Only show the documentation popup when manually triggered
       completion = {
-<<<<<<< Updated upstream
         accept = {
           -- experimental auto-brackets support
           auto_brackets = {
             enabled = true,
           },
-=======
-        accept = { auto_brackets = { enabled = true } },
-        documentation = {
-          auto_show = true,
-          auto_show_delay_ms = 200,
-          treesitter_highlighting = true,
-          window = { border = "rounded" },
-        },
-        list = {
-          selection = function(ctx)
-            return ctx.mode == "cmdline" and "auto_insert" or "preselect"
-          end,
->>>>>>> Stashed changes
         },
         menu = {
-          border = "rounded",
-          enabled = true,
+          winblend = vim.o.pumblend,
         },
-<<<<<<< Updated upstream
 
         documentation = {
           auto_show = false,
@@ -98,16 +76,13 @@ return {
         window = {
           winblend = vim.o.pumblend,
         },
-=======
->>>>>>> Stashed changes
       },
 
       -- Default list of enabled providers defined so that you can extend it
       -- elsewhere in your config, without redefining it, due to `opts_extend`
       sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
+        default = { "lsp", "path", "snippets", "buffer", "emoji", "sql" },
         providers = {
-<<<<<<< Updated upstream
           emoji = {
             module = "blink-emoji",
             name = "Emoji",
@@ -153,27 +128,7 @@ return {
       --
       -- See the fuzzy documentation for more information
       fuzzy = { implementation = "prefer_rust_with_warning" },
-=======
-          lsp = { score_offset = 100 },
-          buffer = { score_offset = -10 },
-        },
-      },
-      fuzzy = {
-        implementation = "prefer_rust_with_warning",
-        debounce_ms = 20,
-      },
-      cmdline = { enabled = false },
-      keymap = {
-        preset = "enter",
-        ["<CR>"] = "select_and_accept",
-        ["<C-y>"] = "select_and_accept",
-        ["<C-e>"] = "close", -- Corrected to string
-      },
     },
-    dependencies = {
-      "rafamadriz/friendly-snippets",
-      "onsails/lspkind.nvim",
->>>>>>> Stashed changes
-    },
+    opts_extend = { "sources.default" },
   },
 }
