@@ -22,3 +22,14 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 
 vim.opt.smartindent = true
+
+-- Undo (Ctrl+z)
+vim.keymap.set("i", "<C-z>", "<Esc>u", { noremap = true, silent = true })
+
+-- Redo (Ctrl+y and Ctrl+Shift+z)
+vim.keymap.set("n", "<C-y>", "<C-r>", { noremap = true, silent = true })
+vim.keymap.set("i", "<C-y>", "<Esc><C-r>i", { noremap = true, silent = true })
+
+-- Select all (Ctrl+a)
+vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
+vim.keymap.set("i", "<C-a>", "<Esc>ggVG", { noremap = true, silent = true })
