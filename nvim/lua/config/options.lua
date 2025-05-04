@@ -6,5 +6,19 @@
 vim.g.lazyvim_prettier_needs_config = true
 vim.g.lazyvim_picker = "telescope"
 vim.g.lazyvim_cmp = "blink.cmp"
-
+vim.opt.swapfile = false -- No `.swp` files
 vim.opt.timeoutlen = 100
+vim.opt.scrolloff = 8
+-- vim.opt.colorcolumn = "79" -- Show a line at 80 characters
+
+vim.cmd([[
+  highlight ColorColumn ctermbg=0 guibg=#2a2a2a
+]])
+vim.opt.wrap = false
+
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+
+vim.opt.smartindent = true

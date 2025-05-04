@@ -168,6 +168,3 @@ vim.keymap.set("n", "<leader>tt", open_floating_terminal, {
   desc = "▎ Open floating terminal",
 })
 -- Search the web via Arecibo in Telescope
-vim.keymap.set("n", "<leader>w", function()
-  require("telescope").extensions.arecibo.websearch()
-end, { desc = "🌐 Web Search (Google, DuckDuckGo, NPM)" })

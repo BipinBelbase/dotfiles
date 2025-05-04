@@ -1,5 +1,6 @@
 return {
   {
+    -- flaash is disabled..............
     enabled = false,
     "folke/flash.nvim",
     ---@type Flash.Config
