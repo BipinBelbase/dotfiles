@@ -288,9 +288,16 @@ vim.keymap.set("n", "<leader>gn", "<cmd>Git branch<CR>", {
   silent = true,
 })
 
+vim.keymap.set("n", "<leader>goo", "<cmd>Git checkout main<CR>", {
+  desc = "🚀 Git Checkout 'main' branch",
+  noremap = true,
+  silent = true,
+})
 -- Git Checkout (will prompt)
-vim.keymap.set("n", "<leader>go", "<cmd>Git checkout ", {
-  desc = "🚚 Git Checkout",
+vim.keymap.set("n", "<leader>gow", function()
+  vim.api.nvim_feedkeys(":Git checkout ", "n", false)
+end, {
+  desc = "🚚 Git Checkout (type branch or commit)",
   noremap = true,
   silent = false,
 })
