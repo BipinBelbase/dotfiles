@@ -245,13 +245,65 @@ vim.keymap.set("n", "<leader>gf", "<cmd>Git<CR>", {
   noremap = true,
   silent = true,
 })
+vim.keymap.set("n", "<leader>gm", function()
+  vim.cmd("wall") -- Save all files first
 
--- Git Commit (Open message buffer)
-vim.keymap.set("n", "<leader>gm", "<cmd>Git commit<CR>", {
-  desc = "📝 Git Commit",
+  -- Create floating buffer
+  local buf = vim.api.nvim_create_buf(false, true)
+  local width = math.floor(vim.o.columns * 0.6)
+  local height = 10
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = math.floor((vim.o.columns - width) / 2)
+
+  local win = vim.api.nvim_open_win(buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+  })
+
+  -- Set filetype and a helpful placeholder
+  vim.api.nvim_buf_set_option(buf, "filetype", "gitcommit")
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "# Type your commit message and press q to commit" })
+
+  -- Map `q` in buffer to commit and close
+  vim.keymap.set("n", "q", function()
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    local message = {}
+    for _, line in ipairs(lines) do
+      if not line:match("^#") and line:match("%S") then
+        table.insert(message, line)
+      end
+    end
+    message = table.concat(message, "\n")
+
+    if message == "" then
+      vim.notify("❌ Commit message is empty!", vim.log.levels.WARN)
+      return
+    end
+
+    -- Close window
+    vim.api.nvim_win_close(win, true)
+
+    -- Run git commit
+    vim.fn.system({ "git", "commit", "-m", message })
+
+    vim.notify("✅ Commit done!", vim.log.levels.INFO)
+  end, { buffer = buf, noremap = true, silent = true, desc = "Commit & Close" })
+end, {
+  desc = "📝 Git Commit (floating, press q to confirm)",
   noremap = true,
   silent = true,
 })
+-- -- Git Commit (Open message buffer)
+-- vim.keymap.set("n", "<leader>gm", "<cmd>Git commit<CR>", {
+--   desc = "📝 Git Commit",
+--   noremap = true,
+--   silent = true,
+-- })
 
 -- Git Push
 vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>", {
