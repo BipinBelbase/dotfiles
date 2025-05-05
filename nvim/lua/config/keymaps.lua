@@ -236,5 +236,75 @@ local function toggle_preview()
   end
 end
 
--- Set keymap for Shift + P in normal mode
-vim.keymap.set("n", "P", toggle_preview, { noremap = true, silent = true, desc = "Toggle file preview" })
+-- Git Keymaps (with descriptions & emojis) 💥
+-- Load this early (e.g., in config/keymaps.lua)
+
+-- Git Status (Fugitive)
+vim.keymap.set("n", "<leader>gf", "<cmd>Git<CR>", {
+  desc = "📄 Git Status (Fugitive)",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Commit (Open message buffer)
+vim.keymap.set("n", "<leader>gm", "<cmd>Git commit<CR>", {
+  desc = "📝 Git Commit",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Push
+vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>", {
+  desc = "🚀 Git Push",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Pull with Rebase
+vim.keymap.set("n", "<leader>gr", "<cmd>Git pull --rebase<CR>", {
+  desc = "📥 Git Pull (Rebase)",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Fetch
+vim.keymap.set("n", "<leader>gk", "<cmd>Git fetch<CR>", {
+  desc = "🔃 Git Fetch",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Merge (will prompt for branch)
+vim.keymap.set("n", "<leader>gx", "<cmd>Git merge ", {
+  desc = "🔀 Git Merge",
+  noremap = true,
+  silent = false, -- allow typing
+})
+
+-- Git Branch list / create
+vim.keymap.set("n", "<leader>gn", "<cmd>Git branch<CR>", {
+  desc = "🌿 Git Branch List",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Checkout (will prompt)
+vim.keymap.set("n", "<leader>go", "<cmd>Git checkout ", {
+  desc = "🚚 Git Checkout",
+  noremap = true,
+  silent = false,
+})
+
+-- Git Log (pretty graph)
+vim.keymap.set("n", "<leader>gh", "<cmd>Git log --oneline --graph<CR>", {
+  desc = "📈 Git Log Graph",
+  noremap = true,
+  silent = true,
+})
+
+-- Git Add All (Stage All)
+vim.keymap.set("n", "<leader>ga", "<cmd>Git add .<CR>", {
+  desc = "➕ Git Add All",
+  noremap = true,
+  silent = true,
+})

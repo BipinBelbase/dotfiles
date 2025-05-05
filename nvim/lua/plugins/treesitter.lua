@@ -19,6 +19,8 @@ return {
         "vim",
         "yaml",
         "java",
+        "c",
+        "cpp",
       },
     },
   },
