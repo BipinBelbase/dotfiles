@@ -168,3 +168,73 @@ vim.keymap.set("n", "<leader>tt", open_floating_terminal, {
   desc = "▎ Open floating terminal",
 })
 -- Search the web via Arecibo in Telescope
+
+--reeeeeeeeeeeeeeeeeeeeddddddddddddddddddddddddddddddddddddddd
+-- Table to store the floating window and buffer references
+local preview_win = nil
+local preview_buf = nil
+
+-- Function to close the floating preview window
+local function close_preview()
+  if preview_win and vim.api.nvim_win_is_valid(preview_win) then
+    vim.api.nvim_win_close(preview_win, true)
+  end
+  preview_win = nil
+  preview_buf = nil
+end
+
+-- Function to open the floating preview window
+local function open_preview()
+  -- Get the path of the selected file in the explorer
+  local node = require("nvim-tree.lib").get_node_at_cursor()
+  if not node or node.open == nil then
+    vim.notify("No file selected", vim.log.levels.WARN)
+    return
+  end
+  local filepath = node.absolute_path
+  if vim.fn.isdirectory(filepath) == 1 then
+    vim.notify("Cannot preview a directory", vim.log.levels.WARN)
+    return
+  end
+
+  -- Create a new buffer for the preview
+  preview_buf = vim.api.nvim_create_buf(false, true)
+  -- Read the file content into the buffer
+  vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, vim.fn.readfile(filepath))
+
+  -- Calculate window dimensions and position
+  local width = math.floor(vim.o.columns * 0.5)
+  local height = math.floor(vim.o.lines * 0.8)
+  local row = math.floor((vim.o.lines - height) / 2)
+  local col = vim.o.columns - width - 2
+
+  -- Create the floating window
+  preview_win = vim.api.nvim_open_win(preview_buf, true, {
+    relative = "editor",
+    width = width,
+    height = height,
+    row = row,
+    col = col,
+    style = "minimal",
+    border = "rounded",
+  })
+
+  -- Set keymap to close the preview with 'q'
+  vim.api.nvim_buf_set_keymap(preview_buf, "n", "q", "", {
+    callback = close_preview,
+    noremap = true,
+    silent = true,
+  })
+end
+
+-- Function to toggle the preview window
+local function toggle_preview()
+  if preview_win and vim.api.nvim_win_is_valid(preview_win) then
+    close_preview()
+  else
+    open_preview()
+  end
+end
+
+-- Set keymap for Shift + P in normal mode
+vim.keymap.set("n", "P", toggle_preview, { noremap = true, silent = true, desc = "Toggle file preview" })
