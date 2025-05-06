@@ -112,7 +112,7 @@ do
   end
 
   -- map Space→r to run
-  vim.keymap.set("n", "<Leader>r", run_current_file, {
+  vim.keymap.set("n", "<Leader>rr", run_current_file, {
     desc = "▎ Run current file in floating terminal",
   })
 end
@@ -155,7 +155,7 @@ local function open_floating_terminal()
   vim.fn.termopen(os.getenv("SHELL") or "bash")
   vim.cmd("startinsert")
 
-  -- Close with 'q'<D-s>
+  -- Close with 'q'
   vim.api.nvim_buf_set_keymap(float_term.buf, "n", "q", "", {
     callback = close_float,
     noremap = true,
@@ -167,88 +167,15 @@ end
 vim.keymap.set("n", "<leader>tt", open_floating_terminal, {
   desc = "▎ Open floating terminal",
 })
--- Search the web via Arecibo in Telescope
 
---reeeeeeeeeeeeeeeeeeeeddddddddddddddddddddddddddddddddddddddd
--- Table to store the floating window and buffer references
-local preview_win = nil
-local preview_buf = nil
+-- Define options for key mappings
+local opts = { noremap = true, silent = true }
 
--- Function to close the floating preview window
-local function close_preview()
-  if preview_win and vim.api.nvim_win_is_valid(preview_win) then
-    vim.api.nvim_win_close(preview_win, true)
-  end
-  preview_win = nil
-  preview_buf = nil
-end
-
--- Function to open the floating preview window
-local function open_preview()
-  -- Get the path of the selected file in the explorer
-  local node = require("nvim-tree.lib").get_node_at_cursor()
-  if not node or node.open == nil then
-    vim.notify("No file selected", vim.log.levels.WARN)
-    return
-  end
-  local filepath = node.absolute_path
-  if vim.fn.isdirectory(filepath) == 1 then
-    vim.notify("Cannot preview a directory", vim.log.levels.WARN)
-    return
-  end
-
-  -- Create a new buffer for the preview
-  preview_buf = vim.api.nvim_create_buf(false, true)
-  -- Read the file content into the buffer
-  vim.api.nvim_buf_set_lines(preview_buf, 0, -1, false, vim.fn.readfile(filepath))
-
-  -- Calculate window dimensions and position
-  local width = math.floor(vim.o.columns * 0.5)
-  local height = math.floor(vim.o.lines * 0.8)
-  local row = math.floor((vim.o.lines - height) / 2)
-  local col = vim.o.columns - width - 2
-
-  -- Create the floating window
-  preview_win = vim.api.nvim_open_win(preview_buf, true, {
-    relative = "editor",
-    width = width,
-    height = height,
-    row = row,
-    col = col,
-    style = "minimal",
-    border = "rounded",
-  })
-
-  -- Set keymap to close the preview with 'q'
-  vim.api.nvim_buf_set_keymap(preview_buf, "n", "q", "", {
-    callback = close_preview,
-    noremap = true,
-    silent = true,
-  })
-end
-
--- Function to toggle the preview window
-local function toggle_preview()
-  if preview_win and vim.api.nvim_win_is_valid(preview_win) then
-    close_preview()
-  else
-    open_preview()
-  end
-end
-
--- Git Keymaps (with descriptions & emojis) 💥
--- Load this early (e.g., in config/keymaps.lua)
-
--- Git Status (Fugitive)
-vim.keymap.set("n", "<leader>gf", "<cmd>Git<CR>", {
-  desc = "📄 Git Status (Fugitive)",
-  noremap = true,
-  silent = true,
-})
+-- 📝 Commit: Opens a floating window for commit message
 vim.keymap.set("n", "<leader>gm", function()
-  vim.cmd("wall") -- Save all files first
+  vim.cmd("wall") -- Save all files
 
-  -- Create floating buffer
+  -- Create a floating buffer
   local buf = vim.api.nvim_create_buf(false, true)
   local width = math.floor(vim.o.columns * 0.6)
   local height = 10
@@ -265,11 +192,11 @@ vim.keymap.set("n", "<leader>gm", function()
     border = "rounded",
   })
 
-  -- Set filetype and a helpful placeholder
+  -- Set filetype and placeholder
   vim.api.nvim_buf_set_option(buf, "filetype", "gitcommit")
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "# Type your commit message and press q to commit" })
 
-  -- Map `q` in buffer to commit and close
+  -- Map 'q' to commit and close
   vim.keymap.set("n", "q", function()
     local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
     local message = {}
@@ -285,85 +212,156 @@ vim.keymap.set("n", "<leader>gm", function()
       return
     end
 
-    -- Close window
     vim.api.nvim_win_close(win, true)
-
-    -- Run git commit
     vim.fn.system({ "git", "commit", "-m", message })
-
     vim.notify("✅ Commit done!", vim.log.levels.INFO)
   end, { buffer = buf, noremap = true, silent = true, desc = "Commit & Close" })
-end, {
-  desc = "📝 Git Commit (floating, press q to confirm)",
-  noremap = true,
-  silent = true,
-})
--- -- Git Commit (Open message buffer)
--- vim.keymap.set("n", "<leader>gm", "<cmd>Git commit<CR>", {
---   desc = "📝 Git Commit",
---   noremap = true,
---   silent = true,
--- })
+end, { desc = "📝 Git Commit (floating, press q to confirm)", noremap = true, silent = true })
 
--- Git Push
-vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>", {
-  desc = "🚀 Git Push",
-  noremap = true,
-  silent = true,
-})
+-- ➕ Add: Stages all changes
+vim.keymap.set("n", "<leader>ga", "<cmd>Git add .<CR>", { desc = "➕ Git Add All", noremap = true, silent = true })
 
--- Git Pull with Rebase
-vim.keymap.set("n", "<leader>gr", "<cmd>Git pull --rebase<CR>", {
-  desc = "📥 Git Pull (Rebase)",
-  noremap = true,
-  silent = true,
-})
-
--- Git Fetch
-vim.keymap.set("n", "<leader>gk", "<cmd>Git fetch<CR>", {
-  desc = "🔃 Git Fetch",
-  noremap = true,
-  silent = true,
-})
-
--- Git Merge (will prompt for branch)
-vim.keymap.set("n", "<leader>gx", "<cmd>Git merge ", {
-  desc = "🔀 Git Merge",
-  noremap = true,
-  silent = false, -- allow typing
-})
-
--- Git Branch list / create
-vim.keymap.set("n", "<leader>gn", "<cmd>Git branch<CR>", {
-  desc = "🌿 Git Branch List",
-  noremap = true,
-  silent = true,
-})
-
-vim.keymap.set("n", "<leader>goo", "<cmd>Git checkout main<CR>", {
-  desc = "🚀 Git Checkout 'main' branch",
-  noremap = true,
-  silent = true,
-})
--- Git Checkout (will prompt)
-vim.keymap.set("n", "<leader>gow", function()
+-- 🔄 Checkout: Opens a prompt to enter branch or commit
+vim.keymap.set("n", "<leader>gh", function()
   vim.api.nvim_feedkeys(":Git checkout ", "n", false)
-end, {
-  desc = "🚚 Git Checkout (type branch or commit)",
-  noremap = true,
-  silent = false,
-})
+end, { desc = "🔄 Git Checkout (prompt)", noremap = true, silent = true })
 
--- Git Log (pretty graph)
-vim.keymap.set("n", "<leader>gh", "<cmd>Git log --oneline --graph<CR>", {
-  desc = "📈 Git Log Graph",
-  noremap = true,
-  silent = true,
-})
+-- 🔀 Merge: Opens a prompt to enter branch to merge
+vim.keymap.set("n", "<leader>gx", function()
+  vim.api.nvim_feedkeys(":Git merge ", "n", false)
+end, { desc = "🔀 Git Merge (prompt)", noremap = true, silent = true })
 
--- Git Add All (Stage All)
-vim.keymap.set("n", "<leader>ga", "<cmd>Git add .<CR>", {
-  desc = "➕ Git Add All",
-  noremap = true,
-  silent = true,
-})
+-- 🔄 Pull: Pulls latest changes with rebase
+vim.keymap.set(
+  "n",
+  "<leader>gr",
+  "<cmd>Git pull --rebase<CR>",
+  { desc = "🔄 Git Pull (rebase)", noremap = true, silent = true }
+)
+
+-- 🚀 Push: Pushes commits to the remote repository
+vim.keymap.set("n", "<leader>gp", "<cmd>Git push<CR>", { desc = "🚀 Git Push", noremap = true, silent = true })
+
+-- Function to toggle Git status in a floating window
+local git_status_win = nil
+local git_status_buf = nil
+
+function ToggleGitStatus()
+  if git_status_win and vim.api.nvim_win_is_valid(git_status_win) then
+    vim.api.nvim_win_close(git_status_win, true)
+    git_status_win = nil
+    git_status_buf = nil
+  else
+    vim.cmd("wall") -- Save all files
+
+    -- Create a new buffer
+    git_status_buf = vim.api.nvim_create_buf(false, true)
+
+    -- Define window dimensions
+    local width = math.floor(vim.o.columns * 0.8)
+    local height = math.floor(vim.o.lines * 0.8)
+    local row = math.floor((vim.o.lines - height) / 2)
+    local col = math.floor((vim.o.columns - width) / 2)
+
+    -- Create the floating window
+    git_status_win = vim.api.nvim_open_win(git_status_buf, true, {
+      relative = "editor",
+      width = width,
+      height = height,
+      row = row,
+      col = col,
+      style = "minimal",
+      border = "rounded",
+    })
+
+    -- Run Git status and set the output to the buffer
+    local handle = io.popen("git status")
+    local result = handle:read("*a")
+    handle:close()
+    vim.api.nvim_buf_set_lines(git_status_buf, 0, -1, false, vim.split(result, "\n"))
+    vim.api.nvim_buf_set_option(git_status_buf, "filetype", "git")
+
+    -- Set buffer-local keymap for 'q' to close the floating window
+    vim.api.nvim_buf_set_keymap(git_status_buf, "n", "q", "", {
+      noremap = true,
+      silent = true,
+      callback = function()
+        if git_status_win and vim.api.nvim_win_is_valid(git_status_win) then
+          vim.api.nvim_win_close(git_status_win, true)
+          git_status_win = nil
+          git_status_buf = nil
+        end
+      end,
+    })
+  end
+end
+
+-- Map the function to <leader>gj
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>gj",
+  "<cmd>lua ToggleGitStatus()<CR>",
+  { noremap = true, silent = true, desc = "📄 Toggle Git Status" }
+)
+-- 🌿 Branches: Lists branches
+vim.keymap.set("n", "<leader>gl", "<cmd>Git branch<CR>", { desc = "🌿 Git Branches", noremap = true, silent = true })
+
+-- 📜 Log: Shows commit log with graph
+vim.keymap.set(
+  "n",
+  "<leader>ge",
+  "<cmd>Git log --oneline --graph<CR>",
+  { desc = "📜 Git Log Graph", noremap = true, silent = true }
+)
+
+-- Function to toggle Git diff in a floating window
+local git_diff_win = nil
+local git_diff_buf = nil
+
+function ToggleGitDiff()
+  if git_diff_win and vim.api.nvim_win_is_valid(git_diff_win) then
+    vim.api.nvim_win_close(git_diff_win, true)
+    git_diff_win = nil
+    git_diff_buf = nil
+  else
+    vim.cmd("wall") -- Save all files
+
+    -- Create a new buffer
+    git_diff_buf = vim.api.nvim_create_buf(false, true)
+
+    -- Define window dimensions
+    local width = math.floor(vim.o.columns * 0.8)
+    local height = math.floor(vim.o.lines * 0.8)
+    local row = math.floor((vim.o.lines - height) / 2)
+    local col = math.floor((vim.o.columns - width) / 2)
+
+    -- Create the floating window
+    git_diff_win = vim.api.nvim_open_win(git_diff_buf, true, {
+      relative = "editor",
+      width = width,
+      height = height,
+      row = row,
+      col = col,
+      style = "minimal",
+      border = "rounded",
+    })
+
+    -- Run Git diff and set the output to the buffer
+    local handle = io.popen("git diff")
+    local result = handle:read("*a")
+    handle:close()
+    vim.api.nvim_buf_set_lines(git_diff_buf, 0, -1, false, vim.split(result, "\n"))
+    vim.api.nvim_buf_set_option(git_diff_buf, "filetype", "diff")
+  end
+end
+
+-- Map the function to <leader>gd
+vim.api.nvim_set_keymap(
+  "n",
+  "<leader>gd",
+  "<cmd>lua ToggleGitDiff()<CR>",
+  { noremap = true, silent = true, desc = "🧾 Toggle Git Diff" }
+)
+
+-- 🕵️ Blame: Shows blame for the current file
+vim.keymap.set("n", "<leader>gy", "<cmd>Git blame<CR>", { desc = "🕵️ Git Blame", noremap = true, silent = true })

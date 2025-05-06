@@ -3,7 +3,7 @@
 #############################
 # Suppress warnings by setting instant prompt to quiet (this avoids early console output issues):
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-echo " ✅ "
+echo "......"
 # Set VI mode (this must be early)
 set -o vi
 
@@ -17,6 +17,7 @@ fi
 #############################
 # Set the path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+
 
 # Declare plugins to load. (This must come before sourcing Oh My Zsh.)
 plugins=(
@@ -36,6 +37,7 @@ source $ZSH/oh-my-zsh.sh
 # ——————————————————————————————
 alias ..='cd ..'
 alias ...='cd ../..'
+alias python='python3'
 # ——————————————————————————————
 # poweroff, reboot, sleep with one word
 # ——————————————————————————————
@@ -190,13 +192,13 @@ source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 # autoload -Uz compinit && compinit
 
 
-# Bind Tab to our custom widget
-bindkey '^I' autosuggest-accept  
-
-# Other keybindings as needed
-# bindkey '^Y' menu-select
-bindkey '^Y' menu-select 
-#############################
+# # Bind Tab to our custom widget
+# bindkey '^I' autosuggest-accept  
+#
+# # Other keybindings as needed
+# # bindkey '^Y' menu-select
+# bindkey '^Y' menu-select 
+# #############################
 # Load Powerlevel10k Custom Config (if available)
 #############################
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh

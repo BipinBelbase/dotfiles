@@ -24,7 +24,9 @@ font-family = JetBrainsMonoNerdFont-SemiBold
 theme = tokyonight-storm
 macos-option-as-alt = true
 font-size = 20
-
+window-padding-balance = true
+window-padding-x = 0
+window-padding-y = 0
 #window-padding-x = 2
 #
 # # Spacing around the equals sign does not matter.
@@ -48,19 +50,29 @@ font-size = 20
 # resize-overlay-duration = 4s 200ms
 #theme = "Solarized Dark - Patched"
 
-window-padding-balance = true
-window-padding-x = 4
-window-padding-y = 6
-window-padding-color = extend
+#window-padding-balance = true
+#window-padding-x = 4
+#window-padding-y = 0
+#window-padding-color = extend
 
-#background-opacity = 0.98
-background-blur-radius = 30
+background-opacity = 1.0
+#background-blur-radius = 30
 #background = #031219
 
 
-#cursor-style = block
+cursor-style = bar
+
 
 cursor-style-blink = true
+
+background-opacity  = 1.0
+
+background-blur-radius = 0
+window-colorspace = display-p3
+macos-icon = retro
+macos-icon-frame =  beige
+bold-is-bright = true
+
 
 
 

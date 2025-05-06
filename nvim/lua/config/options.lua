@@ -23,6 +23,7 @@ vim.opt.expandtab = true
 
 vim.opt.smartindent = true
 
+vim.opt.winborder = "rounded"
 -- Undo (Ctrl+z)
 vim.keymap.set("i", "<C-z>", "<Esc>u", { noremap = true, silent = true })
 
