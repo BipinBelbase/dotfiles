@@ -365,3 +365,13 @@ vim.api.nvim_set_keymap(
 
 -- 🕵️ Blame: Shows blame for the current file
 vim.keymap.set("n", "<leader>gy", "<cmd>Git blame<CR>", { desc = "🕵️ Git Blame", noremap = true, silent = true })
+
+local map = vim.keymap.set
+
+map("n", "<leader>rs", function()
+  vim.fn.jobstart("tmux new-session -d -s live-server 'live-server'", { detach = true })
+  print("Started tmux session 'live-server' running live-server.")
+end, { desc = "Start live-server in tmux session" })
+
+vim.keymap.set("n", "<leader>rm", ":MarkdownPreview<CR>", { desc = "Markdown Preview" })
+vim.keymap.set("n", "<leader>rM", ":MarkdownPreviewStop<CR>", { desc = "Stop Preview" })
