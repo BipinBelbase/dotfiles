@@ -44,3 +44,5 @@ bindkey '^Y' menu-select
 # Powerlevel10k instant prompt (for fast startup)
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
