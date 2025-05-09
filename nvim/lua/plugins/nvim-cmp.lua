@@ -1,4 +1,5 @@
 return {
+
   {
     "saghen/blink.cmp",
     opts = function(_, opts)
@@ -7,6 +8,9 @@ return {
         menu = vim.tbl_deep_extend("force", opts.completion and opts.completion.menu or {}, {
           border = "rounded",
           winblend = 0,
+          draw = {
+            columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } },
+          },
         }),
         documentation = vim.tbl_deep_extend("force", opts.completion and opts.completion.documentation or {}, {
           auto_show = false,

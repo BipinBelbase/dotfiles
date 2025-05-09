@@ -8,29 +8,6 @@ return {
   --   },
   -- },
   {
-    "ray-x/lsp_signature.nvim",
-    event = "InsertEnter",
-    opts = {
-      bind = true,
-      timer_interval = 1000,
-      auto_close_after = 3000,
-      hint_enable = false,
-      hint_inline = false,
-      always_trigger = false,
-      select_signature_key = "<C-n>",
-      handler_opts = {
-        border = "rounded",
-      },
-      max_height = 3,
-      max_width = 40,
-      floating_window = true,
-      floating_window_above_cur_line = true,
-      doc_lines = 0,
-      fix_pos = false,
-      close_timeout = 4000,
-    },
-  },
-  {
     "folke/noice.nvim",
     event = "VeryLazy",
     opts = {
