@@ -56,7 +56,7 @@ alias apple='neofetch'
 alias hp='navi'
 
 # This alias lets you SSH to your "fareast" server (ensure SSH keys are set up for passwordless login if desired)
-alias linux="ssh s2382017@220.83.33.4"
+alias linux="ssh fareast"
 alias reload="source ~/.zshrc"
 extract () {
      if [ -f $1 ] ; then
@@ -240,3 +240,9 @@ source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 # Load Powerlevel10k Custom Config (if available)
 #############################
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+#just for fun
+#
+#
+#
+#
+

@@ -161,6 +161,28 @@ do
             rust = { "bash", "-c", "cargo run" },
             javascript = { "bash", "-c", ("node '%s'"):format(file) },
             html = { "bash", "-c", ("open '%s'"):format(file) },
+
+            typescript = { "bash", "-c", ("ts-node '%s'"):format(file) },
+            go = { "bash", "-c", ("go run '%s'"):format(file) },
+            lua = { "bash", "-c", ("lua '%s'"):format(file) },
+            sh = { "bash", "-c", ("bash '%s'"):format(file) },
+            zsh = { "bash", "-c", ("zsh '%s'"):format(file) },
+            php = { "bash", "-c", ("php '%s'"):format(file) },
+            ruby = { "bash", "-c", ("ruby '%s'"):format(file) },
+            perl = { "bash", "-c", ("perl '%s'"):format(file) },
+            make = {
+                "bash",
+                "-c",
+                ("make -C '%s' %s"):format(
+                    vim.fn.fnamemodify(file, ":h"),
+                    vim.fn.fnamemodify(file, ":t:r")
+                ),
+            },
+            dockerfile = {
+                "bash",
+                "-c",
+                ("docker build -t %s '%s'"):format(stem, vim.fn.fnamemodify(file, ":h")),
+            },
         }
 
         local cmd = cmd_map[ft]
@@ -462,3 +484,6 @@ end, { desc = "Start live-server in tmux session" })
 
 vim.keymap.set("n", "<leader>rm", ":MarkdownPreview<CR>", { desc = "Markdown Preview" })
 vim.keymap.set("n", "<leader>rM", ":MarkdownPreviewStop<CR>", { desc = "Stop Preview" })
+
+-- Simply map <leader>fx to :!chmod +x %<CR>
+vim.keymap.set("n", "<leader>fx", ":!chmod +x %<CR>", { desc = "Make file executable (+x)" })
