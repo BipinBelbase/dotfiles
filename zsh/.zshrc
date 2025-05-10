@@ -158,9 +158,27 @@ alias fnvim='fuzzynvim'
 # Tmux List Sessions (tls)
 # Tmux Attach Session (tas)
 # Tmux Kill Session (tks)
+start() {
+  # If inside tmux already, just launch nvim here
+  if [ -n "$TMUX" ]; then
+    nvim
+    return
+  fi
 
+  # Create a unique session name from the cwd (slashes → dashes), or fallback
+  local sess="${PWD//\//-}"
+  sess="${sess/#-/}"              # remove leading dash
+  sess="${sess:-tmux}"            # if empty, use "tmux"
+
+  # If session exists, attach; otherwise create it and launch nvim
+  if tmux has-session -t "$sess" 2>/dev/null; then
+    tmux attach -t "$sess"
+  else
+    tmux new-session -c "$PWD" -s "$sess" "nvim"
+  fi
+}
 # Core tmux aliases for max productivity
-ts() {
+tns() {
   local default_name="main"
   local session_name="${1:-$default_name}"
 
@@ -185,7 +203,8 @@ ts() {
     fi
   fi
 }
-alias tns='ts'
+
+# alias code='start '
 alias tas='tmux attach -t'
 alias tks='tmux kill-session -t'
 alias tksa='tmux kill-server'

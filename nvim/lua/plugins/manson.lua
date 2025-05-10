@@ -1,207 +1,57 @@
 return {
-  -- tools
+    -- tools
 
-  {
-    "ray-x/lsp_signature.nvim",
-    -- event = "InsertEnter",
-    event = "LspAttach",
-    opts = {
-      bind = true,
-      timer_interval = 200,
-      auto_close_after = 3000,
-      hint_enable = false,
-      hint_inline = false,
-      always_trigger = true,
-      select_signature_key = "<C-n>",
-      handler_opts = {
-        border = "rounded",
-      },
-      max_height = 3,
-      max_width = 40,
-      floating_window = true,
-      floating_window_above_cur_line = true,
-      doc_lines = 3,
-      fix_pos = false,
-      -- close_timeout = 4000,
+    {
+        "ray-x/lsp_signature.nvim",
+        -- event = "InsertEnter",
+        event = "LspAttach",
+        opts = {
+            bind = true,
+            timer_interval = 200,
+            auto_close_after = 3,
+            hint_enable = false,
+            always_trigger = false,
+            select_signature_key = "<C-n>",
+            handler_opts = {
+                border = "rounded",
+            },
+            max_height = 3,
+            max_width = 40,
+            floating_window = true,
+            floating_window_above_cur_line = true,
+            doc_lines = 3,
+            fix_pos = false,
+            close_timeout = 3000,
+        },
     },
-  },
-  {
-    "williamboman/mason.nvim",
-    opts = function(_, opts)
-      vim.list_extend(opts.ensure_installed, {
-        "stylua",
-        "pyright",
-        "clangd",
-        "jdtls",
-        "selene",
-        "luacheck",
-        "shellcheck",
-        "shfmt",
-        "tailwindcss-language-server",
-        "typescript-language-server",
-        "css-lsp",
-      })
-    end,
-  },
-
-  -- lsp servers
-  {
-    "neovim/nvim-lspconfig",
-    dependencies = {
-      "ray-x/lsp_signature.nvim", -- for auto signature help
+    -- lua/plugins/mason.lua
+    -- Mason core
+    {
+        "williamboman/mason.nvim",
+        opts = {
+            ensure_installed = {
+                "stylua",
+                "shellcheck",
+                "shfmt",
+                "flake8",
+            },
+        },
     },
-    opts = {
-      inlay_hints = { enabled = false },
-      ---@type lspconfig.options
-      servers = {
-        -- Python (Pyright)
-        pyright = {},
-        -- C/C++ (clangd)
-        clangd = {
-          cmd = { "clangd", "--background-index", "--clang-tidy" },
-        },
-        jdtls = {
-          cmd = {
-            "jdtls",
-            "-data",
-            vim.fn.stdpath("data") .. "/jdtls-workspace",
-          },
-          settings = {
-            java = {
-              eclipse = { downloadSources = true },
-              configuration = { updateBuildConfiguration = "interactive" },
+    -- Bridge Mason ↔ lspconfig: *this* is where ensure_installed lives
+    {
+        "mason-org/mason-lspconfig.nvim",
+        version = "1.32.0",
+        dependencies = { "williamboman/mason.nvim" },
+        opts = {
+            ensure_installed = {
+                "pyright",
+                "clangd",
+                "jdtls",
+                "lua_ls",
+                "rust_analyzer",
+                "eslint",
             },
-          },
         },
-
-        cssls = {},
-        tailwindcss = {
-          root_dir = function(...)
-            return require("lspconfig.util").root_pattern(".git")(...)
-          end,
-        },
-        tsserver = {
-          root_dir = function(...)
-            return require("lspconfig.util").root_pattern(".git")(...)
-          end,
-          single_file_support = false,
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "literal",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = false,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-            javascript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-                includeInlayFunctionParameterTypeHints = true,
-                includeInlayVariableTypeHints = true,
-                includeInlayPropertyDeclarationTypeHints = true,
-                includeInlayFunctionLikeReturnTypeHints = true,
-                includeInlayEnumMemberValueHints = true,
-              },
-            },
-          },
-        },
-        html = {},
-        yamlls = {
-          settings = {
-            yaml = {
-              keyOrdering = false,
-            },
-          },
-        },
-        lua_ls = {
-          -- enabled = false,
-          single_file_support = true,
-          settings = {
-            Lua = {
-              workspace = {
-                checkThirdParty = false,
-              },
-              completion = {
-                workspaceWord = true,
-                callSnippet = "Both",
-              },
-              misc = {
-                parameters = {
-                  -- "--log-level=trace",
-                },
-              },
-              hint = {
-                enable = true,
-                setType = false,
-                paramType = true,
-                paramName = "Disable",
-                semicolon = "Disable",
-                arrayIndex = "Disable",
-              },
-              doc = {
-                privateName = { "^_" },
-              },
-              type = {
-                castNumberToInteger = true,
-              },
-              diagnostics = {
-                disable = { "incomplete-signature-doc", "trailing-space" },
-                -- enable = false,
-                groupSeverity = {
-                  strong = "Warning",
-                  strict = "Warning",
-                },
-                groupFileStatus = {
-                  ["ambiguity"] = "Opened",
-                  ["await"] = "Opened",
-                  ["codestyle"] = "None",
-                  ["duplicate"] = "Opened",
-                  ["global"] = "Opened",
-                  ["luadoc"] = "Opened",
-                  ["redefined"] = "Opened",
-                  ["strict"] = "Opened",
-                  ["strong"] = "Opened",
-                  ["type-check"] = "Opened",
-                  ["unbalanced"] = "Opened",
-                  ["unused"] = "Opened",
-                },
-                unusedLocalExclude = { "_*" },
-              },
-              format = {
-                enable = false,
-                defaultConfig = {
-                  indent_style = "space",
-                  indent_size = "2",
-                  continuation_indent_size = "2",
-                },
-              },
-            },
-          },
-        },
-      },
-      setup = {},
+        -- Other plugins...
     },
-  },
-  {
-    "neovim/nvim-lspconfig",
-    opts = function()
-      local keys = require("lazyvim.plugins.lsp.keymaps").get()
-      vim.list_extend(keys, {
-        {
-          "gd",
-          function()
-            -- DO NOT RESUSE WINDOW
-            require("telescope.builtin").lsp_definitions({ reuse_win = false })
-          end,
-          desc = "Goto Definition",
-          has = "definition",
-        },
-      })
-    end,
-  },
 }
