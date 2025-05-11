@@ -2,6 +2,7 @@
 # Powerlevel10k Instant Prompt
 #############################
 # Suppress warnings by setting instant prompt to quiet (this avoids early console output issues):
+
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 echo "......"
 # Set VI mode (this must be early)
@@ -35,6 +36,7 @@ source $ZSH/oh-my-zsh.sh
 #############################
 # quick directory jumping
 # ——————————————————————————————
+
 alias ..='cd ..'
 alias ...='cd ../..'
 alias python='python3'
@@ -49,7 +51,7 @@ alias sleepnow='pmset sleepnow'
 alias battery='pmset -g batt'                  
 #below is important
 alias ls='eza --icons'
-alias ll='eza -lah --icons'
+alias ll='eza -lah --icons && eza -ld . ..'
 alias cat='bat'
 alias find='fd'
 alias apple='neofetch'
@@ -243,6 +245,24 @@ source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 #just for fun
 #
 #
-#
-#
 
+# Add personal bin to PATH if it exists
+if [[ -d "$HOME/.local/bin" ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+#
+#
+# fda - including hidden directories
+# fd - cd to selected directory
+
+bindkey -s '^F' 'tmux-sessionizer\n'
+# Define a function named "ff"
+ff() {
+  # Try to detect if any tmux session exists
+  if tmux has-session 2>/dev/null; then
+        tmux neww ~/.local/bin/tmux-sessionizer
+  else
+    # Otherwise, fall back to your tmux-sessionizer helper
+    tmux-sessionizer
+  fi
+}

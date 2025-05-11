@@ -11,6 +11,7 @@ vim.opt.timeoutlen = 100
 vim.opt.scrolloff = 8
 -- vim.opt.colorcolumn = "79" -- Show a line at 80 characters
 
+vim.opt.clipboard = ""
 vim.cmd([[
   highlight ColorColumn ctermbg=0 guibg=#2a2a2a
 ]])
@@ -25,11 +26,10 @@ vim.opt.smartindent = true
 
 vim.opt.winborder = "rounded"
 -- Undo (Ctrl+z)
-vim.keymap.set("i", "<C-z>", "<Esc>u", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-z>", "<Esc>u", { noremap = true, silent = true })
 
 -- Redo (Ctrl+y and Ctrl+Shift+z)
 vim.keymap.set("n", "<C-y>", "<C-r>", { noremap = true, silent = true })
-vim.keymap.set("i", "<C-y>", "<Esc><C-r>i", { noremap = true, silent = true })
 
 -- Select all (Ctrl+a)
 vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })

@@ -21,6 +21,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+vim.env.PATH = vim.env.PATH .. "/Users/bipinbelbase/.local/bin"
 require("lazy").setup({
 
     change_detection = { notify = false },

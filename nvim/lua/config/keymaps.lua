@@ -3,29 +3,32 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+local opts = { noremap = true, silent = true }
 local function create_and_attach_tmux_session()
-    -- Prompt for session name
+    -- Only run if inside tmux already
+    if not (vim.env.TMUX and vim.env.TMUX ~= "") then
+        vim.notify("⚠️ Not in tmux – skipping session creation.", vim.log.levels.WARN)
+        return
+    end
+
+    -- Prompt for a session name
     vim.ui.input({ prompt = "Enter new tmux session name: " }, function(input)
-        if input == nil or input == "" then
-            vim.notify("Session name is required.", vim.log.levels.ERROR)
+        if not input or input == "" then
+            vim.notify("❌ Session name is required.", vim.log.levels.ERROR)
             return
         end
 
-        -- Check if session already exists
-        local handle = io.popen("tmux has-session -t " .. input .. " 2>/dev/null; echo $?")
-        local result = handle:read("*a")
-        handle:close()
-
-        if tonumber(result) == 0 then
-            vim.notify("Session already exists. Attaching...", vim.log.levels.INFO)
+        -- Check if it exists
+        local ok = (vim.fn.system("tmux has-session -t " .. input .. " 2>/dev/null") == "")
+        if ok then
+            vim.notify("ℹ️ Session already exists. Attaching…", vim.log.levels.INFO)
         else
-            -- Create new session
             os.execute("tmux new-session -d -s " .. input)
-            vim.notify("Created new session: " .. input, vim.log.levels.INFO)
+            vim.notify("✅ Created session: " .. input, vim.log.levels.INFO)
         end
 
-        -- Attach to the session
-        os.execute("tmux attach-session -t " .. input)
+        -- Open it in a terminal buffer so you stay in Neovim
+        vim.cmd(string.format("belowright split | terminal tmux attach -t %s", input))
     end)
 end
 
@@ -33,37 +36,57 @@ vim.keymap.set(
     "n",
     "<leader>ta",
     create_and_attach_tmux_session,
-    { desc = "Create and attach to tmux session" }
+    { desc = "Create (if needed) & attach to tmux session, but only if already in tmux" }
 )
---tmux sessionizer
 
--- Function to list and switch tmux sessions
-local function select_tmux_session()
-    -- Check if tmux is installed
+local function select_tmux_session_and_exit()
     if vim.fn.executable("tmux") == 0 then
         vim.notify("❌ tmux is not installed!", vim.log.levels.ERROR)
         return
     end
 
-    -- Retrieve list of tmux sessions
     local sessions = vim.fn.systemlist('tmux list-sessions -F "#{session_name}"')
     if vim.tbl_isempty(sessions) then
         vim.notify("⚠️ No tmux sessions found", vim.log.levels.WARN)
         return
     end
 
-    -- Display a selection prompt to choose a session
-    vim.ui.select(sessions, { prompt = "Select a tmux session:" }, function(choice)
-        if choice then
-            -- Switch to the selected tmux session
-            vim.fn.jobstart("tmux switch-client -t " .. choice, { detach = true })
+    vim.ui.select(sessions, { prompt = "Select a tmux session to attach:" }, function(choice)
+        if not choice then
+            return
         end
+
+        -- Save all buffers before exiting
+        vim.cmd("wall")
+
+        -- This execs tmux, replacing Neovim in the TTY
+        vim.fn.jobstart(
+            { "sh", "-c", "exec tmux attach-session -t " .. choice },
+            { detach = false }
+        )
     end)
 end
--- Bind <leader>ts to the tmux session picker
-vim.keymap.set("n", "<leader>tm", select_tmux_session, { desc = "Switch tmux session" })
+
+vim.keymap.set("n", "<leader>TM", select_tmux_session_and_exit, {
+    desc = "Exit Neovim and attach to tmux session",
+})
 -- Clipboard mappings
-vim.keymap.set("x", "<leader>p", [["_dP]])
+
+vim.keymap.set("n", "<leader>Y", [["+Y]])
+-- Define custom mapping for <Space>pv
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open Explorer" })
+vim.g.netrw_browse_split = 0
+vim.keymap.set("n", "<leader>p", "<Nop>", { silent = true, remap = false })
+vim.keymap.set({ "n", "v" }, "<leader>pp", '"+p', { desc = "Paste from system clipboard" })
+vim.keymap.set("x", "<leader>pn", [["_dP]], { desc = "Paste without storing" })
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
+
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
+vim.keymap.set("n", "<leader>cb", function()
+    vim.diagnostic.open_float()
+end, { desc = "diagonistic current file" })
 -- Delete to the black hole register (do not affect clipboard)
 vim.keymap.set({ "n", "v" }, "<leader>d", '"_d')
 
@@ -141,6 +164,7 @@ do
         )
     end
 
+    vim.keymap.set({ "n", "v" }, "<leader>fs", "<cmd>w<cr>", { desc = "Save File" })
     -- pick the right compile/run command and fire it
     local function run_current_file()
         vim.cmd("write") -- save
@@ -162,7 +186,7 @@ do
             javascript = { "bash", "-c", ("node '%s'"):format(file) },
             html = { "bash", "-c", ("open '%s'"):format(file) },
 
-            typescript = { "bash", "-c", ("ts-node '%s'"):format(file) },
+            typescript = { "bash", "-c", ("npx ts-node '%s'"):format(file) },
             go = { "bash", "-c", ("go run '%s'"):format(file) },
             lua = { "bash", "-c", ("lua '%s'"):format(file) },
             sh = { "bash", "-c", ("bash '%s'"):format(file) },
@@ -252,7 +276,6 @@ vim.keymap.set("n", "<leader>tt", open_floating_terminal, {
 })
 
 -- Define options for key mappings
-local opts = { noremap = true, silent = true }
 
 -- 📝 Commit: Opens a floating window for commit message
 vim.keymap.set("n", "<leader>gm", function()
@@ -487,3 +510,5 @@ vim.keymap.set("n", "<leader>rM", ":MarkdownPreviewStop<CR>", { desc = "Stop Pre
 
 -- Simply map <leader>fx to :!chmod +x %<CR>
 vim.keymap.set("n", "<leader>fx", ":!chmod +x %<CR>", { desc = "Make file executable (+x)" })
+--checing
+vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
