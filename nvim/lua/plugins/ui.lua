@@ -1,4 +1,28 @@
 return {
+
+    {
+        "nvim-telescope/telescope.nvim",
+        keys = {
+            {
+                "<leader>fF",
+                function()
+                    require("telescope.builtin").find_files(
+                        require("telescope.themes").get_dropdown({
+                            cwd = vim.fn.expand("~"),
+                            prompt_title = "Find Files in Home (~)",
+                            hidden = true,
+                            previewer = true,
+                            layout_config = {
+                                width = 0.8,
+                                height = 0.8,
+                            },
+                        })
+                    )
+                end,
+                desc = "Find Files from Home (~)",
+            },
+        },
+    },
     {
         "folke/noice.nvim",
         event = "VeryLazy",
@@ -56,7 +80,7 @@ return {
                     explorer = {
                         layout = {
                             layout = {
-                                width = 0.2, -- absolute width of 25 columns :contentReference[oaicite:0]{index=0}
+                                width = 0.22, -- absolute width of 25 columns :contentReference[oaicite:0]{index=0}
                                 border = "rounded",
                                 -- you can also set height here if you like:
                                 -- height = 20,

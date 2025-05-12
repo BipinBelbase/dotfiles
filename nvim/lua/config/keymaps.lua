@@ -510,5 +510,23 @@ vim.keymap.set("n", "<leader>rM", ":MarkdownPreviewStop<CR>", { desc = "Stop Pre
 
 -- Simply map <leader>fx to :!chmod +x %<CR>
 vim.keymap.set("n", "<leader>fx", ":!chmod +x %<CR>", { desc = "Make file executable (+x)" })
---checing
+--checking
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
+
+vim.keymap.set("n", "<C-q>", ":qa!<CR>", { noremap = true, silent = true })
+
+--telescope
+
+local snacks = require("snacks")
+
+vim.keymap.set("n", "<leader>fe", function()
+    snacks.explorer({
+        -- use the vscode two-pane layout
+        layout = {
+            preset = "vscode",
+            preview = true,
+            fullscreen = true,
+            preview_side = "left",
+        },
+    })
+end, { desc = "Snacks Explorer (FS, preview on left)" })

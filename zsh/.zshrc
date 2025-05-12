@@ -36,6 +36,9 @@ source $ZSH/oh-my-zsh.sh
 #############################
 # quick directory jumping
 # ——————————————————————————————
+alias vim="nvim"
+alias vi="nvim"
+
 
 alias ..='cd ..'
 alias ...='cd ../..'
