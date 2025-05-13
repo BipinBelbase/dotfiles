@@ -519,11 +519,11 @@ vim.keymap.set("n", "<C-q>", ":qa!<CR>", { noremap = true, silent = true })
 
 local snacks = require("snacks")
 
-vim.keymap.set("n", "<leader>fe", function()
+vim.keymap.set("n", "<leader>pe", function()
     snacks.explorer({
         -- use the vscode two-pane layout
         layout = {
-            preset = "vscode",
+            preset = "sidebar",
             preview = true,
             fullscreen = true,
             preview_side = "left",

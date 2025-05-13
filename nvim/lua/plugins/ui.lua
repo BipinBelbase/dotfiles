@@ -1,5 +1,23 @@
 return {
 
+    -- ~/.config/nvim/lua/plugins/disabled.lua
+    {
+        { "j-hui/fidget.nvim", enabled = false },
+    },
+    -- in lua/plugins/colorscheme.lua
+    {
+        {
+            "folke/tokyonight.nvim",
+            opts = {
+                transparent = true,
+                styles = {
+                    sidebars = "transparent",
+                    floats = "transparent",
+                },
+            },
+        },
+    },
+
     {
         "nvim-telescope/telescope.nvim",
         keys = {
@@ -29,6 +47,7 @@ return {
         opts = {
             lsp = {
                 -- Make Noice handle hover and signature help popups
+                progress = { enabled = false },
                 override = {
                     ["vim.lsp.util.open_floating_preview"] = true,
                     ["vim.lsp.handlers.signature_help"] = true,

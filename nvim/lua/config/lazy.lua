@@ -21,7 +21,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
-vim.env.PATH = vim.env.PATH .. "/Users/bipinbelbase/.local/bin"
+-- after you preload lazy.nvim, before require("lazy").setup
+vim.lsp.handlers["$/progress"] = function() end
+-- completely no-ops any LSP progress updates:
 require("lazy").setup({
 
     change_detection = { notify = false },
@@ -68,4 +70,18 @@ require("lazy").setup({
             },
         },
     },
+
+    -- ─────────────────────────────────────────────────────────────────────────────
+    -- 1) Only show ERROR diagnostics (hide WARN, INFO, HINT)
+    vim.diagnostic.config({
+        -- filter out anything below Error
+        severity = { min = vim.diagnostic.severity.ERROR },
+        -- optionally keep signs in the gutter only for Errors
+        signs = { severity = { min = vim.diagnostic.severity.ERROR } },
+        -- disable virtual-text pop-up inline
+        virtual_text = false,
+        -- you can still hover for details if you like
+        float = { severity = { min = vim.diagnostic.severity.ERROR } },
+    }),
+    -- ─────────────────────────────────────────────────────────────────────────────
 })

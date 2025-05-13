@@ -25,6 +25,9 @@ vim.opt.expandtab = true
 vim.opt.smartindent = true
 
 vim.opt.winborder = "rounded"
+
+-- vim.o.winblend = 60 -- Transparency for all floating windows
+-- vim.o.pumblend = 60 -- Transparency for completion popup (pum)
 -- Undo (Ctrl+z)
 vim.keymap.set("n", "<C-z>", "<Esc>u", { noremap = true, silent = true })
 
