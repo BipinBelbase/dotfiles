@@ -25,6 +25,10 @@ return {
             settings = {
                 save_on_toggle = true,
                 sync_on_toggle = false,
+                key = function()
+                    return vim.fn.getcwd()
+                end,
+                -- db = require("harpoon.persist.sqlite"), -- use SQLite to persist
             },
         },
         keys = function()
@@ -70,7 +74,6 @@ return {
             { "<space>cu", "<cmd>UndotreeToggle<CR>", desc = "Toggle Undotree" },
         },
         config = function()
-            -- Optional: Set persistent undo
             vim.o.undofile = true
             vim.o.undodir = vim.fn.stdpath("data") .. "/undodir"
             vim.fn.mkdir(vim.o.undodir, "p")

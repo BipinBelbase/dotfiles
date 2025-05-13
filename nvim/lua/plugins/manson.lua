@@ -26,32 +26,60 @@ return {
     },
     -- lua/plugins/mason.lua
     -- Mason core
+    -- 1) Mason core
     {
         "williamboman/mason.nvim",
         opts = {
-            ensure_installed = {
-                "stylua",
-                "shellcheck",
-                "shfmt",
-                "flake8",
+            ui = {
+                border = "rounded",
+                icons = {
+                    package_installed = "✓",
+                    package_pending = "➜",
+                    package_uninstalled = "✗",
+                },
             },
         },
     },
-    -- Bridge Mason ↔ lspconfig: *this* is where ensure_installed lives
+    -- 2) Mason Tool Installer wraps mason.nvim to install *any* Mason package
     {
-        "mason-org/mason-lspconfig.nvim",
-        version = "1.32.0",
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
         dependencies = { "williamboman/mason.nvim" },
         opts = {
+            -- list all your Mason-installed tools here:
             ensure_installed = {
-                "pyright",
-                "clangd",
-                "jdtls",
-                "lua_ls",
-                "rust_analyzer",
-                "eslint",
+                "ast_grep", -- AST querying                        :contentReference[oaicite:0]{index=0}
+                "autoflake", -- Python import cleanup               :contentReference[oaicite:1]{index=1}
+                "clangd", -- C/C++ LSP                           :contentReference[oaicite:2]{index=2}
+                "codelldb", -- Debug Adapter Protocol              :contentReference[oaicite:3]{index=3}
+                "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
+                "eslint", -- JavaScript/TypeScript linting       :contentReference[oaicite:5]{index=5}
+                "flake8", -- Python linting                      :contentReference[oaicite:6]{index=6}
+                "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
+                "jsonls", -- JSON LSP                            :contentReference[oaicite:8]{index=8}
+                "lua_ls", -- Lua LSP                             :contentReference[oaicite:9]{index=9}
+                -- "markdown-toc", -- Markdown TOC generator              :contentReference[oaicite:10]{index=10}
+                -- "markdownlint-cli2", -- Markdown linting                    :contentReference[oaicite:11]{index=11}
+                -- "marksman", -- Markdown LSP                        :contentReference[oaicite:12]{index=12}
+                "prettier", -- Code formatter                      :contentReference[oaicite:13]{index=13}
+                "pyright", -- Python LSP                          :contentReference[oaicite:14]{index=14}
+                "ruff", -- Python linter                       :contentReference[oaicite:15]{index=15}
+                "rust_analyzer", -- Rust LSP                            :contentReference[oaicite:16]{index=16}
+                "selene", -- Lua linter                          :contentReference[oaicite:17]{index=17}
+                "shellcheck", -- Shell script linting                :contentReference[oaicite:18]{index=18}
+                -- "shfmt", -- Shell script formatting             :contentReference[oaicite:19]{index=19}
+                -- "sqlfluff", -- SQL linter/formatter                :contentReference[oaicite:20]{index=20}
+                "stylua", -- Lua formatter                       :contentReference[oaicite:21]{index=21}
+                "tailwindcss", -- Tailwind CSS LSP                    :contentReference[oaicite:22]{index=22}
+                "ts_ls", -- TypeScript LSP (typescript-language-server) :contentReference[oaicite:23]{index=23}
+                -- "vtsls", -- Vue TS LSP                          :contentReference[oaicite:24]{index=24}
             },
+            -- automatically run installer on startup
+            run_on_start = true,
+            -- keep things fast by not auto-updating
+            auto_update = false,
         },
-        -- Other plugins...
+        config = function(_, opts)
+            require("mason-tool-installer").setup(opts)
+        end,
     },
 }

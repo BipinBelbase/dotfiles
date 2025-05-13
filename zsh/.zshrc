@@ -183,7 +183,7 @@ start() {
   fi
 }
 # Core tmux aliases for max productivity
-tns() {
+tm() {
   local default_name="main"
   local session_name="${1:-$default_name}"
 

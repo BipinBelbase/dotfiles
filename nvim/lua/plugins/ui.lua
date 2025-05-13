@@ -90,7 +90,6 @@ return {
         },
     },
 
-    -- ~/.config/nvim/lua/plugins/snacks.lua
     {
         "folke/snacks.nvim",
         opts = {
