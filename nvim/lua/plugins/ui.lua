@@ -24,15 +24,28 @@ return {
                     },
                 },
                 section_separators = "",
-                component_separators = "",
+                component_separators = " | ",
                 globalstatus = true,
             },
             sections = {
                 lualine_a = { "mode" },
                 lualine_b = { "branch" },
                 lualine_c = { { "filename", path = 3 } },
-                lualine_x = {},
-                lualine_y = { "location" },
+                lualine_x = {
+                    {
+                        function()
+                            local reg = vim.fn.reg_recording()
+                            if reg ~= "" then
+                                return "Recording @" .. reg
+                            end
+                            return nil
+                        end,
+                        cond = function()
+                            return vim.fn.reg_recording() ~= ""
+                        end,
+                    },
+                },
+                lualine_y = { "diff", "diagnostics", "location" },
                 lualine_z = { { "progress" } },
             },
         },

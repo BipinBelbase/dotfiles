@@ -42,5 +42,6 @@ vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
 vim.keymap.set("i", "<C-a>", "<Esc>ggVG", { noremap = true, silent = true })
 
 vim.opt.numberwidth = 1
+vim.opt.foldcolumn = "0"
 
 vim.opt.signcolumn = "auto" -- or "no" if you want to completely remove
