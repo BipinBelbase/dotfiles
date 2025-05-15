@@ -1,6 +1,108 @@
 return {
 
-    -- ~/.config/nvim/lua/plugins/disabled.lua
+    -- ~/.config/nvim/lua/custom/statusline.lua
+    -- Minimal, essential, transparent lualine config for LazyVim
+    -- ~/.config/nvim/lua/custom/statusline.lua
+    {
+        "nvim-lualine/lualine.nvim",
+        opts = {
+            options = {
+                -- instead of "auto", provide a table describing each section’s colors:
+                theme = {
+                    normal = {
+                        a = { fg = "#ffffff", bg = "#24283b", gui = "bold" },
+                        b = { fg = "#ffffff", bg = "#24283b" },
+                        c = { fg = "#ffffff", bg = "#24283b" },
+                    },
+                    insert = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+                    visual = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+                    replace = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+                    inactive = {
+                        a = { fg = "#bbbbbb", bg = "#24283b" },
+                        b = { fg = "#bbbbbb", bg = "#24283b" },
+                        c = { fg = "#bbbbbb", bg = "#24283b" },
+                    },
+                },
+                section_separators = "",
+                component_separators = "",
+                globalstatus = true,
+            },
+            sections = {
+                lualine_a = { "mode" },
+                lualine_b = { "branch" },
+                lualine_c = { { "filename", path = 3 } },
+                lualine_x = {},
+                lualine_y = { "location" },
+                lualine_z = { { "progress" } },
+            },
+        },
+        config = function(_, opts)
+            require("lualine").setup(opts)
+            -- make sure no other bg bleeds through:
+            vim.cmd("highlight Normal guibg=NONE")
+        end,
+    },
+    {
+        "folke/which-key.nvim",
+        opts = {
+            show_help = false, -- ❌ disables the bottom help text :contentReference[oaicite:0]{index=0}
+            -- 2) don’t echo the current key in the cmdline at all
+            show_keys = false, -- ❌ disables “You pressed: <leader>” :contentReference[oaicite:1]{index=1}
+
+            -- 3) optionally, override the arrow / back icons to be empty
+            icons = {
+                mappings = false, -- disable all mapping icons :contentReference[oaicite:3]{index=3}
+                rules = false, -- disable icon rules (autodetected icons) :contentReference[oaicite:4]{index=4}
+                separator = "",
+                colors = false, -- disable colored highlighting for icons :contentReference[oaicite:5]{index=5}
+                -- keys → these are the glyphs for special keys in the popup
+                keys = {
+                    BS = "", -- blank out the Backspace (“go up one level”) glyph
+                    Esc = "", -- blank out the Escape (“close”) glyph
+                },
+                -- you can also blank scroll icons if you like:
+                scroll_down = "",
+                scroll_up = "",
+            },
+            win = {
+                -- border style: "none" | "single" | "double" | "rounded" | …
+                border = "rounded", -- ✔️ valid :contentReference[oaicite:0]{index=0}
+                -- prevent popup overlapping your cursor
+                no_overlap = true, -- ✔️ valid :contentReference[oaicite:1]{index=1}
+                -- extra window padding [top/bottom, right/left]
+                padding = { 0, 0, 0, 0 }, -- ✔️ valid :contentReference[oaicite:2]{index=2}
+                -- show a title and its position: "left" | "center" | "right"
+                title = true, -- ✔️ valid :contentReference[oaicite:3]{index=3}
+                title_pos = "center", -- ✔️ valid :contentReference[oaicite:4]{index=4}
+                -- z-index of the floating win
+                zindex = 1000, -- ✔️ valid :contentReference[oaicite:5]{index=5}
+                -- Vim’s buffer-local & window-local options
+                bo = {}, -- ✔️ valid :contentReference[oaicite:6]{index=6}
+                -- wo = { -- ✔️ valid :contentReference[oaicite:7]{index=7}
+                --     -- here you can set winblend, winhighlight, etc.
+                --     winblend = 10,
+                -- },
+                -- you can also set col, row, width, height here (see comments in defaults)
+                -- col = 0,
+                -- row = math.huge,
+                width = { min = 10, max = 26 },
+                height = { min = 3, max = 18 },
+            },
+
+            layout = {
+                align = "left",
+                -- spacing between columns
+                spacing = 0, -- ✔️ valid :contentReference[oaicite:8]{index=8}
+                -- you can also control column width/height here
+                width = { min = 11, max = 27 },
+                height = { min = 4, max = 19 },
+            },
+        },
+    },
+    {
+        "ThePrimeagen/vim-be-good",
+        cmd = { "VimBeGood" }, -- Load only when you run VimBeGood (<leader>gt)
+    },
     {
         { "j-hui/fidget.nvim", enabled = false },
     },
@@ -45,6 +147,20 @@ return {
         "folke/noice.nvim",
         event = "VeryLazy",
         opts = {
+            cmdline = {
+                view = "cmdline", -- use the classic bottom style view
+            },
+            views = {
+                cmdline = {
+                    position = {
+                        row = -1, -- this puts it at the bottom
+                        col = 0,
+                    },
+                    size = {
+                        width = "100%",
+                    },
+                },
+            },
             lsp = {
                 -- Make Noice handle hover and signature help popups
                 progress = { enabled = false },

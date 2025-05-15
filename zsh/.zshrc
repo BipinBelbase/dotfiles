@@ -36,13 +36,12 @@ source $ZSH/oh-my-zsh.sh
 #############################
 # quick directory jumping
 # ——————————————————————————————
-alias vim="nvim"
-alias vi="nvim"
 
 
 alias ..='cd ..'
 alias ...='cd ../..'
 alias python='python3'
+alias reloadtm='tmux source-file ~/.tmux.conf'
 # ——————————————————————————————
 # poweroff, reboot, sleep with one word
 # ——————————————————————————————
@@ -163,23 +162,48 @@ alias fnvim='fuzzynvim'
 # Tmux List Sessions (tls)
 # Tmux Attach Session (tas)
 # Tmux Kill Session (tks)
+# ~/.zshrc
+
+alias vi="start"
+alias vim="start"
+# nvim() {
+#   echo "⚠️  'nvim' is disabled. Please use 'vim' instead."
+#   sleep 1
+#   vim "$@"
+# }
 start() {
-  # If inside tmux already, just launch nvim here
-  if [ -n "$TMUX" ]; then
-    nvim
+  local file="$1"
+  local real_nvim="$(command -v nvim)"
+
+  # If already inside TMUX, just open nvim normally
+  if [[ -n $TMUX ]]; then
+    if [[ -n "$file" ]]; then
+      "$real_nvim" "$file"
+    else
+      "$real_nvim"
+    fi
     return
   fi
 
-  # Create a unique session name from the cwd (slashes → dashes), or fallback
-  local sess="${PWD//\//-}"
-  sess="${sess/#-/}"              # remove leading dash
-  sess="${sess:-tmux}"            # if empty, use "tmux"
+  # Use folder name as session name
+  local cwd_name="${PWD##*/}"
+  [[ -z $cwd_name ]] && cwd_name="tmux"
+  local sess="$cwd_name"
 
-  # If session exists, attach; otherwise create it and launch nvim
+  # Build the nvim command string for tmux
+  local nvim_cmd
+  if [[ -n "$file" ]]; then
+    nvim_cmd="$real_nvim '$file'"
+  else
+    nvim_cmd="$real_nvim"
+  fi
+
+  # If session exists, attach
   if tmux has-session -t "$sess" 2>/dev/null; then
     tmux attach -t "$sess"
   else
-    tmux new-session -c "$PWD" -s "$sess" "nvim"
+    # Else create a new tmux session and run nvim
+    tmux new-session -c "$PWD" -s "$sess" "$nvim_cmd"
   fi
 }
 # Core tmux aliases for max productivity
@@ -210,6 +234,7 @@ tm() {
 }
 
 # alias code='start '
+alias tma='tmux a'
 alias tas='tmux attach -t'
 alias tks='tmux kill-session -t'
 alias tksa='tmux kill-server'
@@ -269,3 +294,23 @@ ff() {
     tmux-sessionizer
   fi
 }
+#always start the tmux session
+
+
+# ───────────────────────────────────────────────────────
+# Bind Ctrl+F to your tmux‑sessionizer script via a ZLE widget
+# ───────────────────────────────────────────────────────
+
+# 1) Define the widget function (call the right filename)
+tmux_sessionizer_widget() {
+  BUFFER=""                       # clear any partially typed command
+  zle -M ""                       # clear any status/message
+  ~/.local/bin/tmux-sessionizer  # run your script
+  zle reset-prompt                # redraw prompt after it exits
+}
+
+# 2) Register it as a ZLE widget
+zle -N tmux_sessionizer_widget
+
+# 3) Bind Ctrl+F (ASCII ^F) to that widget
+bindkey '^F' tmux_sessionizer_widget

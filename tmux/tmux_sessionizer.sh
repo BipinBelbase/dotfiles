@@ -22,5 +22,5 @@ else
         tmux new-session -ds "$selected_name" -c "$selected"
     fi
     # Open a new window and attach to the session using nested tmux
-    tmux new-window -n "$selected_name" "tmux attach-session -t $selected_name"
+    tmux switch-client -t "$selected_name"
 fi

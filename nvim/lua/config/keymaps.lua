@@ -3,77 +3,25 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
-local opts = { noremap = true, silent = true }
-local function create_and_attach_tmux_session()
-    -- Only run if inside tmux already
-    if not (vim.env.TMUX and vim.env.TMUX ~= "") then
-        vim.notify("⚠️ Not in tmux – skipping session creation.", vim.log.levels.WARN)
-        return
+-- disable <leader><leader> once all plugin mappings are loaded
+-- ~/.config/nvim/lua/config/keymaps.lua
+-- unmap double‑leader
+vim.keymap.set("n", "<leader><leader>", "<nop>")
+
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
+vim.keymap.set("n", "<leader>gt", ":VimBeGood<CR>", { desc = "Launch VimBeGood Game" })
+vim.keymap.set("n", "<C-f>", function()
+    local tmux = os.getenv("TMUX")
+    if tmux then
+        os.execute("tmux neww tmux-sessionizer")
+    else
+        print("Not in a tmux session")
     end
-
-    -- Prompt for a session name
-    vim.ui.input({ prompt = "Enter new tmux session name: " }, function(input)
-        if not input or input == "" then
-            vim.notify("❌ Session name is required.", vim.log.levels.ERROR)
-            return
-        end
-
-        -- Check if it exists
-        local ok = (vim.fn.system("tmux has-session -t " .. input .. " 2>/dev/null") == "")
-        if ok then
-            vim.notify("ℹ️ Session already exists. Attaching…", vim.log.levels.INFO)
-        else
-            os.execute("tmux new-session -d -s " .. input)
-            vim.notify("✅ Created session: " .. input, vim.log.levels.INFO)
-        end
-
-        -- Open it in a terminal buffer so you stay in Neovim
-        vim.cmd(string.format("belowright split | terminal tmux attach -t %s", input))
-    end)
-end
-
-vim.keymap.set(
-    "n",
-    "<leader>ta",
-    create_and_attach_tmux_session,
-    { desc = "Create (if needed) & attach to tmux session, but only if already in tmux" }
-)
-
-local function select_tmux_session_and_exit()
-    if vim.fn.executable("tmux") == 0 then
-        vim.notify("❌ tmux is not installed!", vim.log.levels.ERROR)
-        return
-    end
-
-    local sessions = vim.fn.systemlist('tmux list-sessions -F "#{session_name}"')
-    if vim.tbl_isempty(sessions) then
-        vim.notify("⚠️ No tmux sessions found", vim.log.levels.WARN)
-        return
-    end
-
-    vim.ui.select(sessions, { prompt = "Select a tmux session to attach:" }, function(choice)
-        if not choice then
-            return
-        end
-
-        -- Save all buffers before exiting
-        vim.cmd("wall")
-
-        -- This execs tmux, replacing Neovim in the TTY
-        vim.fn.jobstart(
-            { "sh", "-c", "exec tmux attach-session -t " .. choice },
-            { detach = false }
-        )
-    end)
-end
-
-vim.keymap.set("n", "<leader>TM", select_tmux_session_and_exit, {
-    desc = "Exit Neovim and attach to tmux session",
-})
--- Clipboard mappings
+end, { desc = "Smart Tmux Sessionizer", noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>Y", [["+Y]])
--- Define custom mapping for <Space>pv
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open Explorer" })
 vim.g.netrw_browse_split = 0
 vim.keymap.set("n", "<leader>p", "<Nop>", { silent = true, remap = false })
@@ -505,15 +453,10 @@ map("n", "<leader>rs", function()
     print("Started tmux session 'live-server' running live-server.")
 end, { desc = "Start live-server in tmux session" })
 
-vim.keymap.set("n", "<leader>rm", ":MarkdownPreview<CR>", { desc = "Markdown Preview" })
-vim.keymap.set("n", "<leader>rM", ":MarkdownPreviewStop<CR>", { desc = "Stop Preview" })
-
 -- Simply map <leader>fx to :!chmod +x %<CR>
 vim.keymap.set("n", "<leader>fx", ":!chmod +x %<CR>", { desc = "Make file executable (+x)" })
---checking
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<CR>")
 
-vim.keymap.set("n", "<C-q>", ":qa!<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-q>", ":q<CR>", { noremap = true, silent = true })
 
 --telescope
 
@@ -530,3 +473,9 @@ vim.keymap.set("n", "<leader>pe", function()
         },
     })
 end, { desc = "Snacks Explorer (FS, preview on left)" })
+
+-- Resize splits using Ctrl + Arrow Keys
+vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase Height" })
+vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease Height" })
+vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease Width" })
+vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase Width" })
