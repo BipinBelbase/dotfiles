@@ -163,10 +163,11 @@ return {
             },
         },
     },
-    {
-        "ThePrimeagen/vim-be-good",
-        cmd = { "VimBeGood" }, -- Load only when you run VimBeGood (<leader>gt)
-    },
+    --vim game for improving typing speed
+    -- {
+    --     "ThePrimeagen/vim-be-good",
+    --     cmd = { "VimBeGood" }, -- Load only when you run VimBeGood (<leader>gt)
+    -- },
     {
         { "j-hui/fidget.nvim", enabled = false },
     },
