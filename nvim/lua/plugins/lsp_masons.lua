@@ -97,7 +97,7 @@ return {
                 "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
                 "eslint", -- JavaScript/TypeScript linting       :contentReference[oaicite:5]{index=5}
                 "flake8", -- Python linting                      :contentReference[oaicite:6]{index=6}
-                "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
+                -- "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
                 "jsonls", -- JSON LSP                            :contentReference[oaicite:8]{index=8}
                 "lua_ls", -- Lua LSP                             :contentReference[oaicite:9]{index=9}
                 -- "markdown-toc", -- Markdown TOC generator              :contentReference[oaicite:10]{index=10}
@@ -106,13 +106,13 @@ return {
                 "prettier", -- Code formatter                      :contentReference[oaicite:13]{index=13}
                 "pyright", -- Python LSP                          :contentReference[oaicite:14]{index=14}
                 "ruff", -- Python linter                       :contentReference[oaicite:15]{index=15}
-                "rust_analyzer", -- Rust LSP                            :contentReference[oaicite:16]{index=16}
+                -- "rust_analyzer", -- Rust LSP                            :contentReference[oaicite:16]{index=16}
                 "selene", -- Lua linter                          :contentReference[oaicite:17]{index=17}
                 "shellcheck", -- Shell script linting                :contentReference[oaicite:18]{index=18}
                 -- "shfmt", -- Shell script formatting             :contentReference[oaicite:19]{index=19}
                 -- "sqlfluff", -- SQL linter/formatter                :contentReference[oaicite:20]{index=20}
                 "stylua", -- Lua formatter                       :contentReference[oaicite:21]{index=21}
-                "tailwindcss", -- Tailwind CSS LSP                    :contentReference[oaicite:22]{index=22}
+                -- "tailwindcss", -- Tailwind CSS LSP                    :contentReference[oaicite:22]{index=22}
                 "ts_ls", -- TypeScript LSP (typescript-language-server) :contentReference[oaicite:23]{index=23}
                 -- "vtsls", -- Vue TS LSP                          :contentReference[oaicite:24]{index=24}
             },
