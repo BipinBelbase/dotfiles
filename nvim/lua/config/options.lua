@@ -2,6 +2,9 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 
+--this is the defult dashboard of the neovim
+vim.opt.shortmess:remove("I")
+
 vim.opt.termguicolors = true
 
 -- fully opaque completion menu

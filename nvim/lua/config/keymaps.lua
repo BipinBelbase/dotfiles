@@ -22,15 +22,40 @@ vim.keymap.set("n", "<C-f>", function()
 end, { desc = "Smart Tmux Sessionizer", noremap = true, silent = true })
 
 vim.keymap.set("n", "<leader>Y", [["+Y]])
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex, { desc = "Open Explorer" })
-vim.g.netrw_browse_split = 0
 vim.keymap.set("n", "<leader>p", "<Nop>", { silent = true, remap = false })
 vim.keymap.set({ "n", "v" }, "<leader>pp", '"+p', { desc = "Paste from system clipboard" })
 vim.keymap.set("x", "<leader>pn", [["_dP]], { desc = "Paste without storing" })
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { desc = "Yank to system clipboard" })
 
+--netrw settings
+vim.opt.autochdir = true
+vim.g.netrw_liststyle = 3
 vim.g.netrw_banner = 0
-vim.g.netrw_winsize = 25
+function ToggleNetrw()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local ft = vim.api.nvim_buf_get_option(bufnr, "filetype")
+
+    if ft == "netrw" then
+        vim.cmd("bd") -- Close Netrw
+    else
+        vim.cmd("Explore") -- Open Netrw in current window
+    end
+end
+
+vim.api.nvim_set_keymap(
+    "n",
+    "<leader>pv",
+    ":lua ToggleNetrw()<CR>",
+    { noremap = true, silent = true }
+)
+vim.api.nvim_set_keymap(
+    "n",
+    "<leader>e",
+    ":lua ToggleNetrw()<CR>",
+    { noremap = true, silent = true }
+)
+vim.g.netrw_browse_split = 0
+vim.g.netrw_winsize = 60
 
 vim.keymap.set("n", "<leader>cb", function()
     vim.diagnostic.open_float()
@@ -459,20 +484,6 @@ vim.keymap.set("n", "<leader>fx", ":!chmod +x %<CR>", { desc = "Make file execut
 vim.keymap.set("n", "<C-q>", ":q<CR>", { noremap = true, silent = true })
 
 --telescope
-
-local snacks = require("snacks")
-
-vim.keymap.set("n", "<leader>pe", function()
-    snacks.explorer({
-        -- use the vscode two-pane layout
-        layout = {
-            preset = "sidebar",
-            preview = true,
-            fullscreen = true,
-            preview_side = "left",
-        },
-    })
-end, { desc = "Snacks Explorer (FS, preview on left)" })
 
 -- Resize splits using Ctrl + Arrow Keys
 vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase Height" })

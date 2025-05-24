@@ -1,13 +1,20 @@
 return {
 
+    --             -- instead of "auto", provide a table describing each section’s colors:
     -- ~/.config/nvim/lua/custom/statusline.lua
     -- Minimal, essential, transparent lualine config for LazyVim
     -- ~/.config/nvim/lua/custom/statusline.lua
+
+    {
+        "akinsho/bufferline.nvim",
+        enabled = false,
+    },
     {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
                 -- instead of "auto", provide a table describing each section’s colors:
+
                 theme = {
                     normal = {
                         a = { fg = "#ffffff", bg = "#24283b", gui = "bold" },
@@ -26,6 +33,50 @@ return {
                 section_separators = "",
                 component_separators = " | ",
                 globalstatus = true,
+            },
+            tabline = {
+                lualine_a = {},
+                lualine_b = {},
+                lualine_c = {
+                    {
+                        function()
+                            local buffers = {}
+                            for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+                                if vim.api.nvim_buf_is_loaded(bufnr) then
+                                    local is_current = bufnr == vim.api.nvim_get_current_buf()
+                                    local is_modified =
+                                        vim.api.nvim_get_option_value("modified", { buf = bufnr })
+
+                                    if is_current or is_modified then
+                                        local name = vim.fn.fnamemodify(
+                                            vim.api.nvim_buf_get_name(bufnr),
+                                            ":t"
+                                        )
+                                        if name == "" then
+                                            name = "[No Name]"
+                                        end
+                                        if is_modified then
+                                            name = name .. " ●"
+                                        end
+                                        if is_current then
+                                            name = "%#TabLineSel#"
+                                                .. " "
+                                                .. name
+                                                .. " "
+                                                .. "%#TabLine#"
+                                        end
+                                        table.insert(buffers, name)
+                                    end
+                                end
+                            end
+                            return table.concat(buffers, " │ ")
+                        end,
+                        color = { gui = "bold" },
+                    },
+                },
+                lualine_x = {},
+                lualine_y = {},
+                lualine_z = {},
             },
             sections = {
                 lualine_a = { "mode" },
@@ -125,6 +176,10 @@ return {
             "folke/tokyonight.nvim",
             opts = {
                 transparent = true,
+                on_highlights = function(hl, c)
+                    hl.TabLine = { fg = "#888888", bg = "#24283b" } -- Dimmed buffers
+                    hl.TabLineSel = { fg = "#FFFFFF", bg = "#24283b", bold = true } -- Current buffer
+                end,
                 styles = {
                     sidebars = "transparent",
                     floats = "transparent",
@@ -222,6 +277,7 @@ return {
     {
         "folke/snacks.nvim",
         opts = {
+            dashboard = { enabled = false },
             picker = {
                 sources = {
                     explorer = {
@@ -240,53 +296,82 @@ return {
                                 border = "rounded", -- ← rounded border on the file list :contentReference[oaicite:2]{index=2}
                             },
                         },
-
-                        -- 3) Keep other defaults (hidden, auto_close, etc.)
-                        hidden = true,
-                        -- optional: always_focus_input, jump, follow_file, etc.
                     },
-                },
-            },
-            dashboard = {
-                preset = {
-                    header = [[
-
-    ██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗        
-    ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝        
-    ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗          
-    ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝          
-    ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗        
-     ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝        
-██████╗ ██████╗  ██████╗ ███████╗███████╗███████╗███████╗ ██████╗ ██████╗ 
-██╔══██╗██╔══██╗██╔═══██╗██╔════╝██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗
-██████╔╝██████╔╝██║   ██║█████╗  █████╗  ███████╗███████╗██║   ██║██████╔╝
-██╔═══╝ ██╔══██╗██║   ██║██╔══╝  ██╔══╝  ╚════██║╚════██║██║   ██║██╔══██╗
-██║     ██║  ██║╚██████╔╝██║     ███████╗███████║███████║╚██████╔╝██║  ██║
-╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝
-   ]],
-                },
-
-                sections = {
-                    { section = "header", padding = 1 },
-                    { pane = 2, section = "keys", gap = 0, padding = 1 },
-                    { section = "startup", padding = 0 },
-                },
-
-                layout = {
-                    type = "float",
-                    border = "rounded",
-                    width = math.floor(vim.o.columns * 0.6),
-                    height = math.floor(vim.o.lines * 0.3),
-                    row = 0.3,
-                    col = 0.2,
-                },
-
-                button_opts = {
-                    border = "rounded",
-                    padding = { left = 1, right = 1 },
-                    position = "center",
                 },
             },
         },
     },
+
+    --guii ii i ii i ii
+    -- this is for the gui of opening if you want
+    --     {
+    --         "folke/snacks.nvim",
+    --         opts = {
+    --             picker = {
+    --                 sources = {
+    --                     explorer = {
+    --                         layout = {
+    --                             layout = {
+    --                                 width = 0.22, -- absolute width of 25 columns :contentReference[oaicite:0]{index=0}
+    --                                 border = "rounded",
+    --                                 -- you can also set height here if you like:
+    --                                 -- height = 20,
+    --                             },
+    --                             -- you could also tweak position:
+    --                             -- layout = { width = 25, height = 20, position = "left" },
+    --                         },
+    --                         win = {
+    --                             list = {
+    --                                 border = "rounded", -- ← rounded border on the file list :contentReference[oaicite:2]{index=2}
+    --                             },
+    --                         },
+    --
+    --                         -- 3) Keep other defaults (hidden, auto_close, etc.)
+    --                         hidden = true,
+    --                         -- optional: always_focus_input, jump, follow_file, etc.
+    --                     },
+    --                 },
+    --             },
+    --             dashboard = {
+    --                 preset = {
+    --                     header = [[
+    --
+    --     ██╗    ██╗███████╗██╗      ██████╗ ██████╗ ███╗   ███╗███████╗
+    --     ██║    ██║██╔════╝██║     ██╔════╝██╔═══██╗████╗ ████║██╔════╝
+    --     ██║ █╗ ██║█████╗  ██║     ██║     ██║   ██║██╔████╔██║█████╗
+    --     ██║███╗██║██╔══╝  ██║     ██║     ██║   ██║██║╚██╔╝██║██╔══╝
+    --     ╚███╔███╔╝███████╗███████╗╚██████╗╚██████╔╝██║ ╚═╝ ██║███████╗
+    --      ╚══╝╚══╝ ╚══════╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝     ╚═╝╚══════╝
+    -- ██████╗ ██████╗  ██████╗ ███████╗███████╗███████╗███████╗ ██████╗ ██████╗
+    -- ██╔══██╗██╔══██╗██╔═══██╗██╔════╝██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗
+    -- ██████╔╝██████╔╝██║   ██║█████╗  █████╗  ███████╗███████╗██║   ██║██████╔╝
+    -- ██╔═══╝ ██╔══██╗██║   ██║██╔══╝  ██╔══╝  ╚════██║╚════██║██║   ██║██╔══██╗
+    -- ██║     ██║  ██║╚██████╔╝██║     ███████╗███████║███████║╚██████╔╝██║  ██║
+    -- ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚══════╝╚══════╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝
+    --    ]],
+    --                 },
+    --
+    --                 sections = {
+    --                     { section = "header", padding = 1 },
+    --                     { pane = 2, section = "keys", gap = 0, padding = 1 },
+    --                     { section = "startup", padding = 0 },
+    --                 },
+    --
+    --                 layout = {
+    --                     type = "float",
+    --                     border = "rounded",
+    --                     width = math.floor(vim.o.columns * 0.6),
+    --                     height = math.floor(vim.o.lines * 0.3),
+    --                     row = 0.3,
+    --                     col = 0.2,
+    --                 },
+    --
+    --                 button_opts = {
+    --                     border = "rounded",
+    --                     padding = { left = 1, right = 1 },
+    --                     position = "center",
+    --                 },
+    --             },
+    --         },
+    --     },
 }

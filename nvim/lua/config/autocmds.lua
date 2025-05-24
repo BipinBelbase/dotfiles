@@ -7,6 +7,7 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 -- vim.cmd("Copilot disable")
+
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
     callback = function()
         --this is the life gap in the left insde the " what ever
