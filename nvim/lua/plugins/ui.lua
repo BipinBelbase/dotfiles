@@ -1,9 +1,12 @@
 return {
-
-    --             -- instead of "auto", provide a table describing each section’s colors:
-    -- ~/.config/nvim/lua/custom/statusline.lua
-    -- Minimal, essential, transparent lualine config for LazyVim
-    -- ~/.config/nvim/lua/custom/statusline.lua
+    --below installed plugins
+    --1.lualine.nvim
+    --2.lualine
+    --3.whichkey
+    --4.tokyonight
+    --5.telescope
+    --6.noice
+    --7.snacks
 
     {
         "akinsho/bufferline.nvim",
@@ -59,11 +62,11 @@ return {
                                             name = name .. " ●"
                                         end
                                         if is_current then
-                                            name = "%#TabLineSel#"
-                                                .. " "
+                                            name = "%#TabLineSel#["
+                                                .. ""
                                                 .. name
-                                                .. " "
-                                                .. "%#TabLine#"
+                                                .. ""
+                                                .. "]%#TabLine#"
                                         end
                                         table.insert(buffers, name)
                                     end
@@ -104,6 +107,10 @@ return {
             require("lualine").setup(opts)
             -- make sure no other bg bleeds through:
             vim.cmd("highlight Normal guibg=NONE")
+            vim.cmd([[
+      highlight TabLineSel gui=bold guifg=#ffffff guibg=#24283b
+      highlight TabLine gui=none guifg=#888888 guibg=#24283b
+    ]])
         end,
     },
     {
@@ -171,20 +178,27 @@ return {
     {
         { "j-hui/fidget.nvim", enabled = false },
     },
-    -- in lua/plugins/colorscheme.lua
+
+    -- -- add gruvbox
+    -- { "ellisonleao/gruvbox.nvim" },
+    -- {
+    --     "LazyVim/LazyVim",
+    --     opts = {
+    --         colorscheme = "gruvbox",
+    --     },
+    -- },
     {
-        {
-            "folke/tokyonight.nvim",
-            opts = {
-                transparent = true,
-                on_highlights = function(hl, c)
-                    hl.TabLine = { fg = "#888888", bg = "#24283b" } -- Dimmed buffers
-                    hl.TabLineSel = { fg = "#FFFFFF", bg = "#24283b", bold = true } -- Current buffer
-                end,
-                styles = {
-                    sidebars = "transparent",
-                    floats = "transparent",
-                },
+        "folke/tokyonight.nvim",
+        opts = {
+            transparent = true,
+            on_highlights = function(hl, c)
+                hl.TabLine = { fg = "#888888", bg = "#24283b" } -- Dimmed buffers
+                hl.TabLineSel = { fg = "#FFFFFF", bg = "#24283b", bold = true } -- Current buffer
+                hl.TabLineModified = { fg = "#888888", bg = "#24283b" }
+            end,
+            styles = {
+                sidebars = "transparent",
+                floats = "transparent",
             },
         },
     },
