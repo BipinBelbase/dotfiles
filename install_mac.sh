@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -8,16 +8,16 @@ BACKUP="$HOME/dotfiles.bak"
 REPO="https://github.com/bipinbelbase/dotfiles.git"
 BFILE="$DOTFILES/homebrew/Brewfile"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
-declare -A FILES=(
-    [".zshrc"]="zsh/.zshrc"
-    [".zprofile"]="zsh/.zprofile"
-    [".p10k.zsh"]="zsh/.p10k.zsh"
-    [".tmux.conf"]="tmux/.tmux.conf"
-    [".config/nvim"]="nvim"
-    ["Library/Application Support/Code/User/settings.json"]="vscode/settings.json"
-    ["Library/Application Support/Code/User/keybindings.json"]="vscode/keybindings.json"
-    [".config/ghostty/config"]="ghostty/config"
-    ["Library/Application Support/Raycast/config.json"]="raycast/config.json"
+typeset -A FILES
+FILES=(
+    .zshrc "zsh/.zshrc"
+    .zprofile "zsh/.zprofile"
+    .p10k.zsh "zsh/.p10k.zsh"
+    .tmux.conf "tmux/.tmux.conf"
+    .config/nvim "nvim"
+    "Library/Application Support/Code/User/settings.json" "vscode/settings.json"
+    "Library/Application Support/Code/User/keybindings.json" "vscode/keybindings.json"
+    .config/ghostty/config "ghostty/config"
 )
 
 # === FLAGS ===
@@ -73,9 +73,9 @@ if ! command -v brew &>/dev/null; then
     echo "🍺 Installing Homebrew..."
     run '/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
     if [[ -d /opt/homebrew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
+        eval "$('/opt/homebrew/bin/brew' shellenv)"
     elif [[ -d /usr/local/Homebrew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)"
+        eval "$('/usr/local/bin/brew' shellenv)"
     fi
 else
     echo "🍺 Homebrew already installed"
@@ -115,51 +115,58 @@ else
     echo "🌟 Oh My Zsh already installed"
 fi
 
-# === STEP 6: Tmux Plugin Manager ===
-if [ ! -d "$TPM_DIR" ]; then
-    echo "🔌 Installing tmux plugin manager..."
-    run "git clone https://github.com/tmux-plugins/tpm '$TPM_DIR'"
-else
-    echo "🔌 tmux plugin manager already installed"
-fi
 
-# === STEP 6.1: Tmux Plugin Install ===
+# === STEP 6: Tmux Plugin Manager ===
+
 if command -v tmux &>/dev/null; then
-    echo "✨ Installing tmux plugins…"
-    run "tmux new-session -d -s _tpm_install '$TPM_DIR/scripts/install_plugins.sh'"
+    if [ ! -d "$TPM_DIR" ]; then
+        echo "🔌 Installing tmux plugin manager..."
+        run "git clone https://github.com/tmux-plugins/tpm '$TPM_DIR'"
+    else
+        echo "🔄 TPM already installed. Updating TPM..."
+        run "git -C '$TPM_DIR' pull origin master"
+    fi
+
+    echo "✨ Installing or updating tmux plugins..."
+    tmux start-server
+    tmux new-session -d -s _tpm_install "$TPM_DIR/scripts/install_plugins.sh"
     sleep 2
-    run "tmux kill-session -t _tpm_install"
-    run "tmux source-file '$HOME/.tmux.conf'"
+    if tmux has-session -t _tpm_install 2>/dev/null; then
+        tmux kill-session -t _tpm_install
+    fi
+
+    echo "🔄 Reloading tmux config..."
+    tmux source-file "$HOME/.tmux.conf"
 else
-    echo "⚠️ tmux not found; skipping plugin install and reload"
+    echo "⚠️ tmux not found; skipping tmux plugin manager setup"
 fi
 
 # === STEP 7: Symlinks ===
 echo "🔗 Creating symlinks for dotfiles..."
 
-for target in "${!FILES[@]}"; do
+for target in ${(k)FILES}; do
     source="$DOTFILES/${FILES[$target]}"
     dest="$HOME/$target"
-    dest_dir=$(dirname "$dest")
+    dest_dir="$(dirname "$dest")"
 
-    run "mkdir -p '$dest_dir'"
+    run "mkdir -p \"$dest_dir\""
 
     if [ -L "$dest" ]; then
-        if [ "$(readlink "$dest")" == "$source" ]; then
+        if [ "$(readlink "$dest")" = "$source" ]; then
             echo "✔ $target already linked"
             continue
         else
             echo "↻ Updating symlink: $target"
-            run "ln -sf '$source' '$dest'"
+            run "ln -sf \"$source\" \"$dest\""
         fi
     elif [ -e "$dest" ]; then
         echo "⚠ Backing up $target to $target.bak"
-        run "rm -rf '${dest}.bak'"
-        run "mv '$dest' '${dest}.bak'"
-        run "ln -s '$source' '$dest'"
+        run "rm -rf \"${dest}.bak\""
+        run "mv \"$dest\" \"${dest}.bak\""
+        run "ln -s \"$source\" \"$dest\""
     else
         echo "🔗 Linking: $target"
-        run "ln -s '$source' '$dest'"
+        run "ln -s \"$source\" \"$dest\""
     fi
 done
 

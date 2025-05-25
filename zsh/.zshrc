@@ -327,3 +327,6 @@ zle -N tmux_sessionizer_widget
 
 # 3) Bind Ctrl+F (ASCII ^F) to that widget
 bindkey '^F' tmux_sessionizer_widget
+
+
+
