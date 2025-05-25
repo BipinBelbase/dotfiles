@@ -370,15 +370,14 @@ if command -v tmux &>/dev/null; then
     echo "✨ Installing or updating tmux plugins..."
     sleep 2
     tmux start-server
-    tmux new-session -d -s _tpm_install "$TPM_DIR/scripts/install_plugins.sh"
-    sleep 2
+    tmux new-session -d -s _tpm_install "cd $TPM_DIR/scripts && ./install_plugins.sh && tmux source-file $HOME/.tmux.conf && exit"
+    echo "🔄 Reloaded tmux config..."
+    sleep 5
+
     if tmux has-session -t _tpm_install 2>/dev/null; then
         tmux kill-session -t _tpm_install
     fi
 
-    echo "🔄 Reloading tmux config..."
-    sleep 1
-    tmux source-file "$HOME/.tmux.conf"
 else
     echo "⚠️ tmux not found; skipping tmux plugin manager setup"
     sleep 1
