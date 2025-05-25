@@ -39,9 +39,9 @@ source $ZSH/oh-my-zsh.sh
 
 
 alias ..='cd ..'
-alias ...='cd ../..'
 alias python='python3'
 alias reloadtm='tmux source-file ~/.tmux.conf'
+alias lg='lazygit'
 # ——————————————————————————————
 # poweroff, reboot, sleep with one word
 # ——————————————————————————————
