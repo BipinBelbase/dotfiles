@@ -18,10 +18,10 @@ Before running the script:
 2. **Then install download one file and run it just past this and work finished **
 
 ```bash
-curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh && chmod +x ~/install_mac.sh && ~/install_mac.sh```
+curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh 
+    ```
 
-
-2. **Allow script to run:**
+3. **Allow script to run:**
 
    ```bash
    chmod +x install_mac.sh
@@ -29,7 +29,7 @@ curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/do
 
    This makes the script executable.
 
-3. **Run the script:**
+4. **Run the script:**
 
    ```bash
    ./install_mac.sh
@@ -41,10 +41,18 @@ curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/do
    ./install_mac.sh --dry-run
    ```
 
----
+
+# THIS 4 STEPS IS ENOUGH TO INSTALL CONFIG ON MAC
+
+
 
 ## 🔧 What the Script Does (Step-by-Step)
+## This is just the explaination you dont have the run it 
+## The installation is already finished so Good bye if you want
 
+
+
+ 
 ### 1. **Setup Variables**
 
 * `DOTFILES` = `~/dotfiles`
