@@ -66,7 +66,7 @@ alias sleepnow='pmset sleepnow'
 alias battery='pmset -g batt'                  
 #below is important
 alias ls='eza --icons'
-alias ll='eza -lah --icons && eza -ld . ..'
+alias ll='eza -lah --icons && eza -ldh . ..'
 alias cat='bat'
 alias find='fd'
 alias apple='neofetch'
@@ -299,13 +299,13 @@ fi
 bindkey -s '^F' 'tmux-sessionizer\n'
 # Define a function named "ff"
 ff() {
-  # Try to detect if any tmux session exists
-  if tmux has-session 2>/dev/null; then
-        tmux neww ~/.local/bin/tmux-sessionizer
-  else
-    # Otherwise, fall back to your tmux-sessionizer helper
-    tmux-sessionizer
-  fi
+    if [ -n "$TMUX" ]; then
+        # Inside tmux
+        tmux new-window "$HOME/.local/bin/tmux-sessionizer"
+    else
+        # Outside tmux
+        "$HOME/.local/bin/tmux-sessionizer"
+    fi
 }
 #always start the tmux session
 
