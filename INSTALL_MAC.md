@@ -15,6 +15,12 @@ Before running the script:
    ```
 
    This installs command-line developer tools including Git.
+2. **Then install download one file and run it just past this and work finished **
+
+```bash
+curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh && chmod +x ~/install_mac.sh && ~/install_mac.sh```
+
+```
 
 2. **Allow script to run:**
 
@@ -148,16 +154,3 @@ Shows all actions without actually executing them.
   exec $SHELL
   ```
 
----
-
-## 🧠 Tips
-
-* Make sure Homebrew and all tools are installed correctly
-* If any plugin fails to load, manually check permissions or re-run tmux setup
-* You can customize the `FILES` array in the script to link more dotfiles (like `.gitconfig`, `.aliases`, etc.)
-
----
-
-> You now have a full automated macOS development setup using your personal dotfiles repo 💻🔥
-
-Keep your repo updated and re-run the script anytime you switch machines!
