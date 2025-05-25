@@ -31,6 +31,17 @@ plugins=(
 # Source Oh My Zsh (this will load plugins, themes, etc.)
 source $ZSH/oh-my-zsh.sh
 
+# Wrapper function to update Brewfile after brew install/uninstall
+function brew() {
+  # Run the real brew command with all arguments
+  command brew "$@"
+
+  # Check if the command was install, uninstall, or remove
+  if [[ "$1" == "install" || "$1" == "uninstall" || "$1" == "remove" ]]; then
+    echo "Updating Brewfile..."
+    brew bundle dump --file=~/dotfiles/homebrew/Brewfile --force
+  fi
+}
 #############################
 # User Customizations & Aliases
 #############################
@@ -42,6 +53,8 @@ alias ..='cd ..'
 alias python='python3'
 alias reloadtm='tmux source-file ~/.tmux.conf'
 alias lg='lazygit'
+alias c='clear'
+alias update='brew update && brew upgrade'
 # ——————————————————————————————
 # poweroff, reboot, sleep with one word
 # ——————————————————————————————
