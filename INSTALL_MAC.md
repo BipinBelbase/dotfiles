@@ -20,7 +20,6 @@ Before running the script:
 ```bash
 curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh && chmod +x ~/install_mac.sh && ~/install_mac.sh```
 
-```
 
 2. **Allow script to run:**
 
