@@ -180,6 +180,5 @@ fi
 
 # === DONE ===
 echo "✅ Setup complete!"
-echo "• Run 'p10k configure' for Powerlevel10k prompt"
-echo "• Press Prefix + I inside tmux to install plugins via TPM"
+echo "• Press Prefix(ctrl+space)+I inside tmux to install plugins via TPM"
 echo "🔚 All done! Please open a new terminal window (or run 'exec \$SHELL') to finalize."
