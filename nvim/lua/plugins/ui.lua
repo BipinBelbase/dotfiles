@@ -232,14 +232,24 @@ return {
         opts = {
             cmdline = {
                 view = "cmdline", -- use the classic bottom style view
-            },
-            format = {
-                cmdline = { pattern = "^:", icon = " :", lang = "vim" },
-                search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
-                search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
-                filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-                help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
-                input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
+                format = {
+                    cmdline = { pattern = "^:", icon = " :", lang = "vim" },
+                    search_down = {
+                        kind = "search",
+                        pattern = "^/",
+                        icon = "  ",
+                        lang = "regex",
+                    },
+                    search_up = {
+                        kind = "search",
+                        pattern = "^%?",
+                        icon = "  ",
+                        lang = "regex",
+                    },
+                    filter = { pattern = "^:%s*!", icon = " $", lang = "bash" },
+                    help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+                    input = { view = "cmdline_input", icon = "󰥻 " }, -- Used by input()
+                },
             },
             views = {
                 cmdline = {
@@ -291,7 +301,7 @@ return {
                 },
             },
             presets = {
-                bottom_search = true, -- use a classic bottom cmdline for search
+                bottom_search = false,
                 command_palette = true, -- position the cmdline and popupmenu together
                 long_message_to_split = true, -- long messages will be sent to a split
 
@@ -308,6 +318,8 @@ return {
             picker = {
                 sources = {
                     explorer = {
+                        jump = { close = true },
+
                         layout = {
                             layout = {
                                 width = 0.22, -- absolute width of 25 columns :contentReference[oaicite:0]{index=0}
