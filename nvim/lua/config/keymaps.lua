@@ -39,7 +39,7 @@ vim.api.nvim_set_keymap(
 )
 vim.api.nvim_set_keymap(
     "n",
-    "<leader>e",
+    "<leader>pv",
     ":lua ToggleNetrw()<CR>",
     { noremap = true, silent = true }
 )
@@ -248,3 +248,11 @@ vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", { desc = "Increase Height" })
 vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", { desc = "Decrease Height" })
 vim.keymap.set("n", "<C-Left>", ":vertical resize -2<CR>", { desc = "Decrease Width" })
 vim.keymap.set("n", "<C-Right>", ":vertical resize +2<CR>", { desc = "Increase Width" })
+
+vim.keymap.set("n", "<C-k>", function()
+    require("lsp_signature").toggle_float_win()
+end, { silent = true, noremap = true, desc = "Toggle LSP Signature" })
+
+vim.keymap.set("n", "<leader>e", function()
+    Snacks.picker.explorer()
+end, { desc = "Open Snacks Explorer" })
