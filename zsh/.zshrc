@@ -49,6 +49,17 @@ function brew() {
 # ——————————————————————————————
 
 
+function nvim() {
+  :
+  echo "Please vim command"
+}
+
+# Detect OS and alias vim accordingly
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+  alias vim='/usr/bin/nvim'       # Linux typical path
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  alias vim='/opt/homebrew/bin/nvim'  # macOS Homebrew path
+fi
 alias ..='cd ..'
 alias python='python3'
 alias reloadtm='tmux source-file ~/.tmux.conf'
@@ -95,49 +106,18 @@ extract () {
          echo "'$1' is not a valid file"
      fi
 }
-# ——————————————————————————————
-# fzd: interactively list DIRECTORIES only (no cd)
-# ——————————————————————————————
-listdirfuzzy() {
-  if command -v fd &>/dev/null; then
-    fd --type d --hidden --follow --exclude .git '' | fzf +m
-  else
-    find . -path '*/\.*' -prune -o -type d -print 2>/dev/null | fzf +m
-  fi
+
+alias back='cd -'
+
+unalias fzd 2>/dev/null
+alias  q="exit"
+#below is in the testing
+
+fcd() {
+  local dir
+  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
 }
-alias fzd=listdirfuzzy
-
-# ——————————————————————————————
-# fzdgo: fuzzy-pick a DIRECTORY and cd into it
-# ——————————————————————————————
-# put this in your ~/.bashrc or ~/.zshrc and then `source` it
-# -----------------------------------------------------------------------------
-# Fuzzy-directory-only cd: fzdgo
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
-# fzdgo: fuzzy-directory-only cd (includes hidden, skips .git)
-# -----------------------------------------------------------------------------
-
-# put this at the very top of your ~/.zshrc:
-# ensure no old alias interferes
-#unalias fzdgo 2>/dev/null
-
-fzdgo() {
-  local target
-  target=$(fd --hidden --follow --exclude .git | fzf --prompt="📂 fzdgo> " --preview 'ls -la {}')
-  
-  if [[ -n "$target" ]]; then
-    if [[ -d "$target" ]]; then
-      cd "$target"
-    else
-      cd "$(dirname "$target")"
-    fi
-  fi
-}
-# ——————————————————————————————
-# fzf: interactively list FILES only (no action)
-# ——————————————————————————————
-fzf() {
+fzf(){
   if command -v fd &>/dev/null; then
     fd --type f --hidden --follow --exclude .git '' | command fzf "$@"
   else
@@ -145,83 +125,19 @@ fzf() {
   fi
 }
 
-
-# ——————————————————————————————
-# fzfgo: fuzzy-pick a FILE and cd into its directory
-# ——————————————————————————————
-fzfgoo() {
-  local dir
-  dir=$(fd --type d --hidden --follow --exclude .git | fzf --preview 'ls -la {}')
-  [[ -n $dir ]] && cd "$dir"
-}
-alias fzfgo='fzfgoo'
-
-alias  q="exit"
-
-# ——————————————————————————————
-# fnvim: fuzzy-pick a FILE, cd to its dir, and open in Neovim
-# ——————————————————————————————
-fuzzynvim() {
+fzo() {
   local file
-  file=$(fzf)
+  file=$(find ~ -type f 2>/dev/null | fzf)
   if [[ -n $file ]]; then
     cd "$(dirname "$file")"
-    nvim "$(basename "$file")"
+    vim "$(basename "$file")"
   fi
 }
-alias fnvim='fuzzynvim'
-#this below setting is just for the tmux 
-# Tmux New Session (tns)
-# Tmux List Sessions (tls)
-# Tmux Attach Session (tas)
-# Tmux Kill Session (tks)
-# ~/.zshrc
 
-alias vi="start"
-alias vim="start"
-# nvim() {
-#   echo "⚠️  'nvim' is disabled. Please use 'vim' instead."
-#   sleep 1
-#   vim "$@"
-# }
-start() {
-  local file="$1"
-  local real_nvim="$(command -v nvim)"
 
-  # If already inside TMUX, just open nvim normally
-  if [[ -n $TMUX ]]; then
-    if [[ -n "$file" ]]; then
-      "$real_nvim" "$file"
-    else
-      "$real_nvim"
-    fi
-    return
-  fi
-
-  # Use folder name as session name
-  local cwd_name="${PWD##*/}"
-  [[ -z $cwd_name ]] && cwd_name="tmux"
-  local sess="$cwd_name"
-
-  # Build the nvim command string for tmux
-  local nvim_cmd
-  if [[ -n "$file" ]]; then
-    nvim_cmd="$real_nvim '$file'"
-  else
-    nvim_cmd="$real_nvim"
-  fi
-
-  # If session exists, attach
-  if tmux has-session -t "$sess" 2>/dev/null; then
-    tmux attach -t "$sess"
-  else
-    # Else create a new tmux session and run nvim
-    tmux new-session -c "$PWD" -s "$sess" "$nvim_cmd"
-  fi
-}
-# Core tmux aliases for max productivity
+#good
 tm() {
-  local default_name="main"
+  local default_name="bipinbelbase"
   local session_name="${1:-$default_name}"
 
   if ! command -v tmux &>/dev/null; then
@@ -246,12 +162,10 @@ tm() {
   fi
 }
 
-# alias code='start '
-alias tma='tmux a'
+alias tma='tmux -a'
 alias tas='tmux attach -t'
 alias tks='tmux kill-session -t'
 alias tksa='tmux kill-server'
-#alias tds='tmux detach'
 alias trs='tmux rename-session -t'
 alias tls='tmux ls'
 #############################
@@ -260,41 +174,29 @@ alias tls='tmux ls'
 # Load Powerlevel10k theme (installed via Homebrew)
 source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
 
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='fd --type f'  # if you have fd installed
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d'
+
 # Autojump
 [[ -f /opt/homebrew/etc/profile.d/autojump.sh ]] && \
   source /opt/homebrew/etc/profile.d/autojump.sh
 # Load syntax highlighting and autosuggestions (also from Homebrew)
-source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
 #############################
-# Zsh Completion Initialization
-#############################
-# autoload -Uz compinit && compinit
-
-
-# # Bind Tab to our custom widget
-# bindkey '^I' autosuggest-accept  
-#
-# # Other keybindings as needed
-# # bindkey '^Y' menu-select
-# bindkey '^Y' menu-select 
 # #############################
 # Load Powerlevel10k Custom Config (if available)
 #############################
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 #just for fun
 #
-#
-
 # Add personal bin to PATH if it exists
 if [[ -d "$HOME/.local/bin" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
-#
-#
-# fda - including hidden directories
-# fd - cd to selected directory
 
 bindkey -s '^F' 'tmux-sessionizer\n'
 # Define a function named "ff"
@@ -307,13 +209,10 @@ ff() {
         "$HOME/.local/bin/tmux-sessionizer"
     fi
 }
-#always start the tmux session
-
 
 # ───────────────────────────────────────────────────────
 # Bind Ctrl+F to your tmux‑sessionizer script via a ZLE widget
 # ───────────────────────────────────────────────────────
-
 # 1) Define the widget function (call the right filename)
 tmux_sessionizer_widget() {
   BUFFER=""                       # clear any partially typed command
@@ -321,12 +220,7 @@ tmux_sessionizer_widget() {
   ~/.local/bin/tmux-sessionizer  # run your script
   zle reset-prompt                # redraw prompt after it exits
 }
-
 # 2) Register it as a ZLE widget
 zle -N tmux_sessionizer_widget
-
 # 3) Bind Ctrl+F (ASCII ^F) to that widget
 bindkey '^F' tmux_sessionizer_widget
-
-
-
