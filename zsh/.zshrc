@@ -66,23 +66,16 @@ alias reloadtm='tmux source-file ~/.tmux.conf'
 alias lg='lazygit'
 alias c='clear'
 alias update='brew update && brew upgrade'
-# ——————————————————————————————
-# poweroff, reboot, sleep with one word
-# ——————————————————————————————
 alias poweroff='sudo shutdown -h now'       
 alias reboot='sudo shutdown -r now'         
 alias sleepnow='pmset sleepnow'
-
-# show battery & charging status
 alias battery='pmset -g batt'                  
-#below is important
 alias ls='eza --icons'
 alias ll='eza -lah --icons && eza -ldh . ..'
 alias cat='bat'
 alias find='fd'
 alias apple='neofetch'
 alias hp='navi'
-
 # This alias lets you SSH to your "fareast" server (ensure SSH keys are set up for passwordless login if desired)
 alias linux="ssh fareast"
 alias reload="source ~/.zshrc"
@@ -106,35 +99,63 @@ extract () {
          echo "'$1' is not a valid file"
      fi
 }
-
 alias back='cd -'
-
 unalias fzd 2>/dev/null
 alias  q="exit"
-#below is in the testing
+#make the directory then cd into it 
+function mkd() {
+	mkdir -p "$1"
+	cd "$1"
+}
+function cd() {
+	# Try a normal cd
+	builtin cd "$@" 2> /dev/null
+	if [ $? = 0 ]; then
+		# If we get here cd was successful so do a ls
+		ls
+	else
+		# If we get here, cd was not successful
+		if [ -f "$1" ]; then
+			# If there is a file there, try and open it in vim
+			# ToDo: smarter open so it will open in zathura if it's a pdf for
+			# example
+			$EDITOR "$1"
+		else
+			# Otherwise fail clearly
+			echo "Can't cd"
+		fi
+	fi
+	#updatePath
+}
 
-fcd() {
+jo() {
   local dir
-  dir=$(find ${1:-.} -type d 2> /dev/null | fzf +m) && cd "$dir"
+  dir=$(
+    fd --type f --hidden --exclude .git --exclude .tmux --exclude .local --exclude .oh-my-zsh --exclude .Trash --exclude Applications --exclude Library --exclude .cache --exclude  .npm --exclude  Movies --exclude  Music '' "$HOME" 2> /dev/null \
+    | fzf --height 60% --layout=reverse --border
+  ) && vim "$dir"
 }
-fzf(){
-  if command -v fd &>/dev/null; then
-    fd --type f --hidden --follow --exclude .git '' | command fzf "$@"
+
+fzd() {
+  local dir
+  dir=$(
+    fd --type d --hidden --exclude .git --exclude .tmux --exclude .local --exclude .oh-my-zsh --exclude .Trash --exclude Applications --exclude Library --exclude .cache --exclude  .npm --exclude  Movies --exclude  Music '' "$HOME" 2> /dev/null \
+    | fzf --height 60% --layout=reverse --border
+  ) && cd "$dir"
+}
+j() {
+  if [ "$#" -eq 0 ]; then
+      fzd
   else
-    find . -path '*/\.*' -prune -o -type f -print 2>/dev/null | command fzf "$@"
+    local target
+    target=$(zoxide query "$*")
+    if [ $? -eq 0 ]; then
+      cd "$target"
+    else
+      cd "$(zoxide query -l | fzd)"
+    fi
   fi
 }
-
-fzo() {
-  local file
-  file=$(find ~ -type f 2>/dev/null | fzf)
-  if [[ -n $file ]]; then
-    cd "$(dirname "$file")"
-    vim "$(basename "$file")"
-  fi
-}
-
-
 #good
 tm() {
   local default_name="bipinbelbase"
@@ -174,15 +195,6 @@ alias tls='tmux ls'
 # Load Powerlevel10k theme (installed via Homebrew)
 source "$(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-export FZF_DEFAULT_COMMAND='fd --type f'  # if you have fd installed
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-export FZF_ALT_C_COMMAND='fd --type d'
-
-# Autojump
-[[ -f /opt/homebrew/etc/profile.d/autojump.sh ]] && \
-  source /opt/homebrew/etc/profile.d/autojump.sh
-# Load syntax highlighting and autosuggestions (also from Homebrew)
 source "$(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
 source "$(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 
@@ -224,3 +236,13 @@ tmux_sessionizer_widget() {
 zle -N tmux_sessionizer_widget
 # 3) Bind Ctrl+F (ASCII ^F) to that widget
 bindkey '^F' tmux_sessionizer_widget
+bindkey '^Y' autosuggest-accept
+
+# Enable menu-style completions
+zstyle ':completion:*' menu select
+eval "$(zoxide init zsh)"
+
+
+
+
+
