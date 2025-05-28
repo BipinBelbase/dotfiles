@@ -1,4 +1,4 @@
-vim.opt.shortmess:remove("I")
+-- vim.opt.shortmess:remove("I")
 vim.opt.termguicolors = true
 -- fully opaque completion menu
 vim.opt.pumblend = 0
@@ -26,7 +26,6 @@ vim.opt.smartindent = true
 vim.opt.winborder = "rounded"
 -- Redo (Ctrl+y)
 vim.keymap.set("n", "<C-y>", "<C-r>", { noremap = true, silent = true })
-
 -- Select all (Ctrl+a)
 vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
 vim.keymap.set("i", "<C-a>", "<Esc>ggVG", { noremap = true, silent = true })
