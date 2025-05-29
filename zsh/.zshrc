@@ -128,6 +128,28 @@ function cd() {
 	#updatePath
 }
 
+alias process='glances'
+
+size() {
+  if [[ -z "$1" ]]; then
+    echo "Usage: size <file_or_directory>"
+    return 1
+  fi
+
+  local target="$1"
+
+  if [[ ! -e "$target" ]]; then
+    echo "❌ '$target' does not exist"
+    return 1
+  fi
+
+  du -sh -- "$target"
+}
+
+catr() {
+    tail -n "+$1" $3 | head -n "$(($2 - $1 + 1))"
+}
+
 jo() {
   local dir
   dir=$(
