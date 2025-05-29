@@ -205,7 +205,7 @@ tm() {
   fi
 }
 
-alias tma='tmux -a'
+alias tma='tmux a'
 alias tas='tmux attach -t'
 alias tks='tmux kill-session -t'
 alias tksa='tmux kill-server'
