@@ -7,7 +7,20 @@ return {
     --5.telescope
     --6.noice
     --7.snacks
-
+    --8. trouble.nvim
+    {
+        "m4xshen/hardtime.nvim",
+        lazy = false,
+        dependencies = { "MunifTanjim/nui.nvim" },
+        opts = {},
+    },
+    {
+        "folke/trouble.nvim",
+        opts = {
+            focus = true, -- Prevents the Trouble window from gaining focus when opened
+            -- You can add other options here as needed
+        },
+    },
     {
         "akinsho/bufferline.nvim",
         enabled = false,

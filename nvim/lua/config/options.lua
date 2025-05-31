@@ -1,4 +1,5 @@
--- vim.opt.shortmess:remove("I")
+--for the neovim default text to showups
+vim.opt.shortmess:remove("I")
 vim.opt.termguicolors = true
 -- fully opaque completion menu
 vim.opt.pumblend = 0

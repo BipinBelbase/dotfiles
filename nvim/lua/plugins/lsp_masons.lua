@@ -33,12 +33,15 @@ return {
             },
             diagnostics = {
                 underline = false, -- ⛔ disable underlines
-                virtual_text = {
-                    severity = vim.diagnostic.severity.ERROR, -- only red (errors)
-                    spacing = 2,
-                    source = "if_many", -- show source if many
-                },
                 signs = true,
+                virtual_text = false,
+
+                -- This shows the inline text when errors founds
+                -- virtual_text = {
+                --     severity = vim.diagnostic.severity.ERROR, -- only red (errors)
+                --     spacing = 0,
+                --     source = "if_many", -- show source if many
+                -- },
                 update_in_insert = false,
                 severity_sort = true,
             },

@@ -5,6 +5,13 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+-- -- Show diagnostic(errors) popup when cursor stays on a line
+-- vim.o.updatetime = 2550
+-- vim.api.nvim_create_autocmd("CursorHold", {
+--     callback = function()
+--         vim.diagnostic.open_float(nil, { focus = false })
+--     end,
+-- })
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
     callback = function()
         --this is the life gap in the left insde the " what ever

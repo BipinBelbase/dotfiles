@@ -63,9 +63,11 @@ vim.keymap.set("n", "N", "Nzzzv")
 
 vim.keymap.set("n", "<C-k>", "<cmd>cnext<CR>zz")
 vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
-vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
-vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 
+-- vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
+-- vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
+vim.keymap.set("n", "<leader>k", vim.diagnostic.goto_next, { desc = "Next ERROR LIST" })
+vim.keymap.set("n", "<leader>j", vim.diagnostic.goto_prev, { desc = "Prev ERROR LIST" })
 vim.keymap.set(
     "n",
     "<leader>fr",
