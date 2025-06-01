@@ -8,6 +8,29 @@ return {
     --6.noice
     --7.snacks
     --8. trouble.nvim
+
+    {
+        { "j-hui/fidget.nvim", enabled = false },
+    },
+    -- {
+    --     "j-hui/fidget.nvim",
+    --     tag = "legacy", -- use a stable tag
+    --     event = "LspAttach", -- load when any LSP attaches
+    --     config = function()
+    --         require("fidget").setup({
+    --             text = {
+    --                 spinner = "dots", -- simple “dots” animation
+    --                 done = "✔", -- checkmark when a task finishes
+    --             },
+    --             align = {
+    --                 bottom = true, -- show fidget at the bottom of the window
+    --             },
+    --             window = {
+    --                 blend = 0, -- 0 = fully opaque background
+    --             },
+    --         })
+    --     end,
+    -- },
     {
         "m4xshen/hardtime.nvim",
         lazy = false,
@@ -188,10 +211,7 @@ return {
     --     "ThePrimeagen/vim-be-good",
     --     cmd = { "VimBeGood" }, -- Load only when you run VimBeGood (<leader>gt)
     -- },
-    {
-        { "j-hui/fidget.nvim", enabled = false },
-    },
-
+    --
     -- -- add gruvbox
     -- { "ellisonleao/gruvbox.nvim" },
     -- {
@@ -332,7 +352,8 @@ return {
                 sources = {
                     explorer = {
                         jump = { close = true },
-
+                        enabled = true,
+                        replace_netrw = true,
                         layout = {
                             layout = {
                                 width = 0.22, -- absolute width of 25 columns :contentReference[oaicite:0]{index=0}

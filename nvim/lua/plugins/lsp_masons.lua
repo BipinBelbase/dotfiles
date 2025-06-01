@@ -6,6 +6,21 @@ return {
     --4.nvim-lspconfig
 
     {
+        "L3MON4D3/LuaSnip",
+        -- Load friendly-snippets automatically when LuaSnip starts
+        config = function()
+            require("luasnip.loaders.from_vscode").lazy_load({
+                -- Only load these languages for faster startup; comment out lines to load more
+                include = { "python", "javascript", "typescript", "c" },
+                -- exclude = { "rust", "go" },  -- example of how to skip languages
+            })
+        end,
+    },
+    {
+        "rafamadriz/friendly-snippets",
+    },
+
+    {
         "neovim/nvim-lspconfig",
         ---@class PluginLspOpts
         opts = {
@@ -97,11 +112,11 @@ return {
                 "autoflake", -- Python import cleanup               :contentReference[oaicite:1]{index=1}
                 "clangd", -- C/C++ LSP                           :contentReference[oaicite:2]{index=2}
                 "codelldb", -- Debug Adapter Protocol              :contentReference[oaicite:3]{index=3}
-                "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
+                -- "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
                 "eslint", -- JavaScript/TypeScript linting       :contentReference[oaicite:5]{index=5}
                 "flake8", -- Python linting                      :contentReference[oaicite:6]{index=6}
                 -- "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
-                "jsonls", -- JSON LSP                            :contentReference[oaicite:8]{index=8}
+                -- "jsonls", -- JSON LSP                            :contentReference[oaicite:8]{index=8}
                 "lua_ls", -- Lua LSP                             :contentReference[oaicite:9]{index=9}
                 -- "markdown-toc", -- Markdown TOC generator              :contentReference[oaicite:10]{index=10}
                 -- "markdownlint-cli2", -- Markdown linting                    :contentReference[oaicite:11]{index=11}
@@ -117,7 +132,7 @@ return {
                 "stylua", -- Lua formatter                       :contentReference[oaicite:21]{index=21}
                 -- "tailwindcss", -- Tailwind CSS LSP                    :contentReference[oaicite:22]{index=22}
                 "ts_ls", -- TypeScript LSP (typescript-language-server) :contentReference[oaicite:23]{index=23}
-                -- "vtsls", -- Vue TS LSP                          :contentReference[oaicite:24]{index=24}
+                "vtsls", -- Vue TS LSP                          :contentReference[oaicite:24]{index=24}
             },
             -- automatically run installer on startup
             run_on_start = true,
