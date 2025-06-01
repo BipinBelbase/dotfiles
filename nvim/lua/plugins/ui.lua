@@ -13,9 +13,22 @@ return {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
-                -- instead of "auto", provide a table describing each section’s colors:
-
-                theme = "tokyonight",
+                -- theme = "tokyonight",
+                theme = {
+                    normal = {
+                        a = { fg = "#ffffff", bg = "NONE", gui = "bold" },
+                        b = { fg = "#ffffff", bg = "NONE" },
+                        c = { fg = "#ffffff", bg = "NONE" },
+                    },
+                    insert = { a = { fg = "#ffffff", bg = "NONE", gui = "bold" } },
+                    visual = { a = { fg = "#ffffff", bg = "NONE", gui = "bold" } },
+                    replace = { a = { fg = "#ffffff", bg = "NONE", gui = "bold" } },
+                    inactive = {
+                        a = { fg = "#bbbbbb", bg = "NONE" },
+                        b = { fg = "#bbbbbb", bg = "NONE" },
+                        c = { fg = "#bbbbbb", bg = "NONE" },
+                    },
+                },
                 section_separators = "",
                 component_separators = "|",
                 globalstatus = true,
@@ -90,11 +103,14 @@ return {
             require("lualine").setup(opts)
             -- make sure no other bg bleeds through:
             vim.cmd("highlight Normal guibg=NONE")
-            -- vim.cmd("highlight WinBar guibg=NONE guifg=NONE")
-            -- vim.cmd("highlight WinBarNC guibg=NONE guifg=NONE")
-            vim.cmd("highlight lualine_a guibg=NONE")
-            vim.cmd("highlight lualine_b guibg=NONE")
-            vim.cmd("highlight lualine_c guibg=NONE")
+            -- vim.cmd("highlight StatusLine guibg=NONE")
+            -- vim.cmd("highlight StatusLineNC guibg=NONE")
+            vim.cmd("highlight LualineA_normal guibg=NONE")
+            vim.cmd("highlight LualineB_normal guibg=NONE")
+            vim.cmd("highlight LualineC_normal guibg=NONE")
+            vim.cmd("highlight LualineX_normal guibg=NONE")
+            vim.cmd("highlight LualineY_normal guibg=NONE")
+            vim.cmd("highlight LualineZ_normal guibg=NONE")
             vim.cmd("highlight TabLine guibg=NONE guifg=#888888 gui=none")
             vim.cmd("highlight TabLineSel guibg=NONE guifg=#ffffff gui=bold")
             vim.cmd("highlight TabLineFill guibg=NONE guifg=NONE")
