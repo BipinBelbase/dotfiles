@@ -10,65 +10,12 @@ return {
     --8. trouble.nvim
 
     {
-        { "j-hui/fidget.nvim", enabled = false },
-    },
-    -- {
-    --     "j-hui/fidget.nvim",
-    --     tag = "legacy", -- use a stable tag
-    --     event = "LspAttach", -- load when any LSP attaches
-    --     config = function()
-    --         require("fidget").setup({
-    --             text = {
-    --                 spinner = "dots", -- simple “dots” animation
-    --                 done = "✔", -- checkmark when a task finishes
-    --             },
-    --             align = {
-    --                 bottom = true, -- show fidget at the bottom of the window
-    --             },
-    --             window = {
-    --                 blend = 0, -- 0 = fully opaque background
-    --             },
-    --         })
-    --     end,
-    -- },
-    {
-        "m4xshen/hardtime.nvim",
-        lazy = false,
-        dependencies = { "MunifTanjim/nui.nvim" },
-        opts = {},
-    },
-    {
-        "folke/trouble.nvim",
-        opts = {
-            focus = true, -- Prevents the Trouble window from gaining focus when opened
-            -- You can add other options here as needed
-        },
-    },
-    {
-        "akinsho/bufferline.nvim",
-        enabled = false,
-    },
-    {
         "nvim-lualine/lualine.nvim",
         opts = {
             options = {
                 -- instead of "auto", provide a table describing each section’s colors:
 
-                theme = {
-                    normal = {
-                        a = { fg = "#ffffff", bg = "#24283b", gui = "bold" },
-                        b = { fg = "#ffffff", bg = "#24283b" },
-                        c = { fg = "#ffffff", bg = "#24283b" },
-                    },
-                    insert = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
-                    visual = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
-                    replace = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
-                    inactive = {
-                        a = { fg = "#bbbbbb", bg = "#24283b" },
-                        b = { fg = "#bbbbbb", bg = "#24283b" },
-                        c = { fg = "#bbbbbb", bg = "#24283b" },
-                    },
-                },
+                theme = "tokyonight",
                 section_separators = "",
                 component_separators = "|",
                 globalstatus = true,
@@ -143,11 +90,54 @@ return {
             require("lualine").setup(opts)
             -- make sure no other bg bleeds through:
             vim.cmd("highlight Normal guibg=NONE")
-            vim.cmd([[
-      highlight TabLineSel gui=bold guifg=#ffffff guibg=#24283b
-      highlight TabLine gui=none guifg=#888888 guibg=#24283b
-    ]])
+            -- vim.cmd("highlight WinBar guibg=NONE guifg=NONE")
+            -- vim.cmd("highlight WinBarNC guibg=NONE guifg=NONE")
+            vim.cmd("highlight lualine_a guibg=NONE")
+            vim.cmd("highlight lualine_b guibg=NONE")
+            vim.cmd("highlight lualine_c guibg=NONE")
+            vim.cmd("highlight TabLine guibg=NONE guifg=#888888 gui=none")
+            vim.cmd("highlight TabLineSel guibg=NONE guifg=#ffffff gui=bold")
+            vim.cmd("highlight TabLineFill guibg=NONE guifg=NONE")
         end,
+    },
+    {
+        { "j-hui/fidget.nvim", enabled = false },
+    },
+    -- {
+    --     "j-hui/fidget.nvim",
+    --     tag = "legacy", -- use a stable tag
+    --     event = "LspAttach", -- load when any LSP attaches
+    --     config = function()
+    --         require("fidget").setup({
+    --             text = {
+    --                 spinner = "dots", -- simple “dots” animation
+    --                 done = "✔", -- checkmark when a task finishes
+    --             },
+    --             align = {
+    --                 bottom = true, -- show fidget at the bottom of the window
+    --             },
+    --             window = {
+    --                 blend = 0, -- 0 = fully opaque background
+    --             },
+    --         })
+    --     end,
+    -- },
+    {
+        "m4xshen/hardtime.nvim",
+        lazy = false,
+        dependencies = { "MunifTanjim/nui.nvim" },
+        opts = {},
+    },
+    {
+        "folke/trouble.nvim",
+        opts = {
+            focus = true, -- Prevents the Trouble window from gaining focus when opened
+            -- You can add other options here as needed
+        },
+    },
+    {
+        "akinsho/bufferline.nvim",
+        enabled = false,
     },
     {
         "folke/which-key.nvim",
@@ -224,10 +214,13 @@ return {
         "folke/tokyonight.nvim",
         opts = {
             transparent = true,
+            on_colors = function(colors)
+                colors.bg_statusline = "NONE" -- or colors.none if defined
+            end,
             on_highlights = function(hl, c)
-                hl.TabLine = { fg = "#888888", bg = "#24283b" } -- Dimmed buffers
-                hl.TabLineSel = { fg = "#FFFFFF", bg = "#24283b", bold = true } -- Current buffer
-                hl.TabLineModified = { fg = "#888888", bg = "#24283b" }
+                hl.TabLine = { fg = "#888888", bg = nil } -- Dimmed buffers
+                hl.TabLineSel = { fg = "#FFFFFF", bg = nil, bold = true } -- Current buffer
+                hl.TabLineModified = { fg = "#888888", bg = nil }
             end,
             styles = {
                 sidebars = "transparent",
@@ -447,4 +440,107 @@ return {
     --             },
     --         },
     --     },
+    --     background of the tokyonight moon
+    --
+    -- {
+    --     "nvim-lualine/lualine.nvim",
+    --     opts = {
+    --         options = {
+    --             -- instead of "auto", provide a table describing each section’s colors:
+    --
+    --             theme = {
+    --                 normal = {
+    --                     a = { fg = "#ffffff", bg = "#24283b", gui = "bold" },
+    --                     b = { fg = "#ffffff", bg = "#24283b" },
+    --                     c = { fg = "#ffffff", bg = "#24283b" },
+    --                 },
+    --                 insert = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+    --                 visual = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+    --                 replace = { a = { fg = "#ffffff", bg = "#24283b", gui = "bold" } },
+    --                 inactive = {
+    --                     a = { fg = "#bbbbbb", bg = "#24283b" },
+    --                     b = { fg = "#bbbbbb", bg = "#24283b" },
+    --                     c = { fg = "#bbbbbb", bg = "#24283b" },
+    --                 },
+    --             },
+    --             section_separators = "",
+    --             component_separators = "|",
+    --             globalstatus = true,
+    --         },
+    --         tabline = {
+    --             lualine_a = {},
+    --             lualine_b = {},
+    --             lualine_c = {
+    --                 {
+    --                     function()
+    --                         local buffers = {}
+    --                         for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    --                             if vim.api.nvim_buf_is_loaded(bufnr) then
+    --                                 local is_current = bufnr == vim.api.nvim_get_current_buf()
+    --                                 local is_modified =
+    --                                     vim.api.nvim_get_option_value("modified", { buf = bufnr })
+    --
+    --                                 if is_current or is_modified then
+    --                                     local name = vim.fn.fnamemodify(
+    --                                         vim.api.nvim_buf_get_name(bufnr),
+    --                                         ":t"
+    --                                     )
+    --                                     if name == "" then
+    --                                         name = " X "
+    --                                     end
+    --                                     if is_modified then
+    --                                         name = name .. " ●"
+    --                                     end
+    --                                     if is_current then
+    --                                         name = "%#TabLineSel#["
+    --                                             .. ""
+    --                                             .. name
+    --                                             .. ""
+    --                                             .. "]%#TabLine#"
+    --                                     end
+    --                                     table.insert(buffers, name)
+    --                                 end
+    --                             end
+    --                         end
+    --                         return table.concat(buffers, "   ")
+    --                     end,
+    --                     color = { gui = "bold" },
+    --                 },
+    --             },
+    --             lualine_x = {},
+    --             lualine_y = {},
+    --             lualine_z = {},
+    --         },
+    --         sections = {
+    --             lualine_a = { "mode" },
+    --             lualine_b = { "branch" },
+    --             lualine_c = { { "filename", path = 3 } },
+    --             lualine_x = {
+    --                 {
+    --                     function()
+    --                         local reg = vim.fn.reg_recording()
+    --                         if reg ~= "" then
+    --                             return "Recording @" .. reg
+    --                         end
+    --                         return nil
+    --                     end,
+    --                     cond = function()
+    --                         return vim.fn.reg_recording() ~= ""
+    --                     end,
+    --                 },
+    --             },
+    --             lualine_y = { "diff", "diagnostics", "location" },
+    --             lualine_z = { { "progress" } },
+    --         },
+    --     },
+    --     config = function(_, opts)
+    --         require("lualine").setup(opts)
+    --         -- make sure no other bg bleeds through:
+    --         vim.cmd("highlight Normal guibg=NONE")
+    --         vim.cmd([[
+    --   highlight TabLineSel gui=bold guifg=#ffffff guibg=#24283b
+    --   highlight TabLine gui=none guifg=#888888 guibg=#24283b
+    -- ]])
+    --     end,
+    -- },
 }
