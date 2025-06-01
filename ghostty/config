@@ -55,8 +55,8 @@ window-padding-y = 0
 #window-padding-y = 0
 #window-padding-color = extend
 
-background-opacity = 1.0
-#background-blur-radius = 30
+background-opacity = 0.9
+background-blur-radius = 10
 #background = #031219
 
 
@@ -65,9 +65,8 @@ cursor-style = bar
 
 cursor-style-blink = true
 
-background-opacity  = 1.0
-
-background-blur-radius = 0
+#background-opacity  = 1.0
+#background-blur-radius = 0
 window-colorspace = display-p3
 macos-icon = retro
 macos-icon-frame =  beige
