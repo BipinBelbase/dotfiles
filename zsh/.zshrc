@@ -74,8 +74,8 @@ alias ls='eza --icons'
 alias ll='eza -lah --icons && eza -ldh . ..'
 alias cat='bat'
 alias find='fd'
-alias apple='neofetch'
-alias hp='navi'
+alias apple='fastfetch'
+alias help='navi'
 # This alias lets you SSH to your "fareast" server (ensure SSH keys are set up for passwordless login if desired)
 alias linux="ssh fareast"
 alias reload="source ~/.zshrc"
@@ -102,6 +102,7 @@ extract () {
 alias back='cd -'
 unalias fzd 2>/dev/null
 alias  q="exit"
+alias yabaireload='yabai --restart-service && skhd --restart-service '
 #make the directory then cd into it 
 function mkd() {
 	mkdir -p "$1"
