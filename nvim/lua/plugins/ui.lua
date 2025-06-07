@@ -8,7 +8,6 @@ return {
     --6.noice
     --7.snacks
     --8. trouble.nvim
-
     {
         "nvim-lualine/lualine.nvim",
         opts = {
@@ -45,7 +44,6 @@ return {
                                     local is_current = bufnr == vim.api.nvim_get_current_buf()
                                     local is_modified =
                                         vim.api.nvim_get_option_value("modified", { buf = bufnr })
-
                                     if is_current or is_modified then
                                         local name = vim.fn.fnamemodify(
                                             vim.api.nvim_buf_get_name(bufnr),
@@ -161,7 +159,6 @@ return {
             show_help = false, -- ❌ disables the bottom help text :contentReference[oaicite:0]{index=0}
             -- 2) don’t echo the current key in the cmdline at all
             show_keys = false, -- ❌ disables “You pressed: <leader>” :contentReference[oaicite:1]{index=1}
-
             -- 3) optionally, override the arrow / back icons to be empty
             icons = {
                 mappings = false, -- disable all mapping icons :contentReference[oaicite:3]{index=3}
@@ -201,7 +198,6 @@ return {
                 width = { min = 10, max = 26 },
                 height = { min = 3, max = 18 },
             },
-
             layout = {
                 align = "left",
                 -- spacing between columns
@@ -244,7 +240,6 @@ return {
             },
         },
     },
-
     {
         "nvim-telescope/telescope.nvim",
         keys = {
@@ -346,13 +341,11 @@ return {
                 bottom_search = false,
                 command_palette = true, -- position the cmdline and popupmenu together
                 long_message_to_split = true, -- long messages will be sent to a split
-
                 lsp_doc_border = true, -- rounded borders
                 long_message_to_split = true,
             },
         },
     },
-
     {
         "folke/snacks.nvim",
         opts = {
@@ -383,7 +376,6 @@ return {
             },
         },
     },
-
     --guii ii i ii i ii
     -- this is for the gui of opening if you want
     --     {

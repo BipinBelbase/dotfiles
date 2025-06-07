@@ -6,7 +6,8 @@ cmd + shift - s : open /Applications/Safari.app
 # cmd + shift - m : open /System/Applications/Mail.app
 # cmd - b : open -na /Applications/Zen.app
 # cmd + shift - b : firefox --private-window
-cmd + shift - return : open -na /Applications/Ghostty.app
+cmd - return : open -na /Applications/Ghostty.app
+cmd + shift - return : open -na /Applications/Zen.app
 
 # Change window layout (BSP / float / stack)
 cmd + shift - e : yabai -m space --layout bsp
@@ -92,4 +93,11 @@ cmd + shift - up    : yabai -m window --resize top:0:-20
 
 # Resize Down
 cmd + shift - down  : yabai -m window --resize bottom:0:20
-
+#
+# cmd + shift - u : yabai -m window --focus recent
+#
+# cmd + ctrl - h : yabai -m window --focus prev
+# cmd + ctrl - l : yabai -m window --focus next
+#
+# ctrl + cmd - j : yabai -m window --warp west
+# ctrl + cmd - k : yabai -m window --warp east
