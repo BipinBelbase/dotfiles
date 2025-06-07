@@ -190,15 +190,15 @@ return {
             return keys
         end,
     },
+
     {
         "mbbill/undotree",
         keys = {
-            { "<space>cu", "<cmd>UndotreeToggle<CR>", desc = "Toggle Undotree" },
+            { "<leader>cu", "<cmd>UndotreeToggle<CR>", desc = "Toggle UndoTree" },
         },
         config = function()
-            vim.o.undofile = true
-            vim.o.undodir = vim.fn.stdpath("data") .. "/undodir"
-            vim.fn.mkdir(vim.o.undodir, "p")
+            -- Enable persistent undo
+            vim.opt.undofile = true
         end,
     },
 }

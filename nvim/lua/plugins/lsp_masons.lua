@@ -48,7 +48,13 @@ return {
             },
             diagnostics = {
                 underline = false, -- ⛔ disable underlines
-                signs = true,
+                signs = {
+                    text = {
+                        [vim.diagnostic.severity.ERROR] = "",
+                        [vim.diagnostic.severity.WARN] = "",
+                        [vim.diagnostic.severity.INFO] = "",
+                    },
+                },
                 virtual_text = false,
 
                 -- This shows the inline text when errors founds

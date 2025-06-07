@@ -2,7 +2,7 @@
 # i3/vim-style macOS yabai keybindings
 
 # Application Launchers
-cmd + shift - s : open /Applications/Safari.app
+# cmd + shift - s : open /Applications/Safari.app
 # cmd + shift - m : open /System/Applications/Mail.app
 # cmd - b : open -na /Applications/Zen.app
 # cmd + shift - b : firefox --private-window

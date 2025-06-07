@@ -8,6 +8,29 @@ return {
     --6.noice
     --7.snacks
     --8. trouble.nvim
+
+    {
+        "lewis6991/gitsigns.nvim",
+        event = "LazyFile",
+        opts = {
+            signs = {
+                add = { text = "▎" },
+                change = { text = "▎" },
+                delete = { text = "" },
+                topdelete = { text = "" },
+                changedelete = { text = "▎" },
+                untracked = { text = "▎" },
+            },
+            signs_staged = {
+                add = { text = "▎" },
+                change = { text = "▎" },
+                delete = { text = "" },
+                topdelete = { text = "" },
+                changedelete = { text = "▎" },
+            },
+        },
+    },
+
     {
         "nvim-lualine/lualine.nvim",
         opts = {
@@ -50,17 +73,17 @@ return {
                                             ":t"
                                         )
                                         if name == "" then
-                                            name = " X "
+                                            name = " x "
                                         end
                                         if is_modified then
                                             name = name .. " ●"
                                         end
                                         if is_current then
-                                            name = "%#TabLineSel#["
+                                            name = "%#tablinesel#["
                                                 .. ""
                                                 .. name
                                                 .. ""
-                                                .. "]%#TabLine#"
+                                                .. "]%#tabline#"
                                         end
                                         table.insert(buffers, name)
                                     end
