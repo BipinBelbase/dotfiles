@@ -35,3 +35,9 @@ vim.keymap.set("i", "<C-a>", "<Esc>ggVG", { noremap = true, silent = true })
 vim.opt.numberwidth = 1
 vim.opt.foldcolumn = "0"
 vim.opt.signcolumn = "yes" -- or "no" if you want to completely remove
+
+-- this is gonna , not put comment in new line
+
+vim.opt.title = true
+vim.opt.titlestring = '%t%( %M%)%( (%{expand("%:~:h")})%)%a (nvim)'
+vim.opt.formatoptions:remove("o")
