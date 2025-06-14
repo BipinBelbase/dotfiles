@@ -121,7 +121,7 @@ return {
                 -- "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
                 "eslint", -- JavaScript/TypeScript linting       :contentReference[oaicite:5]{index=5}
                 "flake8", -- Python linting                      :contentReference[oaicite:6]{index=6}
-                -- "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
+                "jdtls", -- Java LSP                            :contentReference[oaicite:7]{index=7}
                 -- "jsonls", -- JSON LSP                            :contentReference[oaicite:8]{index=8}
                 "lua_ls", -- Lua LSP                             :contentReference[oaicite:9]{index=9}
                 -- "markdown-toc", -- Markdown TOC generator              :contentReference[oaicite:10]{index=10}
