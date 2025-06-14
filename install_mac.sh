@@ -15,6 +15,8 @@ FILES=(
     .p10k.zsh "zsh/.p10k.zsh"
     .tmux.conf "tmux/.tmux.conf"
     .config/nvim "nvim"
+    .config/skhd "skhd"
+    .config/yabai "yabai"
     "Library/Application Support/Code/User/settings.json" "vscode/settings.json"
     "Library/Application Support/Code/User/keybindings.json" "vscode/keybindings.json"
     .config/ghostty/config "ghostty/config"
