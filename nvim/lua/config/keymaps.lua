@@ -55,11 +55,10 @@ vim.keymap.set({ "n", "v" }, "<leader>d", '"_d')
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 --greatest remap
-
 vim.keymap.set("n", "<CR>", "<C-d>zz", { noremap = true }) -- Enter scrolls down
 vim.keymap.set("n", "<BS>", "<C-u>zz", { noremap = true }) -- Backspace scrolls up
 vim.keymap.set("v", "<CR>", "<C-d>zz", { noremap = true }) -- Enter scrolls down
-vim.keymap.set("v", "<BS>", "<C-u>zz", { noremap = true }) -- Backspace scrolls up
+-- vim.keymap.set("x", "\\", "<C-u>zz", { noremap = true, silent = true })
 
 vim.keymap.set("n", "J", "mzJ`z")
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -71,8 +70,8 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- vim.keymap.set("n", "<C-j>", "<cmd>cprev<CR>zz")
 -- vim.keymap.set("n", "<leader>k", "<cmd>lnext<CR>zz")
 -- vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
-vim.keymap.set("n", "<leader>k", vim.diagnostic.goto_next, { desc = "Next ERROR LIST" })
-vim.keymap.set("n", "<leader>j", vim.diagnostic.goto_prev, { desc = "Prev ERROR LIST" })
+vim.keymap.set("n", "<leader>j", vim.diagnostic.goto_next, { desc = "Next ERROR LIST" })
+vim.keymap.set("n", "<leader>k", vim.diagnostic.goto_prev, { desc = "Prev ERROR LIST" })
 vim.keymap.set(
     "n",
     "<leader>fr",
