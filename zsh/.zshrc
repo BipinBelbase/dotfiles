@@ -2,6 +2,10 @@
 # Powerlevel10k Instant Prompt
 #############################
 # Suppress warnings by setting instant prompt to quiet (this avoids early console output issues):
+# this below is for the remembering 
+# j <CR> = find the directory and open
+# ff <CR> find dirctory and open new tmux session
+# jo <CR> find fild and open in the vim
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 echo "......"
