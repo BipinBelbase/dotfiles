@@ -238,6 +238,10 @@ if [[ -d "$HOME/.local/bin" ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+if [[ -d "$HOME/.cargo/bin" ]]; then
+  export PATH="$HOME/.cargo/bin:$PATH"
+fi
+
 bindkey -s '^F' 'tmux-sessionizer\n'
 # Define a function named "ff"
 ff() {
