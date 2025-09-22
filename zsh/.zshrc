@@ -108,6 +108,9 @@ alias back='cd -'
 unalias fzd 2>/dev/null
 alias  q="exit"
 alias yabaireload='yabai --restart-service && skhd --restart-service '
+alias yabaistart='yabai --start-service'
+alias yabaistop='yabai --stop-service'
+alias yabaiload='yabai --load-sa'
 #make the directory then cd into it 
 function mkd() {
 	mkdir -p "$1"
