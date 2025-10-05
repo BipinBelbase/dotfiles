@@ -111,6 +111,7 @@ alias yabaireload='yabai --restart-service && skhd --restart-service '
 alias yabaistart='yabai --start-service'
 alias yabaistop='yabai --stop-service'
 alias yabaiload='yabai --load-sa'
+
 #make the directory then cd into it 
 function mkd() {
 	mkdir -p "$1"
@@ -137,7 +138,6 @@ function cd() {
 	#updatePath
 }
 
-alias process='glances'
 
 size() {
   if [[ -z "$1" ]]; then
@@ -280,7 +280,17 @@ eval "$(zoxide init zsh)"
 
 
 
-
+# Apple Dock timing shortcut with parameter + feedback
+appledock() {
+  if [ "$1" = "0" ]; then
+    defaults delete com.apple.dock autohide-delay >/dev/null 2>&1
+    echo "✅ Dock delay reset to default (instant popup)."
+  else
+    defaults write com.apple.dock autohide-delay -float "$1"
+    echo "⏱️ Dock delay set to $1 second(s)."
+  fi
+  killall Dock >/dev/null 2>&1
+}
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
 # The following lines have been added by Docker Desktop to enable Docker CLI completions.
 fpath=(/Users/bipinbelbase/.docker/completions $fpath)
