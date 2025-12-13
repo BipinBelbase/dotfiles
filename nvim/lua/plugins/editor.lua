@@ -78,6 +78,13 @@ return {
         opts = function(_, opts)
             opts.completion = vim.tbl_deep_extend("force", opts.completion or {}, {
                 ghost_text = { enabled = false },
+
+                list = {
+                    selection = {
+                        preselect = false, -- stops “first item selected” problem
+                        auto_insert = false, -- keeps your typed text stable
+                    },
+                },
                 menu = vim.tbl_deep_extend(
                     "force",
                     opts.completion and opts.completion.menu or {},
@@ -112,18 +119,12 @@ return {
                 ),
             })
 
-            -- 2) Keymaps must be at the top level, not under `completion`
             opts.keymap = vim.tbl_deep_extend("force", opts.keymap or {}, {
-                -- set to 'none' to disable the 'default' preset
-                preset = "super-tab",
-                -- ["super-tab"] = { "accept", "fallback" },
-                ["<S-Tab"] = { "select_next", "fallback" },
-                ["<C-y"] = { "select_next", "fallback" },
+                preset = "none",
+                ["<C-y>"] = { "accept", "fallback" },
                 ["<C-p>"] = { "select_prev", "fallback" },
                 ["<C-n>"] = { "select_next", "fallback" },
-
-                -- disable these defaults
-                ["<C-e>"] = {},
+                ["<C-e>"] = { "cancel", "fallback" },
                 ["<C-space>"] = {},
             })
             opts.signature = vim.tbl_deep_extend("force", opts.signature or {}, {
