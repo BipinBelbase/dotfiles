@@ -33,6 +33,7 @@ brew "zsh-vi-mode"
 brew "koekeishiya/formulae/skhd", args: ["HEAD"]
 brew "koekeishiya/formulae/yabai", args: ["HEAD"]
 brew "spring-io/tap/spring-boot"
+cask "codex"
 cask "docker-desktop"
 cask "font-jetbrains-mono-nerd-font"
 cask "ghostty"

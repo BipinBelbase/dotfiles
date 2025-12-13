@@ -95,7 +95,7 @@ return {
     -- Mason core
     -- 1) Mason core
     {
-        "williamboman/mason.nvim",
+        "mason.nvim",
         opts = {
             ui = {
                 border = "rounded",
@@ -110,7 +110,7 @@ return {
     -- 2) Mason Tool Installer wraps mason.nvim to install *any* Mason package
     {
         "WhoIsSethDaniel/mason-tool-installer.nvim",
-        dependencies = { "williamboman/mason.nvim" },
+        dependencies = { "mason.nvim" },
         opts = {
             -- list all your Mason-installed tools here:
             ensure_installed = {

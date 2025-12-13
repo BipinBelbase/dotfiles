@@ -58,6 +58,10 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("n", "<CR>", "<C-d>zz", { noremap = true }) -- Enter scrolls down
 vim.keymap.set("n", "<BS>", "<C-u>zz", { noremap = true }) -- Backspace scrolls up
 vim.keymap.set("v", "<CR>", "<C-d>zz", { noremap = true }) -- Enter scrolls down
+-- new added one
+pcall(vim.keymap.del, "x", "<BS>")
+vim.keymap.set("x", "<BS>", "16k", { noremap = true, silent = true })
+
 -- vim.keymap.set("x", "\\", "<C-u>zz", { noremap = true, silent = true })
 
 vim.keymap.set("n", "J", "mzJ`z")
