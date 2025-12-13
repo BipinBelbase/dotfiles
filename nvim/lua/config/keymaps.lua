@@ -37,12 +37,6 @@ vim.api.nvim_set_keymap(
     ":lua ToggleNetrw()<CR>",
     { noremap = true, silent = true }
 )
-vim.api.nvim_set_keymap(
-    "n",
-    "<leader>pv",
-    ":lua ToggleNetrw()<CR>",
-    { noremap = true, silent = true }
-)
 vim.g.netrw_browse_split = 0
 vim.g.netrw_winsize = 60
 

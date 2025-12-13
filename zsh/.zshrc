@@ -66,6 +66,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 alias ..='cd ..'
 alias python='python3'
+alias ai='codex'
 alias reloadtm='tmux source-file ~/.tmux.conf'
 unalias gl 2>/dev/null
 alias lg='lazygit'
