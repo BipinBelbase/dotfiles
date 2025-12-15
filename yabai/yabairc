@@ -55,6 +55,7 @@ yabai -m rule --add app="System Information" manage=off
 yabai -m rule --add title="Preferences" manage=off
 yabai -m rule --add title="^General.*" manage=off
 yabai -m rule --add app="Raycast" manage=off
+yabai -m rule --add app="Stretchly" manage=off
 # ─── FINAL MESSAGE (no stray characters!) ────────────────────────────────────
 
 echo "yabai configuration loaded…"

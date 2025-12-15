@@ -133,7 +133,27 @@ do
         )
     end
 
-    vim.keymap.set({ "n", "v" }, "<leader>fs", "<cmd>w<cr>", { desc = "Save File" })
+    -- vim.keymap.set({ "n", "v" }, "<leader>fs", "<cmd>w<cr>", { desc = "Save File" })
+
+    vim.keymap.set({ "n", "v" }, "<leader>fs", function()
+        local bufname = vim.api.nvim_buf_get_name(0)
+
+        -- If buffer has no name → prompt for Save As
+        if bufname == "" then
+            vim.ui.input({
+                prompt = "Save file as: ",
+                completion = "file",
+            }, function(input)
+                if input and input ~= "" then
+                    vim.cmd("write " .. vim.fn.fnameescape(input))
+                end
+            end)
+        else
+            -- Normal save
+            vim.cmd("write")
+        end
+    end, { desc = "Save file " })
+
     -- pick the right compile/run command and fire it
     local function run_current_file()
         vim.cmd("write") -- save

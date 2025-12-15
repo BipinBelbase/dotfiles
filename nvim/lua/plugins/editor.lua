@@ -83,6 +83,7 @@ return {
                     selection = {
                         preselect = false, -- stops “first item selected” problem
                         auto_insert = false, -- keeps your typed text stable
+                        -- select_first = true,
                     },
                 },
                 menu = vim.tbl_deep_extend(
@@ -123,7 +124,7 @@ return {
                 preset = "none",
                 ["<C-y>"] = { "accept", "fallback" },
                 ["<C-p>"] = { "select_prev", "fallback" },
-                ["<C-n>"] = { "select_next", "fallback" },
+                ["<C-n>"] = { "select_next" },
                 ["<C-e>"] = { "cancel", "fallback" },
                 ["<C-space>"] = {},
             })
