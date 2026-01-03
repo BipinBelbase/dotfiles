@@ -1,0 +1,53 @@
+{
+    "vim.useSystemClipboard": true,
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "space",
+                "p"
+            ],
+            "commands": [
+                "editor.action.clipboardPasteAction",
+                {
+                    "command": "vim.remap",
+                    "args": {
+                        "after": [
+                            "\"",
+                            "_",
+                            "d",
+                            "P"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "before": [
+                "space",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        }
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": [
+                "space",
+                "d"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d"
+            ]
+        }
+    ],
+    "files.autoSave": "onFocusChange",
+    "workbench.settings.applyToAllProfiles": [
+        "files.autoSave"
+    ]
+}

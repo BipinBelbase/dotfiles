@@ -1,0 +1,15 @@
+alacritty
+kitty
+wezterm
+obsidian
+visual-studio-code
+slack
+discord
+rectangle
+chatgpt
+codex
+gimp
+stretchly
+zen
+ghostty
+docker-desktop

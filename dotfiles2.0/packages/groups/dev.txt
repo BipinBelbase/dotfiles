@@ -1,0 +1,17 @@
+gcc
+python3
+node
+openjdk
+maven
+jupyterlab
+lazygit
+docker-desktop
+spring-boot
+uv
+rust
+rustup
+git-lfs
+gh
+docker
+docker-compose
+make

@@ -1,0 +1,14 @@
+htop
+tree
+ncdu
+fastfetch
+navi
+lazygit
+thefuck
+fd
+fzf
+ripgrep
+jq
+zoxide
+eza
+bat
