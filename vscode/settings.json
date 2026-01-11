@@ -1,24 +1,28 @@
 {
+    "vim.leader": "<space>",
     "vim.useSystemClipboard": true,
     "vim.visualModeKeyBindingsNonRecursive": [
         {
             "before": [
                 "space",
+                "p",
                 "p"
             ],
             "commands": [
-                "editor.action.clipboardPasteAction",
-                {
-                    "command": "vim.remap",
-                    "args": {
-                        "after": [
-                            "\"",
-                            "_",
-                            "d",
-                            "P"
-                        ]
-                    }
-                }
+                "editor.action.clipboardPasteAction"
+            ]
+        },
+        {
+            "before": [
+                "space",
+                "p",
+                "n"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "P"
             ]
         },
         {
@@ -37,6 +41,49 @@
         {
             "before": [
                 "space",
+                "y"
+            ],
+            "commands": [
+                "editor.action.clipboardCopyAction"
+            ]
+        },
+        {
+            "before": [
+                "space",
+                "Y"
+            ],
+            "commands": [
+                "expandLineSelection",
+                "editor.action.clipboardCopyAction",
+                "cancelSelection"
+            ]
+        },
+        {
+            "before": [
+                "space",
+                "p",
+                "p"
+            ],
+            "commands": [
+                "editor.action.clipboardPasteAction"
+            ]
+        },
+        {
+            "before": [
+                "space",
+                "p",
+                "n"
+            ],
+            "after": [
+                "\"",
+                "_",
+                "d",
+                "P"
+            ]
+        },
+        {
+            "before": [
+                "space",
                 "d"
             ],
             "after": [
@@ -46,6 +93,7 @@
             ]
         }
     ],
+    "editor.cursorSurroundingLines": 8,
     "files.autoSave": "onFocusChange",
     "workbench.settings.applyToAllProfiles": [
         "files.autoSave"
