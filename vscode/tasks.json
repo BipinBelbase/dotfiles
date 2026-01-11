@@ -1,0 +1,46 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run current file",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "ext=\"${fileExtname}\"; ext=${ext#.}; case \"$ext\" in c) gcc \"${file}\" -o \"${fileBasenameNoExtension}\" && \"${fileDirname}/${fileBasenameNoExtension}\" ;; cpp) g++ \"${file}\" -o \"${fileBasenameNoExtension}\" && \"${fileDirname}/${fileBasenameNoExtension}\" ;; py) python3 \"${file}\" ;; js|mjs) node \"${file}\" ;; ts) npx ts-node \"${file}\" ;; go) go run \"${file}\" ;; rs) cargo run ;; java) javac \"${file}\" && java \"${fileBasenameNoExtension}\" ;; sh) bash \"${file}\" ;; zsh) zsh \"${file}\" ;; lua) lua \"${file}\" ;; php) php \"${file}\" ;; rb) ruby \"${file}\" ;; pl) perl \"${file}\" ;; html) (command -v xdg-open >/dev/null 2>&1 && xdg-open \"${file}\") >/dev/null 2>&1 & ;; *) echo \"No runner configured for extension: $ext\" ;; esac"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Start live-server",
+            "type": "shell",
+            "command": "bash",
+            "args": [
+                "-lc",
+                "tmux has-session -t live-server 2>/dev/null || tmux new-session -d -s live-server 'live-server'"
+            ],
+            "presentation": {
+                "reveal": "never",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Chmod current file",
+            "type": "shell",
+            "command": "chmod",
+            "args": [
+                "+x",
+                "${file}"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
