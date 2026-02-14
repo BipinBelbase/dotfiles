@@ -6,12 +6,19 @@
 # apply across all supported operating systems. It doesn't install
 # packages—see the OS specific bootstrap scripts for that.
 
-set -e
+set -eu
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+. "$REPO_ROOT/scripts/lib.sh"
 
 echo "[common.sh] Creating base directories in $HOME"
 
-mkdir -p "$HOME/.config"
-mkdir -p "$HOME/.local/bin"
-mkdir -p "$HOME/.cache"
+run_cmd mkdir -p "$HOME/.config"
+run_cmd mkdir -p "$HOME/.local/bin"
+run_cmd mkdir -p "$HOME/.cache"
 
-echo "[common.sh] Base directories created"
+if is_dry_run; then
+  echo "[common.sh] Dry-run complete"
+else
+  echo "[common.sh] Base directories created"
+fi

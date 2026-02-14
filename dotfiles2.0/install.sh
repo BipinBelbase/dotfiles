@@ -8,6 +8,28 @@ log()  { print -r -- "[install] $*"; }
 warn() { print -r -- "[install][warn] $*" >&2; }
 die()  { print -r -- "[install][error] $*" >&2; exit 1; }
 
+usage() {
+  cat <<'EOF'
+Usage:
+  zsh ./install.sh [--test|--dry-run|-t] [PROFILE] [GROUPS]
+
+Examples:
+  zsh ./install.sh
+  zsh ./install.sh full
+  zsh ./install.sh base "core cli dev langs fonts"
+  zsh ./install.sh --test
+  zsh ./install.sh --test full "core cli dev langs fonts wm gui"
+EOF
+}
+
+run_or_preview() {
+  if [[ "${DRY_RUN}" == "1" ]]; then
+    log "[test] Would run: $*"
+    return 0
+  fi
+  "$@"
+}
+
 # ----------------------------
 # Resolve repo root (script dir)
 # ----------------------------
@@ -15,6 +37,26 @@ REPO_ROOT="${0:A:h}"
 cd "$REPO_ROOT" || die "Cannot cd to repo root: $REPO_ROOT"
 
 [[ -f "$REPO_ROOT/Makefile" ]] || die "Makefile not found in $REPO_ROOT. Put this script in the dotfiles repo root."
+
+# ----------------------------
+# Parse args
+# ----------------------------
+DRY_RUN=0
+typeset -a filtered_args
+filtered_args=()
+
+for arg in "$@"; do
+  case "$arg" in
+    --test|--dry-run|-t) DRY_RUN=1 ;;
+    --help|-h) usage; exit 0 ;;
+    *) filtered_args+=("$arg") ;;
+  esac
+done
+set -- "${filtered_args[@]}"
+
+if [[ $# -gt 2 ]]; then
+  die "Too many arguments. Run 'zsh ./install.sh --help' for usage."
+fi
 
 # ----------------------------
 # Detect OS
@@ -53,12 +95,28 @@ detect_os() {
 
 OS="$(detect_os)"
 log "Detected OS: $OS"
+if [[ "$DRY_RUN" == "1" ]]; then
+  log "Running in TEST MODE (no package/file changes will be applied)."
+fi
 
 # ----------------------------
 # Install minimal prereqs (curl/git/make)
 # We intentionally keep this minimal and stable.
 # ----------------------------
 have() { command -v "$1" >/dev/null 2>&1 }
+
+ensure_home_writable_or_die() {
+  local probe
+  probe="$HOME/.dotfiles2_write_check.$$"
+  if [[ "$DRY_RUN" == "1" ]]; then
+    return 0
+  fi
+
+  if ! ( : > "$probe" ) 2>/dev/null; then
+    die "HOME is not writable: $HOME. Fix permissions and re-run."
+  fi
+  rm -f "$probe"
+}
 
 need_cmd_or_die() {
   local cmd="$1" hint="$2"
@@ -68,6 +126,11 @@ need_cmd_or_die() {
 install_prereqs_macos() {
   # On a fresh macOS, "make" requires Xcode Command Line Tools
   if ! have make; then
+    if [[ "$DRY_RUN" == "1" ]]; then
+      warn "make not found. Test mode would need Xcode Command Line Tools."
+      run_or_preview xcode-select --install
+      return
+    fi
     warn "make not found. Installing Xcode Command Line Tools..."
     xcode-select --install >/dev/null 2>&1 || true
     die "Xcode Command Line Tools installer opened. After it finishes, re-run: zsh ./install.sh"
@@ -76,6 +139,11 @@ install_prereqs_macos() {
   # curl and git usually exist; verify anyway
   need_cmd_or_die curl "curl should exist on macOS. If not, install Xcode Command Line Tools."
   if ! have git; then
+    if [[ "$DRY_RUN" == "1" ]]; then
+      warn "git not found. Test mode would need Xcode Command Line Tools."
+      run_or_preview xcode-select --install
+      return
+    fi
     warn "git not found. Installing Xcode Command Line Tools (git comes with it)..."
     xcode-select --install >/dev/null 2>&1 || true
     die "Xcode Command Line Tools installer opened. After it finishes, re-run: zsh ./install.sh"
@@ -83,40 +151,56 @@ install_prereqs_macos() {
 }
 
 install_prereqs_ubuntu() {
-  # Ask for sudo once up-front (less headache later)
-  log "Requesting sudo (needed for package installs)..."
-  sudo -v
-
   if ! have apt-get; then
     die "apt-get not found. This script expects Ubuntu/Debian (or WSL Ubuntu)."
   fi
 
-  # Ensure basic tooling
-  sudo apt-get update -y
-  sudo apt-get install -y curl git make
-}
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run_or_preview sudo apt-get update -y
+    run_or_preview sudo apt-get install -y curl git make
+    return
+  fi
 
-install_prereqs_fedora() {
   log "Requesting sudo (needed for package installs)..."
   sudo -v
 
+  # Ensure basic tooling
+  run_or_preview sudo apt-get update -y
+  run_or_preview sudo apt-get install -y curl git make
+}
+
+install_prereqs_fedora() {
   if ! have dnf; then
     die "dnf not found. This script expects Fedora/RHEL-like systems."
   fi
 
-  sudo dnf -y install curl git make
-}
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run_or_preview sudo dnf -y install curl git make
+    return
+  fi
 
-install_prereqs_arch() {
   log "Requesting sudo (needed for package installs)..."
   sudo -v
 
+  run_or_preview sudo dnf -y install curl git make
+}
+
+install_prereqs_arch() {
   if ! have pacman; then
     die "pacman not found. This script expects Arch Linux."
   fi
 
-  sudo pacman -Sy --noconfirm
-  sudo pacman -S --noconfirm curl git make
+  if [[ "$DRY_RUN" == "1" ]]; then
+    run_or_preview sudo pacman -Sy --noconfirm
+    run_or_preview sudo pacman -S --noconfirm curl git make
+    return
+  fi
+
+  log "Requesting sudo (needed for package installs)..."
+  sudo -v
+
+  run_or_preview sudo pacman -Sy --noconfirm
+  run_or_preview sudo pacman -S --noconfirm curl git make
 }
 
 case "$OS" in
@@ -126,6 +210,8 @@ case "$OS" in
   arch)   install_prereqs_arch ;;
   *)      die "No prereq installer for OS=$OS" ;;
 esac
+
+ensure_home_writable_or_die
 
 # ----------------------------
 # Choose PROFILE and GROUPS
@@ -158,8 +244,15 @@ log "GROUPS=$GROUPS"
 # ----------------------------
 # Run your repo workflow
 # ----------------------------
-log "Running: make all PROFILE=$PROFILE GROUPS=\"$GROUPS\""
-make all PROFILE="$PROFILE" GROUPS="$GROUPS"
+log "Running validation checks"
+make doctor
+
+log "Running: make all PROFILE=$PROFILE GROUPS=\"$GROUPS\" DRY_RUN=$DRY_RUN"
+DRY_RUN="$DRY_RUN" make all PROFILE="$PROFILE" GROUPS="$GROUPS"
 
 log "Done."
-log "If something changed, restart your terminal (or source ~/.zshrc)."
+if [[ "$DRY_RUN" == "1" ]]; then
+  log "Test run completed. No changes were applied."
+else
+  log "If something changed, restart your terminal (or source ~/.zshrc)."
+fi

@@ -8,35 +8,94 @@
 # This script updates the system, ensures stow is installed, and then
 # installs packages defined in packages/groups mapped via packages/os/pacman.map.
 
-set -e
+set -eu
+
+REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+. "$REPO_ROOT/scripts/lib.sh"
+MAP_FILE="$REPO_ROOT/packages/os/pacman.map"
+STRICT_PACKAGES="${STRICT_PACKAGES:-0}"
+PROCESSED_PACKAGES=""
+
+command -v pacman >/dev/null 2>&1 || die "[arch.sh] pacman not found"
 
 # Update package database and upgrade existing packages
 echo "[arch.sh] Updating system"
-sudo pacman -Syu --noconfirm
+run_cmd sudo pacman -Syu --noconfirm
 
 # Ensure stow is installed
 if ! pacman -Qi stow >/dev/null 2>&1; then
   echo "[arch.sh] Installing stow"
-  sudo pacman -S --noconfirm stow
+  run_cmd sudo pacman -S --noconfirm stow
 fi
 
-REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-MAP_FILE="$REPO_ROOT/packages/os/pacman.map"
+resolve_package() {
+  pkg="$1"
+  line="$(awk -F= -v key="$pkg" '$1==key {print; exit}' "$MAP_FILE")"
+  if [ -z "$line" ]; then
+    printf '%s\n' "$pkg"
+    return
+  fi
+
+  mapped="${line#*=}"
+  mapped="${mapped%%#*}"
+  mapped="$(printf '%s' "$mapped" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+
+  if [ -z "$mapped" ]; then
+    printf '%s\n' "__SKIP__"
+  else
+    printf '%s\n' "$mapped"
+  fi
+}
+
+is_valid_group() {
+  case "$1" in
+    *[!A-Za-z0-9_-]*|"") return 1 ;;
+    *) return 0 ;;
+  esac
+}
+
+install_package() {
+  pkg="$1"
+  actual="$2"
+  case " $PROCESSED_PACKAGES " in
+    *" $actual "*)
+      echo "[arch.sh] Skipping duplicate package $actual"
+      return
+      ;;
+  esac
+  PROCESSED_PACKAGES="$PROCESSED_PACKAGES $actual"
+
+  if pacman -Qi "$actual" >/dev/null 2>&1; then
+    echo "[arch.sh] $actual already installed"
+    return
+  fi
+
+  echo "[arch.sh] Installing $actual (from $pkg)"
+  if run_cmd sudo pacman -S --noconfirm "$actual"; then
+    return
+  fi
+
+  if is_truthy "$STRICT_PACKAGES"; then
+    die "[arch.sh] Failed to install $actual (STRICT_PACKAGES=1)"
+  fi
+  warn "[arch.sh] Failed to install $actual; continuing (set STRICT_PACKAGES=1 to fail fast)"
+}
 
 install_group() {
   group="$1"
+  is_valid_group "$group" || die "[arch.sh] Invalid group name: $group"
   group_file="$REPO_ROOT/packages/groups/$group.txt"
   [ -f "$group_file" ] || return
   while IFS= read -r pkg; do
-    [ -z "$pkg" ] && continue
-    actual="$(grep -E "^$pkg=" "$MAP_FILE" | head -n1 | cut -d= -f2)"
-    [ -n "$actual" ] || actual="$pkg"
-    if pacman -Qi "$actual" >/dev/null 2>&1; then
-      echo "[arch.sh] $actual already installed"
-    else
-      echo "[arch.sh] Installing $actual"
-      sudo pacman -S --noconfirm "$actual" || true
+    case "$pkg" in
+      ""|\#*) continue ;;
+    esac
+    actual="$(resolve_package "$pkg")"
+    if [ "$actual" = "__SKIP__" ]; then
+      echo "[arch.sh] Skipping $pkg (not available on Arch)"
+      continue
     fi
+    install_package "$pkg" "$actual"
   done < "$group_file"
 }
 
