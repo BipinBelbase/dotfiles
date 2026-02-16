@@ -67,6 +67,7 @@ fi
 alias ..='cd ..'
 alias python='python3'
 alias ai='codex'
+alias aws="localstack"
 alias reloadtm='tmux source-file ~/.tmux.conf'
 unalias gl 2>/dev/null
 alias lg='lazygit'
