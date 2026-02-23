@@ -1,0 +1,16 @@
+{
+  "diagnostic.virtualText": false,
+  "diagnostic.refreshOnInsertMode": false,
+  "diagnostic.enableMessage": "jump",
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.errorSign": "E ",
+  "diagnostic.warningSign": "W ",
+  "diagnostic.infoSign": "I ",
+  "diagnostic.hintSign": "H ",
+  "suggest.noselect": true,
+  "suggest.enablePreview": false,
+  "suggest.snippetIndicator": "~",
+  "coc.preferences.formatOnSaveFiletypes": [],
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.completion.callSnippet": "Replace"
+}
