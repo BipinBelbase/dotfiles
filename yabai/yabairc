@@ -56,6 +56,10 @@ yabai -m rule --add title="Preferences" manage=off
 yabai -m rule --add title="^General.*" manage=off
 yabai -m rule --add app="Raycast" manage=off
 yabai -m rule --add app="Stretchly" manage=off
-# ─── FINAL MESSAGE (no stray characters!) ────────────────────────────────────
+# ─── AUTO REFLOW ON DISPLAY CHANGE ───────────────────────────────────────────
 
+yabai -m signal --add event=display_added   action="yabai -m space --balance"
+yabai -m signal --add event=display_removed action="yabai -m space --balance"
+yabai -m signal --add event=display_changed action="yabai -m space --balance"
+# ─── FINAL MESSAGE (no stray characters!) ────────────────────────────────────
 echo "yabai configuration loaded…"
