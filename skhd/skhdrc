@@ -6,6 +6,11 @@
 # cmd + shift - m : open /System/Applications/Mail.app
 # cmd - b : open -na /Applications/Zen.app
 # cmd + shift - b : firefox --private-window
+.blacklist [
+    "VMware Fusion"
+    "VMware Fusion Tech Preview"
+    "vmware-vmx"
+]
 cmd - return : open -na /Applications/Ghostty.app
 cmd + shift - return : open -na /Applications/Zen.app
 
