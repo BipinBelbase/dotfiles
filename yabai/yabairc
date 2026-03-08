@@ -4,6 +4,22 @@
 sudo /opt/homebrew/bin/yabai --load-sa
 yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yabai --load-sa"
 
+# TROUBLESHOOTING (if apps stop auto-tiling/fullscreen)
+# Symptom: cmd+f mappings fail, windows open at app default size.
+# Usual cause: macOS reset Accessibility/Input Monitoring permissions.
+# Fix checklist:
+# 1) System Settings -> Privacy & Security -> Accessibility:
+#    enable /opt/homebrew/bin/yabai and /opt/homebrew/bin/skhd
+# 2) System Settings -> Privacy & Security -> Input Monitoring:
+#    enable /opt/homebrew/bin/skhd
+# 3) Restart services:
+#    sudo /opt/homebrew/bin/yabai --load-sa
+#    launchctl kickstart -k gui/$(id -u)/com.koekeishiya.yabai
+#    launchctl kickstart -k gui/$(id -u)/com.koekeishiya.skhd
+# 4) Verify:
+#    launchctl print gui/$(id -u)/com.koekeishiya.yabai | rg 'state =|job state'
+#    tail -n 40 /tmp/yabai_bipinbelbase.err.log
+
 ###############################################################################
 
 # ─── LAYOUT & PLACEMENT ──────────────────────────────────────────────────────

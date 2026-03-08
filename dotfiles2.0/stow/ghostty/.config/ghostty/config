@@ -75,9 +75,9 @@ bold-is-bright = true
 
 
 
-window-width = 150
-window-height = 50
+fullscreen = true
+window-width = 0
+window-height = 0
 
 #background-opacity = 0.94
 #background-blur-radius = 10
-
