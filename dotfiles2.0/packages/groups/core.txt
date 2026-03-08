@@ -10,7 +10,6 @@ fd
 stow
 eza
 bat
-zoxide
 jq
 navi
 fastfetch
