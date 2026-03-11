@@ -161,3 +161,14 @@ Shows all actions without actually executing them.
   exec $SHELL
   ```
 
+## Yabai and skhd Notes
+
+If window movement/space switching hotkeys do not work later, use:
+
+- [yabai/TROUBLESHOOTING.md](./yabai/TROUBLESHOOTING.md)
+
+That file includes:
+
+- why `sudo yabai --load-sa` can fail at startup
+- the permanent `sudoers` fix
+- verification commands and post-upgrade maintenance

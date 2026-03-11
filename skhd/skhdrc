@@ -47,6 +47,8 @@ cmd - f : yabai -m window --toggle zoom-fullscreen
 # alt + shift - f : yabai -m window --toggle native-fullscreen
 
 # Switch spaces
+# NOTE: cmd + 1..0 focuses spaces. Use cmd + shift + 1..0 to move windows.
+# Full troubleshooting: ~/dotfiles/yabai/TROUBLESHOOTING.md
 cmd - space : yabai -m window --focus first
 cmd - 1 : yabai -m space --focus 1;
 cmd - 2 : yabai -m space --focus 2;

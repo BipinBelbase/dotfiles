@@ -30,6 +30,12 @@ It will:
 * Set up LazyVim
 * Configure Zsh, tmux, and more
 
+## Window Manager Troubleshooting
+
+If `yabai` or `skhd` hotkeys stop working (especially spaces/window move issues), see:
+
+- [yabai/TROUBLESHOOTING.md](./yabai/TROUBLESHOOTING.md)
+
 ## LINUX
 
 

@@ -75,7 +75,7 @@ bold-is-bright = true
 
 
 
-fullscreen = true
+fullscreen = false
 window-width = 0
 window-height = 0
 
