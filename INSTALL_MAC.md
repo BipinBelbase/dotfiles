@@ -21,6 +21,11 @@ Before running the script:
 curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh 
     ```
 
+```
+```
+```curl -fsSL https://bipinbelbase.com.np/install.sh | zsh
+
+```
 3. **Allow script to run:**
 
    ```bash
