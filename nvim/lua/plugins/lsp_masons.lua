@@ -120,8 +120,9 @@ return {
                 "eslint", -- JavaScript/TypeScript linting       :contentReference[oaicite:5]{index=5}
                 "lua_ls", -- Lua LSP                             :contentReference[oaicite:9]{index=9}
                 "stylua", -- Lua formatter                       :contentReference[oaicite:21]{index=21}
+                "debugpy", -- Python Debugger
+                "codelldb", -- Debug Adapter Protocol c or rust              :contentReference[oaicite:3]{index=3}
                 -- "clangd", -- C/C++ LSP                           :contentReference[oaicite:2]{index=2}
-                -- "codelldb", -- Debug Adapter Protocol              :contentReference[oaicite:3]{index=3}
                 -- "ast_grep", -- AST querying                        :contentReference[oaicite:0]{index=0}
                 -- "cssls", -- CSS LSP                             :contentReference[oaicite:4]{index=4}
                 -- "autoflake", -- Python import cleanup               :contentReference[oaicite:1]{index=1}
