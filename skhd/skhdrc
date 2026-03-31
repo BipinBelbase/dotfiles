@@ -10,6 +10,7 @@
     "VMware Fusion"
     "VMware Fusion Tech Preview"
     "vmware-vmx"
+    "GIMP"
 ]
 cmd - return : open -na /Applications/Ghostty.app
 cmd + shift - return : open -na /Applications/Zen.app
