@@ -55,7 +55,7 @@ yabai -m config normal_window_opacity      1.0
 # set mouse follows focus mode (default: off)
 # yabai -m config mouse_follows_focus on
 
-yabai -m config mouse_follows_focus on
+yabai -m config mouse_follows_focus off
 # yabai -m config focus_follows_mouse autoraise
 # Use Option (Alt) + click to move/resize windows
 yabai -m config mouse_modifier  alt
