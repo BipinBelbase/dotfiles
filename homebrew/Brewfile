@@ -40,8 +40,8 @@ brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 brew "zsh-vi-mode"
 brew "anomalyco/tap/opencode"
-brew "koekeishiya/formulae/skhd", args: ["HEAD"]
-brew "koekeishiya/formulae/yabai", args: ["HEAD"]
+brew "koekeishiya/formulae/skhd"
+brew "koekeishiya/formulae/yabai"
 brew "localstack/tap/localstack-cli"
 brew "spring-io/tap/spring-boot"
 cask "chatgpt"

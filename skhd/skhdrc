@@ -86,9 +86,8 @@ cmd + ctrl - 8 : yabai -m window --space 8; yabai -m space --focus 8
 cmd + ctrl - 9 : yabai -m window --space 9; yabai -m space --focus 9
 cmd + ctrl - 0 : yabai -m window --space 10; yabai -m space --focus 10
 #
-# # Restart Yabai + skhd (with macOS notifications)
-# Use launchctl directly (more reliable on this machine than yabai --restart-service).
- cmd + shift - r : launchctl kickstart -k gui/$(id -u)/com.koekeishiya.yabai; osascript -e 'display notification "Reloaded yabai" with title "Window Manager"'; launchctl kickstart -k gui/$(id -u)/com.koekeishiya.skhd; osascript -e 'display notification "Reloaded skhd" with title "Window Manager"'
+# Restart whichever current/legacy launchd labels are installed and verify yabai.
+cmd + shift - r : $HOME/.config/yabai/wm-doctor.sh restart; osascript -e 'display notification "Restart checked; run wm-doctor.sh diagnose if keys fail" with title "Window Manager"'
 
 # Resize windows
 # Resize Left

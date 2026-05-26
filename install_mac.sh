@@ -309,6 +309,8 @@ if [ -f "$BFILE" ]; then
     echo "🍻 Installing Brew packages from Brewfile..."
     sleep 3
     run "brew bundle --file='$BFILE' --no-lock"
+    # Replacing these binaries can invalidate macOS Accessibility/Input Monitoring approvals.
+    run "brew pin skhd yabai"
     sleep 1
 else
     echo "⚠️ Brewfile not found; skipping brew bundle"

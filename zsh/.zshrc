@@ -108,10 +108,32 @@ extract () {
 alias back='cd -'
 unalias fzd 2>/dev/null
 alias  q="exit"
-alias yabaireload='yabai --restart-service && skhd --restart-service '
-alias yabaistart='yabai --start-service'
-alias yabaistop='yabai --stop-service'
-alias yabaiload='yabai --load-sa'
+# One command for yabai/skhd checks and recovery.
+unalias yabaireload 2>/dev/null
+yabaireload() {
+  local choice
+
+  echo
+  echo "Yabai + skhd"
+  echo "  1) Check status"
+  echo "  2) Reload both and check status"
+  echo "  3) Repair after Homebrew upgrade, reload, and check"
+  echo "  4) Open macOS permission settings"
+  echo "  q) Cancel"
+  read "choice?Choose [1-4/q]: "
+
+  case "$choice" in
+    1) "$HOME/.config/yabai/wm-doctor.sh" diagnose ;;
+    2) "$HOME/.config/yabai/wm-doctor.sh" restart ;;
+    3) "$HOME/.config/yabai/wm-doctor.sh" after-upgrade ;;
+    4)
+      open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"
+      open "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent"
+      ;;
+    q|Q|"") echo "Cancelled." ;;
+    *) echo "Invalid choice." ;;
+  esac
+}
 
 #make the directory then cd into it 
 function mkd() {

@@ -174,6 +174,6 @@ If window movement/space switching hotkeys do not work later, use:
 
 That file includes:
 
-- why `sudo yabai --load-sa` can fail at startup
-- the permanent `sudoers` fix
-- verification commands and post-upgrade maintenance
+- why an upgraded executable can lose macOS privacy permission
+- why `skhd` can appear broken when `yabai` is the failed process
+- pinned-package prevention and the `wm-doctor.sh after-upgrade` repair command

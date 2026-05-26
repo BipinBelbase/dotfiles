@@ -1,9 +1,8 @@
-# yabai -m signal --add event=dock_did_restart action="sudo yabai --load-sa"
-# sudo yabai --load-sa
-# See ~/dotfiles/yabai/TROUBLESHOOTING.md for startup/load-sa troubleshooting.
-
-sudo /opt/homebrew/bin/yabai --load-sa
-yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yabai --load-sa"
+# The launch agent has no terminal; sudo must never attempt a password prompt here.
+# Run ~/.config/yabai/wm-doctor.sh after-upgrade in Terminal after replacing yabai.
+sudo -n /opt/homebrew/bin/yabai --load-sa ||
+    printf '%s\n' 'yabai: scripting addition not loaded; run ~/.config/yabai/wm-doctor.sh after-upgrade in Terminal' >&2
+yabai -m signal --add event=dock_did_restart action="sudo -n /opt/homebrew/bin/yabai --load-sa"
 
 # TROUBLESHOOTING (if apps stop auto-tiling/fullscreen)
 # Symptom: cmd+f mappings fail, windows open at app default size.
@@ -13,13 +12,10 @@ yabai -m signal --add event=dock_did_restart action="sudo /opt/homebrew/bin/yaba
 #    enable /opt/homebrew/bin/yabai and /opt/homebrew/bin/skhd
 # 2) System Settings -> Privacy & Security -> Input Monitoring:
 #    enable /opt/homebrew/bin/skhd
-# 3) Restart services:
-#    sudo /opt/homebrew/bin/yabai --load-sa
-#    launchctl kickstart -k gui/$(id -u)/com.koekeishiya.yabai
-#    launchctl kickstart -k gui/$(id -u)/com.koekeishiya.skhd
+# 3) Repair an intentional upgrade and restart services:
+#    ~/.config/yabai/wm-doctor.sh after-upgrade
 # 4) Verify:
-#    launchctl print gui/$(id -u)/com.koekeishiya.yabai | rg 'state =|job state'
-#    tail -n 40 /tmp/yabai_bipinbelbase.err.log
+#    ~/.config/yabai/wm-doctor.sh diagnose
 
 ###############################################################################
 

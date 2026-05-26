@@ -24,6 +24,7 @@ font-family = JetBrainsMonoNerdFont-SemiBold
 #font-family = JetBrainsMono Nerd Font
 theme = TokyoNight Storm
 macos-option-as-alt = true
+macos-auto-secure-input = false
 font-size = 20
 window-padding-balance = true
 window-padding-x = 0

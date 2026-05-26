@@ -36,6 +36,12 @@ If `yabai` or `skhd` hotkeys stop working (especially spaces/window move issues)
 
 - [yabai/TROUBLESHOOTING.md](./yabai/TROUBLESHOOTING.md)
 
+Quick check:
+
+```bash
+~/.config/yabai/wm-doctor.sh diagnose
+```
+
 ## LINUX
 
 
