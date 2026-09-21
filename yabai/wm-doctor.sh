@@ -32,8 +32,6 @@ show_service() {
 }
 
 diagnose() {
-    socket_ok=false
-
     printf 'Versions: '
     "$SKHD" --version 2>/dev/null || true
     printf '          '
@@ -43,23 +41,28 @@ diagnose() {
 
     if "$YABAI" -m query --spaces --space >/dev/null 2>&1; then
         printf 'yabai socket: responsive\n'
-        socket_ok=true
     else
         printf 'yabai socket: FAILED (skhd shortcuts that call yabai cannot work)\n' >&2
     fi
 
-    if [ "$socket_ok" = false ]; then
-        if [ -f "$YABAI_ERR" ] && grep -q 'could not access accessibility features' "$YABAI_ERR"; then
-            printf 'Detected: yabai lost Accessibility permission. Re-enable it in System Settings > Privacy & Security > Accessibility.\n' >&2
-        fi
-        if [ -f "$YABAI_ERR" ] && grep -Eq 'sudo: .*password|sudo: a terminal is required' "$YABAI_ERR"; then
-            printf 'Detected: scripting-addition sudo authorization may be stale. Run: %s after-upgrade\n' "$0" >&2
-        fi
-        if [ -f "$SKHD_ERR" ] && grep -q 'failed to connect to socket' "$SKHD_ERR"; then
-            printf 'Detected: skhd received hotkeys while yabai was unavailable; skhd itself was not the failed component.\n' >&2
-        fi
-    elif { [ -s "$YABAI_ERR" ] || [ -s "$SKHD_ERR" ]; }; then
-        printf 'Previous errors remain in /tmp logs; yabai is currently responding. Restart clears diagnosis noise from this incident.\n'
+    printf 'Scripting addition and hotkey operation: not verified by the socket query.\n'
+
+    # Logs can outlive a failure; a responsive socket does not prove SA works.
+    if [ -s "$YABAI_ERR" ] || [ -s "$SKHD_ERR" ]; then
+        printf 'Log clues (may be old): reproduce the failing shortcut and compare new log output before choosing a repair.\n'
+    fi
+    if [ -f "$YABAI_ERR" ] && grep -q 'could not access accessibility features' "$YABAI_ERR"; then
+        printf 'Log clue: yabai could not access Accessibility features. If this recurs, check its Accessibility grant in System Settings.\n' >&2
+    fi
+    if [ -f "$YABAI_ERR" ] && grep -Eq 'sudo: .*password|sudo: a terminal is required' "$YABAI_ERR"; then
+        printf 'Log clue: sudo authorization failed. If this recurs after replacing yabai, review: %s after-upgrade\n' "$0" >&2
+    fi
+    if { [ -f "$YABAI_ERR" ] && grep -Eq 'scripting[ -]addition|scripting addition not loaded' "$YABAI_ERR"; } ||
+       { [ -f "$SKHD_ERR" ] && grep -Eq 'scripting[ -]addition|scripting addition not loaded' "$SKHD_ERR"; }; then
+        printf 'Log clue: scripting-addition messages found. Space switching can fail while the socket responds; inspect the exact error before changing sudoers or permissions.\n' >&2
+    fi
+    if [ -f "$SKHD_ERR" ] && grep -q 'failed to connect to socket' "$SKHD_ERR"; then
+        printf 'Log clue: a command logged by skhd could not connect to yabai. This does not establish current hotkey health.\n' >&2
     fi
 }
 
