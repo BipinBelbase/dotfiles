@@ -49,7 +49,7 @@ diagnose() {
 
     # Logs can outlive a failure; a responsive socket does not prove SA works.
     if [ -s "$YABAI_ERR" ] || [ -s "$SKHD_ERR" ]; then
-        printf 'Log clues (may be old): reproduce the failing shortcut and compare new log output before choosing a repair.\n'
+        printf 'Non-empty log files found (may be old); reproduce the failing shortcut and compare new log output before choosing a repair.\n'
     fi
     if [ -f "$YABAI_ERR" ] && grep -q 'could not access accessibility features' "$YABAI_ERR"; then
         printf 'Log clue: yabai could not access Accessibility features. If this recurs, check its Accessibility grant in System Settings.\n' >&2
