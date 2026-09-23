@@ -173,22 +173,77 @@ window on Desktop 1 for these checks. Direct commands below change Space focus.
 | `Cmd + Return` outside blacklisted apps | Ghostty opens; tests a shortcut that does not invoke yabai. |
 | Two managed windows, then `Cmd + H/L` | Keyboard focus moves; pointer stays put with this repo's `mouse_follows_focus off`. |
 | `/opt/homebrew/bin/yabai -m space --focus 2`, then `/opt/homebrew/bin/yabai -m space --focus 1` | Both direct commands succeed; tests yabai Space focus without the native fallback. |
-| `Cmd + 2`, then `Cmd + 1` | Desktop switching works; may be using the fallback described below. |
+| `Cmd + 2`, then `Cmd + 1` | yabai switches desktops; this binding has no native fallback. |
 | `Cmd + Shift + 2` on the disposable window | Window moves to Desktop 2; inspect it there and move it back. |
 | Reconnect the external monitor | Recheck tiling and keyboard focus on both displays. |
 
-The current `skhdrc` tries yabai Space focus first, then uses AppleScript to send
-Control+number when yabai fails. Enable and verify the matching desktop shortcuts
-in System Settings > Keyboard > Keyboard Shortcuts > Mission Control. Create the
-desktops first; check the mapping yourself, especially Desktop 10/Control+0 and
-multiple displays. The fallback also needs the relevant macOS permission for
-synthesizing keys; inspect an Automation/Accessibility denial rather than
-assuming the shortcut is configured correctly.
+Space-focus bindings now call yabai directly. Move-and-follow uses `&&`, so a
+failed window move cannot switch you away from the window. The old AppleScript
+fallback has been removed: it mixed two backends and made successful native
+switching look like successful yabai operation. This cleanup does not repair
+an incompatible scripting addition.
 
-A successful `Cmd + number` is therefore **not proof SA works**. The window-move
-and move-and-follow bindings have no equivalent native fallback in this config.
-Native Mission Control remains a way to switch desktops while investigating;
-see [Apple's Spaces guide](https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac).
+### When even native switching fails while yabai is running
+
+On a Mac this is **macOS**, not iOS. An OS version alone does not identify the
+cause. The [macOS 27 community report](https://github.com/asmvik/yabai/issues/2802)
+describes a build-specific patch; it is not proof that your installed stable
+binary supports your build. Do not solve this by repeatedly rewriting sudoers.
+
+After installing this branch, collect one read-only report:
+
+```bash
+~/.config/yabai/wm-doctor.sh report
+```
+
+Review logs before sharing. The report includes versions, both legacy/current
+service labels, Mission Control preferences and recent errors. It does not
+reset permissions, load SA, stop services or change settings. Missing preference
+keys mean default/unset, not an automatic diagnosis. If both service labels for
+one tool are loaded, inspect each with `launchctl print gui/$(id -u)/LABEL`
+(replace LABEL with an exact label from the report); do not launch extra daemons.
+
+Test two existing ordinary desktops (not fullscreen app Spaces) outside
+VMware/GIMP. Keep a terminal open so recovery does not depend on skhd.
+
+1. In System Settings > Keyboard > Keyboard Shortcuts > Mission Control, enable
+   "Switch to Desktop 1/2" and verify their actual shortcuts. Physically press
+   those keys, normally Control+1/2, without holding Command. These bindings are
+   not intercepted by this repo's skhdrc. Do not synthesize them via AppleScript.
+2. Test direct `/opt/homebrew/bin/yabai -m space --focus 2`, then `Cmd + 2`.
+   Direct success plus hotkey failure points toward skhd/input/configuration.
+   A direct SA error requires checking the installed yabai/build compatibility.
+3. If physical native switching also fails, isolate skhd first:
+   `/opt/homebrew/bin/skhd --stop-service`. Retest the physical native keys.
+   If this fixes it, investigate the active skhd config and input interception.
+4. If native switching is still broken with skhd stopped, stop yabai too:
+   `/opt/homebrew/bin/yabai --stop-service`. Retest the same keys.
+   If only this restores switching, preserve the report; the yabai/Dock
+   interaction needs investigation on that exact OS build. Removing a fallback
+   is not evidence that this deeper problem is fixed.
+5. If native keys fail with both stopped, check Mission Control settings and
+   other shortcut tools. Use Mission Control directly as the temporary route.
+   See [Apple's Spaces guide](https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac).
+
+Stopping a daemon does not necessarily unload an already injected SA.
+These comparisons narrow the cause; they do not conclusively separate every
+Dock/SA failure. With duplicate service labels, first verify that the intended
+process actually stopped.
+
+To restore services after the comparison:
+
+```bash
+/opt/homebrew/bin/yabai --start-service
+/opt/homebrew/bin/skhd --start-service
+~/.config/yabai/wm-doctor.sh report
+```
+
+If restarting yabai reproduces the native-switching failure, keep it stopped
+temporarily and use macOS's own Spaces while investigating upstream support.
+Do not install an unreviewed fork or weaken SIP just to silence an error.
+For stable numbering, turn off automatic Space rearrangement in Mission Control.
+With multiple displays, verify each Space index using `yabai -m query --spaces`;
+Desktop numbers, fullscreen Spaces and display focus can make assumptions wrong.
 
 Logs can contain both old and current failures. A responsive socket proves only
 that yabai answered the query. To isolate new log output, run this in another
