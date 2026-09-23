@@ -1,56 +1,109 @@
 tap "anomalyco/tap"
-tap "koekeishiya/formulae"
+tap "asmvik/formulae", "https://github.com/asmvik/homebrew-formulae.git"
+tap "jurplel/tap"
 tap "localstack/tap"
 tap "mhaeuser/mhaeuser"
 tap "nikitabobko/tap"
 tap "romkatv/powerlevel10k"
 tap "spring-io/tap"
+# Clone of cat(1) with syntax highlighting and Git integration
 brew "bat"
+# Shell script to build fancy DMGs
 brew "create-dmg"
+# Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
+# Modern, maintained replacement for ls
 brew "eza"
+# Like neofetch, but much faster because written mostly in C
 brew "fastfetch"
+# Simple, fast and user-friendly alternative to find
 brew "fd"
+# Command-line fuzzy finder written in Go
 brew "fzf"
+# GNU compiler collection
 brew "gcc"
+# Distributed revision control system
 brew "git"
+# Improved top (interactive process viewer)
 brew "htop"
+# Lightweight and flexible command-line JSON processor
 brew "jq"
+# Open-source, cross-platform JavaScript runtime environment
 brew "node"
+# Interactive environments for writing and running code
 brew "jupyterlab"
+# Simple terminal UI for git commands
 brew "lazygit"
+# Development kit for the Java programming language
 brew "openjdk"
+# Java-based project management
 brew "maven"
+# Run a Kubernetes cluster locally
 brew "minikube"
+# Interactive cheatsheet tool for the command-line
 brew "navi"
+# Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
+# Theme for zsh
 brew "powerlevel10k"
+# Interpreted, interactive, object-oriented programming language
 brew "python@3.13"
+# Search tool like grep and The Silver Searcher
 brew "ripgrep"
+# Safe, concurrent, practical language
 brew "rust"
+# Rust toolchain installer
 brew "rustup"
+# Organize software neatly under a single directory tree (e.g. /usr/local)
 brew "stow"
+# Terminal multiplexer
 brew "tmux"
+# Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
+# Internet file retriever
 brew "wget"
+# Shell extension to navigate your filesystem faster
 brew "zoxide"
+# UNIX shell (command interpreter)
 brew "zsh"
+# Fish-like fast/unobtrusive autosuggestions for zsh
 brew "zsh-autosuggestions"
+# Additional completion definitions for zsh
 brew "zsh-completions"
+# Fish shell like syntax highlighting for zsh
 brew "zsh-syntax-highlighting"
+# Better and friendly vi(vim) mode plugin for ZSH
 brew "zsh-vi-mode"
-brew "anomalyco/tap/opencode"
-brew "koekeishiya/formulae/skhd"
-brew "koekeishiya/formulae/yabai"
-brew "localstack/tap/localstack-cli"
-brew "spring-io/tap/spring-boot"
+# Simple hotkey-daemon for macOS.
+brew "asmvik/formulae/skhd", args: ["HEAD"], trusted: true
+# A tiling window manager for macOS based on binary space partitioning.
+brew "asmvik/formulae/yabai", args: ["HEAD"], trusted: true
+# OpenAI's official ChatGPT desktop app
 cask "chatgpt"
+# OpenAI's coding agent that runs in your terminal
 cask "codex"
+# App to build and share containerised applications and microservices
 cask "docker-desktop"
 cask "font-jetbrains-mono-nerd-font"
+# Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Free and open-source image editor
 cask "gimp"
+# Native instant workspace switching
+cask "jurplel/tap/instant-space-switcher", trusted: true
+# Keyboard customiser
 cask "karabiner-elements"
+# Open-source code editor
 cask "visual-studio-code"
+# Gecko based web browser
 cask "zen"
+vscode "asvetliakov.vscode-neovim"
+vscode "github.copilot-chat"
+vscode "ms-vscode.cpptools"
+vscode "openai.chatgpt"
+vscode "platformio.platformio-ide"
 cargo "rustlings"
+npm "@anthropic-ai/claude-code"
+npm "live-server"
+npm "typescript-language-server"
+npm "typescript"
