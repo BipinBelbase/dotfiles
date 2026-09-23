@@ -85,12 +85,34 @@ restart() {
 }
 
 after_upgrade() {
-    hash="$(shasum -a 256 "$YABAI" | awk '{print $1}')"
-    printf '%s ALL=(root) NOPASSWD: sha256:%s %s --load-sa\n' "$USER_NAME" "$hash" "$YABAI" |
-        sudo tee /private/etc/sudoers.d/yabai >/dev/null
-    sudo chown root:wheel /private/etc/sudoers.d/yabai
-    sudo chmod 440 /private/etc/sudoers.d/yabai
-    sudo visudo -cf /private/etc/sudoers.d/yabai
+    # Keep shasum's exit status; a pipeline through awk could hide failure.
+    hash_output="$(shasum -a 256 "$YABAI")"
+    hash="${hash_output%% *}"
+    case "$hash" in
+        ''|*[!0-9a-fA-F]*)
+            printf 'Invalid yabai SHA256; sudoers was not changed.\n' >&2
+            return 1
+            ;;
+    esac
+    if [ "${#hash}" -ne 64 ]; then
+        printf 'Invalid yabai SHA256 length; sudoers was not changed.\n' >&2
+        return 1
+    fi
+
+    # Stage on the same filesystem so rename replaces the rule atomically.
+    # The dotted staging directory is ignored by sudoers includedir.
+    sudo /bin/sh -eu -c '
+        staging_dir="$(mktemp -d /private/etc/sudoers.d/.yabai.XXXXXX)"
+        trap '\''rm -rf "$staging_dir"'\'' 0
+        trap '\''exit 1'\'' HUP INT TERM
+        candidate="$staging_dir/yabai"
+
+        printf "%s ALL=(root) NOPASSWD: sha256:%s %s --load-sa\n" "$1" "$2" "$3" > "$candidate"
+        chown root:wheel "$candidate"
+        chmod 440 "$candidate"
+        visudo -cf "$candidate"
+        mv -f "$candidate" /private/etc/sudoers.d/yabai
+    ' sh "$USER_NAME" "$hash" "$YABAI"
     sudo -n "$YABAI" --load-sa
     restart
 }
