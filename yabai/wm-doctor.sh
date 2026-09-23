@@ -113,8 +113,17 @@ after_upgrade() {
         visudo -cf "$candidate"
         mv -f "$candidate" /private/etc/sudoers.d/yabai
     ' sh "$USER_NAME" "$hash" "$YABAI"
-    sudo -n "$YABAI" --load-sa
-    restart
+    if sudo -n "$YABAI" --load-sa; then
+        restart
+    else
+        load_status=$?
+        printf 'Scripting addition failed to load (exit %s); services were not restarted.\n' "$load_status" >&2
+        printf 'The sudoers rule was installed. Inspect the load error above before repeating repair; authorization and macOS/yabai compatibility are separate checks.\n' >&2
+        printf 'Logs: %s and %s\n' "$YABAI_ERR" "$SKHD_ERR" >&2
+        # Diagnosis must not hide the original load failure, even if it fails.
+        diagnose || true
+        return "$load_status"
+    fi
 }
 
 case "${1:-diagnose}" in
