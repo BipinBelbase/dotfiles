@@ -126,7 +126,49 @@ after_upgrade() {
     fi
 }
 
+report() {
+    printf '=== macOS and architecture ===\n'
+    sw_vers 2>&1 || true
+    uname -m
+    csrutil status 2>&1 || true
+
+    printf '\n=== Doctor (socket health is not SA health) ===\n'
+    diagnose || true
+
+    printf '\n=== Loaded service labels ===\n'
+    for report_app in yabai skhd; do
+        report_count=0
+        for report_label in "com.asmvik.$report_app" "com.koekeishiya.$report_app"; do
+            if launchctl print "gui/$UID_NUMBER/$report_label" >/dev/null 2>&1; then
+                printf '%s\n' "$report_label"
+                report_count=$((report_count + 1))
+            fi
+        done
+        if [ "$report_count" -gt 1 ]; then
+            printf 'Multiple %s service labels loaded; inspect their executable paths before restarting.\n' "$report_app"
+        fi
+    done
+
+    printf '\n=== Mission Control settings (missing key means unset/default) ===\n'
+    defaults read com.apple.dock mru-spaces 2>&1 || true
+    defaults read com.apple.spaces spans-displays 2>&1 || true
+
+    printf '\n=== Recent errors (may include old failures) ===\n'
+    for report_log in "$YABAI_ERR" "$SKHD_ERR"; do
+        printf '\n%s\n' "$report_log"
+        if [ -f "$report_log" ]; then
+            tail -n 30 "$report_log" || true
+        else
+            printf 'No log file.\n'
+        fi
+    done
+    printf '\nReport only: no service, permission, or sudoers changes were made.\n'
+}
+
 case "${1:-diagnose}" in
+    report)
+        report
+        ;;
     diagnose)
         diagnose
         ;;
@@ -137,7 +179,7 @@ case "${1:-diagnose}" in
         after_upgrade
         ;;
     *)
-        printf 'Usage: %s [diagnose|restart|after-upgrade]\n' "$0" >&2
+        printf 'Usage: %s [diagnose|report|restart|after-upgrade]\n' "$0" >&2
         exit 2
         ;;
 esac
