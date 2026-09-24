@@ -31,7 +31,10 @@ These are the main i3-style controls. The letters follow the Vim/i3 direction pa
 | Focus left / down / up / right | `Cmd + H/J/K/L` |
 | Swap the current window | `Cmd + Shift + H/J/K/L` |
 | Toggle floating | `Cmd + Shift + Space` |
-| Fullscreen | `Cmd + F` |
+| Fill this Space / restore tiled layout | `Cmd + F` |
+| Minimize to Dock (macOS default) | `Cmd + M` |
+
+`Cmd + F` is yabai zoom, not macOS Full Screen. Use the green window button for native Full Screen (a separate Space). Details: [Yabai reference](yabai/REFERENCE.md#maximize-fullscreen-and-minimize).
 
 The default layout is BSP, similar to i3. New windows are placed as the second child. Padding and gaps are currently zero.
 

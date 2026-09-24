@@ -31,12 +31,15 @@ This is the main i3-style workflow.
 | `Cmd + Shift + H/J/K/L` | Swap the current window in that direction; fall back to moving across displays |
 | `Cmd + Shift + Space` | Toggle floating and place the window in a 4×4 grid |
 | `Cmd + F` | Toggle yabai zoom-fullscreen |
+| `Cmd + M` | Minimize the front window to the Dock (macOS default; not a skhd binding) |
 | `Cmd + Shift + Left/Right` | Resize horizontally |
 | `Cmd + Shift + Up/Down` | Resize vertically |
 | `Cmd + Shift + E` | Set the current Space to BSP layout |
 | `Cmd + Shift + S` | Set the current Space to stack layout |
 
 ## Applications
+
+For the difference between yabai zoom-fullscreen, native macOS Full Screen, and minimizing, see [Yabai Reference](../yabai/REFERENCE.md#maximize-fullscreen-and-minimize). In short: `Cmd + F` fills this Space and toggles back; use the green window button for macOS Full Screen; `Cmd + M` minimizes.
 
 | Shortcut | Action |
 |---|---|

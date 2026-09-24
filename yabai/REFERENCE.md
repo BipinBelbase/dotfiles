@@ -2,6 +2,16 @@
 
 Yabai is the window manager and Space controller. It uses BSP tiling, similar to i3.
 
+## Maximize, fullscreen, and minimize
+
+When two windows share a Space, yabai arranges them side by side (or in your current tiling layout). Focus the one you want with `Cmd + H/J/K/L`, then press `Cmd + F` to make it fill the current Space. Press `Cmd + F` again to restore the tiled layout. This is yabai's reversible `zoom-fullscreen`; it does not create a new macOS Space.
+
+macOS Full Screen is different: use the window's green button to enter or leave native Full Screen. That moves the app into its own macOS Space. The `Alt + Shift + F` native-fullscreen binding shown commented out in `skhdrc` is disabled, so it is not a working shortcut right now.
+
+To minimize the focused window to the Dock, use macOS's `Cmd + M`. This is the standard macOS shortcut, not a custom yabai/skhd binding. `Cmd + F` is the useful maximize/restore shortcut for keeping the app in the same Space. `Cmd + Shift + Space` is not maximize: it toggles floating and applies your configured grid placement.
+
+See [yabai window commands](https://github.com/asmvik/yabai/wiki/Commands) for the zoom and native-fullscreen command distinction, and [Apple's Full Screen guide](https://support.apple.com/en-bw/guide/mac-help/mchl9c21d2be/mac) for the green button behavior.
+
 ## Current behavior
 
 - Layout: BSP.
