@@ -168,12 +168,9 @@ Shows all actions without actually executing them.
 
 ## Yabai and skhd Notes
 
-If window movement/space switching hotkeys do not work later, use:
+If window movement/space switching hotkeys do not work later, run:
 
-- [yabai/TROUBLESHOOTING.md](./yabai/TROUBLESHOOTING.md)
-
-That file includes:
-
-- why an upgraded executable can lose macOS privacy permission
-- why `skhd` can appear broken when `yabai` is the failed process
+```bash
+~/.config/yabai/wm-doctor.sh diagnose
+```
 - pinned-package prevention and the `wm-doctor.sh after-upgrade` repair command

@@ -32,10 +32,6 @@ It will:
 
 ## Window Manager Troubleshooting
 
-If `yabai` or `skhd` hotkeys stop working (especially spaces/window move issues), see:
-
-- [yabai/TROUBLESHOOTING.md](./yabai/TROUBLESHOOTING.md)
-
 Quick check:
 
 ```bash

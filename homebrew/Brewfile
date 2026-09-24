@@ -90,7 +90,6 @@ cask "ghostty"
 # Free and open-source image editor
 cask "gimp"
 # Native instant workspace switching
-cask "jurplel/tap/instant-space-switcher", trusted: true
 # Keyboard customiser
 cask "karabiner-elements"
 # Open-source code editor
