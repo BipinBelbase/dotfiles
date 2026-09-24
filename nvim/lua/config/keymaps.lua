@@ -76,6 +76,28 @@ vim.keymap.set(
     [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
     { desc = "Find and Replace" }
 )
+local function keep_telescope_shortcuts_consistent()
+    vim.keymap.set(
+        "n",
+        "<leader>fr",
+        [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+        { desc = "Find and Replace" }
+    )
+    vim.keymap.set("n", "<leader>fR", function()
+        require("telescope.builtin").oldfiles()
+    end, { desc = "Recent Files" })
+    vim.keymap.set("n", "<leader><leader>", "<Nop>", { desc = "Disabled" })
+end
+
+vim.api.nvim_create_autocmd("User", {
+    pattern = "LazyLoad",
+    callback = function(event)
+        if event.data == "telescope.nvim" then
+            keep_telescope_shortcuts_consistent()
+        end
+    end,
+    desc = "Keep personal Telescope shortcuts after plugin load",
+})
 vim.keymap.set("n", "Q", "<nop>")
 --macos setting<D-s>s
 vim.keymap.set("n", "<D-s>", ":w<CR>", { desc = "Save file (CMD+S workaround)" })
@@ -259,7 +281,7 @@ vim.keymap.set("n", "<leader>tt", open_floating_terminal, {
 })
 
 local map = vim.keymap.set
-map("n", "<leader>rs", function()
+map("n", "<leader>rl", function()
     vim.fn.jobstart("tmux new-session -d -s live-server 'live-server'", { detach = true })
     print("Started tmux session 'live-server' running live-server.")
 end, { desc = "Start live-server in tmux session" })
