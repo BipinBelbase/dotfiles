@@ -66,7 +66,30 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 alias ..='cd ..'
 alias python='python3'
-alias ai='codex'
+unalias ai 2>/dev/null
+ai() {
+  local choice
+
+  echo
+  echo "Choose an AI coding assistant:"
+  echo "  1) Codex"
+  echo "  2) Copilot"
+  echo "  3) Google Antigravity (agy)"
+  echo "  4) OpenCode"
+  echo "  5) Coming soon"
+  echo "  q) Cancel"
+  read "choice?Choose [1-5/q]: "
+
+  case "$choice" in
+    1) command codex "$@" ;;
+    2) command copilot "$@" ;;
+    3) command agy "$@" ;;
+    4) command opencode "$@" ;;
+    5) echo "That option is coming soon." ;;
+    q|Q|"") echo "Cancelled." ;;
+    *) echo "Invalid choice."; return 1 ;;
+  esac
+}
 alias aws="localstack"
 alias reloadtm='tmux source-file ~/.tmux.conf'
 unalias gl 2>/dev/null
