@@ -1,52 +1,24 @@
-# this is the simple settings for my workflow
+# Bipin's dotfiles
 
-# REMEMBER SIMPLICITY IS THE ULTIMATE SOPHISTICATION
+This repository tracks the Mac development setup. The current Neovim and
+window-manager configs live in the root-level `nvim/`, `skhd/`, and `yabai/`
+folders. The live Mac setup is not fully sourced from one folder yet: shell,
+tmux, Git, and Ghostty links currently target files under `dotfiles2.0/stow/`.
 
-# SO THIS IS NOT ABOUT INSTALLING ALL , ITS ABOUT INSTALLING ESSENTIALISM
+Start with [CURRENT_MAC_SETUP.md](CURRENT_MAC_SETUP.md) before installing,
+moving, or relinking anything. It records the live links, safe maintenance
+workflow, and known restore limitations. For a new Mac, follow
+[INSTALL_MAC.md](INSTALL_MAC.md). Treat `dotfiles2.0/` as a separate
+future reference; do not edit or install it as part of maintenance of the
+current setup.
 
-# 🚀 Dotfiles Setup
-Welcome to my personal dotfiles setup! This is the configuration I use to supercharge my developer workflow on macOS, and soon on Linux (Arch with Hyprland) and Windows(i am not sure about this).
+## Main current configs
 
-## 📦 Platforms
+- `nvim/` — active Neovim/LazyVim configuration and shortcut reference.
+- `skhd/` and `yabai/` — active keyboard shortcuts, window management, and
+  `wm-doctor.sh` recovery helper.
+- `tmux/`, `zsh/`, `ghostty/`, `homebrew/` — root-level configs and package
+  manifest; check the live-link inventory because some current links still
+  point elsewhere.
 
-* **🖥️ macOS** – Fully supported and automated via [INSTALL\_MAC.md](./INSTALL_MAC.md).
-* **🐧 Linux (Arch + Hyprland)** – Coming soon(i forgot to push in the github)...
-* **🪟 Windows** – Coming soon(hope so)...
-
-## 🧠 What's Included
-
-* Neovim with LazyVim as the base (fully modular, fast, and extensible)
-* Zsh with Oh My Zsh and useful plugins
-* tmux with sensible defaults and plugin manager
-* Custom keymaps, aliases, and utilities
-
-## ⚙️ macOS Installation
-
-To get started on **macOS**, read the [INSTALL\_MAC.md](./INSTALL_MAC.md) guide.
-It will:
-* Install Homebrew and essential packages
-* Clone this dotfiles repo
-* Symlink all config files (like `~/.config/nvim`, `~/.zshrc`, etc.)
-* Set up LazyVim
-* Configure Zsh, tmux, and more
-
-## Window Manager Troubleshooting
-
-Quick check:
-
-```bash
-~/.config/yabai/wm-doctor.sh diagnose
-```
-
-## LINUX
-
-
-## WINDOWS
-
-
-
-------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------
-> 🧠 Designed for those who want power, minimalism, and productivity — all in one place. Coming soon for Linux (Arch with Hyprland) and Windows. Stay tuned!
+Linux and Windows are later goals. macOS is the system to keep reliable first.

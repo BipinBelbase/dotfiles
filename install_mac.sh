@@ -4,10 +4,10 @@ IFS=$'\n\t'
 
 # === CONFIG ===
 DOTFILES="$HOME/dotfiles"
-BACKUP="$HOME/dotfiles.bak"
 REPO="https://github.com/bipinbelbase/dotfiles.git"
 BFILE="$DOTFILES/homebrew/Brewfile"
 TPM_DIR="$HOME/.tmux/plugins/tpm"
+TPM_PARENT="$(dirname "$TPM_DIR")"
 typeset -A FILES
 FILES=(
     .zshrc "zsh/.zshrc"
@@ -19,7 +19,7 @@ FILES=(
     .config/yabai "yabai"
     "Library/Application Support/Code/User/settings.json" "vscode/settings.json"
     "Library/Application Support/Code/User/keybindings.json" "vscode/keybindings.json"
-    .config/ghostty/config "ghostty/config"
+    .config/ghostty "ghostty"
 )
 
 # === FLAGS ===
@@ -61,6 +61,21 @@ run() {
     else
         eval "$@"
     fi
+}
+
+# Preserve existing paths without overwriting an earlier backup.
+backup_path() {
+    local original="$1"
+    local stamp candidate
+    integer suffix=1
+
+    stamp="$(date '+%Y%m%d-%H%M%S')"
+    candidate="${original}.bak.${stamp}"
+    while [ -e "$candidate" ] || [ -L "$candidate" ]; do
+        candidate="${original}.bak.${stamp}.${suffix}"
+        (( suffix += 1 ))
+    done
+    echo "$candidate"
 }
 
 echo "🚀 Starting Mac setup..."
@@ -259,16 +274,16 @@ cat <<EOF
 EOF
 sleep 8
 # === STEP 3: Clone dotfiles ===
-if [ -d "$DOTFILES" ]; then
-    echo "⚠️ Found existing dotfiles. Backing up to dotfiles.bak..."
+if [ -d "$DOTFILES/.git" ] || [ -f "$DOTFILES/.git" ]; then
+    echo "✅ Using the existing dotfiles checkout at $DOTFILES"
+elif [ -e "$DOTFILES" ]; then
+    echo "❌ $DOTFILES exists but is not a Git checkout. Nothing was moved or removed."
+    exit 1
+else
+    echo "📥 Cloning dotfiles repository..."
     sleep 3
-    run "rm -rf '$BACKUP'"
-    run "mv '$DOTFILES' '$BACKUP'"
+    run "git clone '$REPO' '$DOTFILES'"
 fi
-
-echo "📥 Cloning dotfiles repository..."
-sleep 3
-run "git clone '$REPO' '$DOTFILES'"
 
 sleep 3
 
@@ -364,6 +379,7 @@ if command -v tmux &>/dev/null; then
     if [ ! -d "$TPM_DIR" ]; then
         echo "🔌 Installing tmux plugin manager..."
         sleep 3
+        run "mkdir -p '$TPM_PARENT'"
         run "git clone https://github.com/tmux-plugins/tpm '$TPM_DIR'"
     else
         echo "🔄 TPM already installed. Updating TPM..."
@@ -373,13 +389,17 @@ if command -v tmux &>/dev/null; then
 
     echo "✨ Installing or updating tmux plugins..."
     sleep 2
-    tmux start-server
-    tmux new-session -d -s _tpm_install "cd $TPM_DIR/scripts && ./install_plugins.sh && tmux source-file $HOME/.tmux.conf && exit"
-    echo "🔄 Reloaded tmux config..."
-    sleep 5
+    if $DRY_RUN; then
+        echo "🧪 [Dry Run] Would install configured tmux plugins and reload ~/.tmux.conf"
+    else
+        tmux start-server
+        tmux new-session -d -s _tpm_install "tmux source-file $DOTFILES/tmux/.tmux.conf && cd $TPM_DIR/scripts && ./install_plugins.sh && tmux source-file $HOME/.tmux.conf && exit"
+        echo "🔄 Reloaded tmux config..."
+        sleep 5
 
-    if tmux has-session -t _tpm_install 2>/dev/null; then
-        tmux kill-session -t _tpm_install
+        if tmux has-session -t _tpm_install 2>/dev/null; then
+            tmux kill-session -t _tpm_install
+        fi
     fi
 
 else
@@ -417,21 +437,21 @@ for target in ${(k)FILES}; do
             sleep 2
             continue
         else
-            echo "↻ Updating symlink: $target"
+            backup="$(backup_path "$dest")"
+            echo "⚠ Preserving existing symlink $target at $backup"
             sleep 3
-            run "ln -sf \"$source\" \"$dest\""
+            run "mv \"$dest\" \"$backup\""
         fi
     elif [ -e "$dest" ]; then
-        echo "⚠ Backing up $target to $target.bak"
+        backup="$(backup_path "$dest")"
+        echo "⚠ Backing up $target to $backup"
         sleep 2
-        run "rm -rf \"${dest}.bak\""
-        run "mv \"$dest\" \"${dest}.bak\""
-        run "ln -s \"$source\" \"$dest\""
-    else
-        echo "🔗 Linking: $target"
-        sleep 2
-        run "ln -s \"$source\" \"$dest\""
+        run "mv \"$dest\" \"$backup\""
     fi
+
+    echo "🔗 Linking: $target"
+    sleep 2
+    run "ln -s \"$source\" \"$dest\""
 done
 
 sleep 4

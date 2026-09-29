@@ -12,6 +12,10 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 . "$REPO_ROOT/scripts/lib.sh"
 
 if ! command -v stow >/dev/null 2>&1; then
+  if is_dry_run; then
+    echo "[link.sh] GNU stow is not installed; dry-run cannot check link conflicts yet."
+    exit 0
+  fi
   die "[link.sh] GNU stow is not installed. Please install stow first (see packages)."
 fi
 
@@ -43,6 +47,15 @@ managed_paths() {
         */*) second="${rest%%/*}" ;;
         "") second="" ;;
         *) second="$rest" ;;
+      esac
+
+      # Keep the temporary dry-run focused on the exact managed editor files;
+      # never copy all of ~/Library or ~/.config/Code into its scratch HOME.
+      case "$rel_path" in
+        Library/*|.config/Code/*)
+          printf '%s\n' "$rel_path"
+          continue
+          ;;
       esac
 
       case "$first" in

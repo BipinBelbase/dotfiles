@@ -1,4 +1,5 @@
 return {
+
     --below installed plugins
     --1.lualine.nvim
     --2.lualine

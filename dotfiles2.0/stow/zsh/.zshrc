@@ -37,13 +37,14 @@ source $ZSH/oh-my-zsh.sh
 
 # Wrapper function to update Brewfile after brew install/uninstall
 function brew() {
+  local brewfile="${${(%):-%x}:A:h:h:h}/packages/Brewfile"
   # Run the real brew command with all arguments
   command brew "$@"
 
   # Check if the command was install, uninstall, or remove
   if [[ "$1" == "install" || "$1" == "uninstall" || "$1" == "remove" ]]; then
     echo "Updating Brewfile..."
-    brew bundle dump --file=~/dotfiles/homebrew/Brewfile --force
+    command brew bundle dump --file="$brewfile" --force
   fi
 }
 #############################
@@ -66,31 +67,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 alias ..='cd ..'
 alias python='python3'
-unalias ai 2>/dev/null
-ai() {
-  local choice
-
-  echo
-  echo "Choose an AI coding assistant:"
-  echo "  1) Codex"
-  echo "  2) Copilot"
-  echo "  3) Google Antigravity (agy)"
-  echo "  4) OpenCode"
-  echo "  5) Coming soon"
-  echo "  q) Cancel"
-  read "choice?Choose [1-5/q]: "
-
-  case "$choice" in
-    1) command codex "$@" ;;
-    2) command copilot "$@" ;;
-    3) command agy "$@" ;;
-    4) command opencode "$@" ;;
-    5) echo "That option is coming soon." ;;
-    q|Q|"") echo "Cancelled." ;;
-    *) echo "Invalid choice."; return 1 ;;
-  esac
-}
-alias aws="localstack"
+alias ai='codex'
 alias reloadtm='tmux source-file ~/.tmux.conf'
 unalias gl 2>/dev/null
 alias lg='lazygit'

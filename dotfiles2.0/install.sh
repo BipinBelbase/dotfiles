@@ -11,7 +11,7 @@ die()  { print -r -- "[install][error] $*" >&2; exit 1; }
 usage() {
   cat <<'EOF'
 Usage:
-  zsh ./install.sh [--test|--dry-run|-t] [PROFILE] [GROUPS]
+  zsh ./install.sh [--test|--dry-run|-t] [--step=all|bootstrap|packages|shell|link|plugins] [PROFILE] [GROUPS]
 
 Examples:
   zsh ./install.sh
@@ -19,6 +19,10 @@ Examples:
   zsh ./install.sh base "core cli dev langs fonts"
   zsh ./install.sh --test
   zsh ./install.sh --test full "core cli dev langs fonts wm gui"
+  zsh ./install.sh --step=packages
+  zsh ./install.sh --step=shell
+  zsh ./install.sh --step=link
+  zsh ./install.sh --step=plugins
 EOF
 }
 
@@ -42,17 +46,24 @@ cd "$REPO_ROOT" || die "Cannot cd to repo root: $REPO_ROOT"
 # Parse args
 # ----------------------------
 DRY_RUN=0
+STEP=all
 typeset -a filtered_args
 filtered_args=()
 
 for arg in "$@"; do
   case "$arg" in
     --test|--dry-run|-t) DRY_RUN=1 ;;
+    --step=*) STEP="${arg#--step=}" ;;
     --help|-h) usage; exit 0 ;;
     *) filtered_args+=("$arg") ;;
   esac
 done
 set -- "${filtered_args[@]}"
+
+case "$STEP" in
+  all|bootstrap|packages|shell|link|plugins) ;;
+  *) die "Unknown step '$STEP'. Choose all, bootstrap, packages, shell, link, or plugins." ;;
+esac
 
 if [[ $# -gt 2 ]]; then
   die "Too many arguments. Run 'zsh ./install.sh --help' for usage."
@@ -213,10 +224,15 @@ esac
 
 ensure_home_writable_or_die
 
+if [[ "$STEP" == "all" ]]; then
+  zsh "$REPO_ROOT/scripts/install-intro.sh"
+else
+  log "Resuming at the '$STEP' step. The full animated intro runs with --step=all."
+fi
+
 # ----------------------------
-# Choose PROFILE and GROUPS
-# - PROFILE: base|full (your Makefile defaults to base)
-# - GROUPS: space-separated package groups (your Makefile defaults to core)
+# Choose PROFILE and GROUPS for package managers that use package groups.
+# On macOS, packages/Brewfile is the complete package source.
 #
 # Usage:
 #   zsh ./install.sh
@@ -240,6 +256,7 @@ fi
 
 log "PROFILE=$PROFILE"
 log "GROUPS=$GROUPS"
+log "STEP=$STEP"
 
 # ----------------------------
 # Run your repo workflow
@@ -247,12 +264,16 @@ log "GROUPS=$GROUPS"
 log "Running validation checks"
 make doctor
 
-log "Running: make all PROFILE=$PROFILE GROUPS=\"$GROUPS\" DRY_RUN=$DRY_RUN"
-DRY_RUN="$DRY_RUN" make all PROFILE="$PROFILE" GROUPS="$GROUPS"
+log "Running: make $STEP PROFILE=$PROFILE GROUPS=\"$GROUPS\" DRY_RUN=$DRY_RUN"
+DRY_RUN="$DRY_RUN" make "$STEP" PROFILE="$PROFILE" GROUPS="$GROUPS"
 
 log "Done."
+if [[ "$STEP" == "all" && "$DRY_RUN" == "0" ]]; then
+  sh "$REPO_ROOT/scripts/banners/shell-ready.sh"
+  zsh "$REPO_ROOT/scripts/install-finish.sh"
+fi
 if [[ "$DRY_RUN" == "1" ]]; then
   log "Test run completed. No changes were applied."
 else
-  log "If something changed, restart your terminal (or source ~/.zshrc)."
+  log "Step '$STEP' completed. Open a new terminal to load the linked shell config."
 fi

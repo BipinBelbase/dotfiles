@@ -1,176 +1,61 @@
-# 📦 Dotfiles Installation Guide (for Mac)
+# Mac install guide
 
-This guide explains how to use the `install_mac.sh` script from [bipinbelbase/dotfiles](https://github.com/BipinBelbase/dotfiles) to set up your Mac development environment with full automation. Follow these steps carefully.
+This is the install guide for the current root-level Mac setup. Start with
+[`CURRENT_MAC_SETUP.md`](CURRENT_MAC_SETUP.md) to see which configs the Mac
+currently loads and what the installer will change.
 
----
+## Before installing
 
-## ✅ Prerequisites
+1. Install Apple's command-line tools if they are not present:
 
-Before running the script:
-
-1. **Install Git (if not installed):**
-
-   ```bash
+   ```sh
    xcode-select --install
    ```
 
-   This installs command-line developer tools including Git.
-2. **Then install download one file and run it just past this and work finished **
+2. Make sure the complete repository is available at `~/dotfiles`. If it is
+   already there, inspect its Git status first and keep any local changes.
+3. Preview the installer:
 
-```bash
-curl -fsSL -o ~/install_mac.sh https://raw.githubusercontent.com/bipinbelbase/dotfiles/main/install_mac.sh 
-    ```
-
-```
-```
-```curl -fsSL https://bipinbelbase.com.np/install.sh | zsh
-
-```
-3. **Allow script to run:**
-
-   ```bash
-   chmod +x install_mac.sh
-   ```
-
-   This makes the script executable.
-
-4. **Run the script:**
-
-   ```bash
-   ./install_mac.sh
-   ```
-
-   Or run it in dry-run mode (to preview actions):
-
-   ```bash
+   ```sh
+   cd ~/dotfiles
    ./install_mac.sh --dry-run
    ```
 
+The preview retains the designed intro and pacing, so it takes a while. Read
+the target and backup paths it prints. The preview does not install packages,
+change links, or run tmux plugin installation.
 
-# THIS 4 STEPS IS ENOUGH TO INSTALL CONFIG ON MAC
+## Run the installer
 
+When you are ready to install, run:
 
-
-## 🔧 What the Script Does (Step-by-Step)
-## This is just the explaination you dont have the run it 
-## The installation is already finished so Good bye if you want
-
-
-
- 
-### 1. **Setup Variables**
-
-* `DOTFILES` = `~/dotfiles`
-* `BACKUP` = `~/dotfiles.bak`
-* `REPO` = GitHub link to dotfiles repo
-* `BFILE` = Homebrew `Brewfile`
-* `TPM_DIR` = tmux plugin manager path
-
-### 2. **Command-Line Arguments**
-
-* `--dry-run`: Simulates the installation
-* `--help` or `-h`: Shows help message
-
----
-
-## 🚀 Installation Steps
-
-### 🥇 Step 1: Install Homebrew (if not already installed)
-
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```sh
+./install_mac.sh
 ```
 
-Then adds it to your shell environment (zsh).
+The designed sequence installs Homebrew if needed, installs packages from
+`homebrew/Brewfile`, installs Oh My Zsh when missing, installs or updates TPM,
+installs configured tmux plugins, and links the root-level Zsh, tmux, Neovim,
+skhd, yabai, Ghostty, and VS Code configuration.
 
-### 🥈 Step 2: Ensure Git is Installed
+If `~/dotfiles` is already a Git checkout, the installer uses it in place. It
+does not remove, rename, or clone over that checkout. If the path exists but
+is not a Git checkout, the script stops rather than moving it.
 
-If not, installs it via:
+When an existing home path conflicts with a link, the installer moves it to
+an unused sibling path ending in `.bak.<timestamp>` and keeps it. Existing
+symlinks are preserved the same way; the script no longer force-replaces them
+or deletes an earlier backup. Ghostty is linked as a directory so the
+installer does not write through an existing directory symlink.
 
-```bash
-brew install git
-```
+## After installing
 
-### 🥉 Step 3: Clone Your Dotfiles Repo
+- Open a new terminal to load the linked shell config.
+- Check Neovim, tmux, Ghostty, VS Code, and window-manager shortcuts.
+- macOS may ask you to grant Accessibility and Input Monitoring permissions
+  to yabai and skhd. Use `~/.config/yabai/wm-doctor.sh diagnose` to inspect
+  their status.
+- Homebrew and TPM may update software as part of the original install flow.
+  The installer does not pin exact Homebrew versions or a TPM revision.
 
-* Backs up old `~/dotfiles` as `~/dotfiles.bak`
-* Clones fresh from GitHub
-
-### 🍻 Step 4: Brewfile Bundle
-
-Installs apps and CLI tools defined in `homebrew/Brewfile`:
-
-```bash
-brew bundle --file="$DOTFILES/homebrew/Brewfile" --no-lock
-```
-
-### 🌟 Step 5: Install Oh My Zsh
-
-Skips if already installed. Otherwise:
-
-```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-```
-
-### 🔌 Step 6: Install Tmux Plugin Manager
-
-* Clones TPM if not present
-* Runs `install_plugins.sh` inside a temporary tmux session
-
-### 🔗 Step 7: Create Symlinks
-
-For each config file:
-
-* If existing symlink: updates it
-* If file exists: backs it up to `.bak`
-* If nothing exists: creates new symlink
-
-Linked files include:
-
-* `~/.zshrc`, `~/.zprofile`, `~/.p10k.zsh`
-* `~/.tmux.conf`
-* `~/.config/nvim`
-* VS Code settings and keybindings
-* `~/.config/ghostty/config`
-
-### 🔄 Step 8: Source zsh config
-
-* Automatically sources `~/.zshrc`
-* Or prompts you to manually source if shell info is missing
-
----
-
-## 🧪 Optional: Dry Run Mode
-
-```bash
-./install_mac.sh --dry-run
-```
-
-Shows all actions without actually executing them.
-
----
-
-## ✅ Final Notes
-
-* Run:
-
-  ```bash
-  p10k configure
-  ```
-
-  to set up Powerlevel10k
-* Inside tmux, press `Prefix + I` to install TPM plugins
-* Open new terminal or run:
-
-  ```bash
-  exec $SHELL
-  ```
-
-## Yabai and skhd Notes
-
-If window movement/space switching hotkeys do not work later, run:
-
-```bash
-~/.config/yabai/wm-doctor.sh diagnose
-```
-- pinned-package prevention and the `wm-doctor.sh after-upgrade` repair command
+No installer was run while preparing this guide.

@@ -4,9 +4,8 @@
 #
 # This script moves any conflicting dotfiles out of the way so that
 # GNU stow can safely create new symlinks. Each run stores backups
-# inside `~/.dotfiles_backup/<timestamp>/` preserving the directory
-# structure. Only files and directories that are regular files or
-# directories (not symlinks) are backed up.
+# inside a unique `~/.dotfiles_backup/<timestamp>/` directory, preserving the
+# directory structure. Conflicting symlinks are preserved too.
 
 set -eu
 
@@ -14,10 +13,30 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 . "$REPO_ROOT/scripts/lib.sh"
 
 timestamp=$(date +%Y%m%d_%H%M%S)
-backup_root="$HOME/.dotfiles_backup/$timestamp"
+backup_parent="$HOME/.dotfiles_backup"
+backup_root="$backup_parent/$timestamp"
 
 if ! is_dry_run && [ ! -w "$HOME" ]; then
   die "[backup.sh] HOME is not writable: $HOME"
+fi
+
+# Never reuse a prior run's destination. mkdir is atomic, so simultaneous
+# installers also receive different backup directories.
+suffix=1
+if is_dry_run; then
+  while [ -e "$backup_root" ] || [ -L "$backup_root" ]; do
+    backup_root="$backup_parent/${timestamp}_$suffix"
+    suffix=$((suffix + 1))
+  done
+else
+  mkdir -p "$backup_parent"
+  while ! mkdir "$backup_root" 2>/dev/null; do
+    if [ ! -e "$backup_root" ] && [ ! -L "$backup_root" ]; then
+      die "[backup.sh] Cannot create backup directory under $backup_parent"
+    fi
+    backup_root="$backup_parent/${timestamp}_$suffix"
+    suffix=$((suffix + 1))
+  done
 fi
 
 is_repo_stow_symlink() {
@@ -47,6 +66,15 @@ managed_paths() {
         */*) second="${rest%%/*}" ;;
         "") second="" ;;
         *) second="$rest" ;;
+      esac
+
+      # Back up only the managed editor settings files. Moving all of
+      # ~/Library or ~/.config/Code would also move unrelated app state.
+      case "$rel_path" in
+        Library/*|.config/Code/*)
+          printf '%s\n' "$rel_path"
+          continue
+          ;;
       esac
 
       case "$first" in
@@ -87,10 +115,6 @@ backup_if_exists() {
     fi
   fi
 }
-
-if ! is_dry_run; then
-  mkdir -p "$backup_root"
-fi
 
 echo "[backup.sh] Scanning managed paths from $REPO_ROOT/stow"
 managed_paths | while IFS= read -r item; do
