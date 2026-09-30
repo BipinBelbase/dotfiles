@@ -23,34 +23,46 @@ exist.
 - `archive/legacy-root/`: read-only snapshot of the previous root structure.
 - `tests/`: the two existing root checks, with repository paths updated.
 
-The older AI-created `dotfiles2.0` configuration and installer are not part of
-the candidate. Its former package organization is only a layout reference.
+The older AI-created `dotfiles2.0` settings and installer were not carried
+forward. Its former package organization informed the folder layout.
 The folders use a Stow-compatible shape, but `install_mac.sh` makes the links
 itself; GNU Stow is not required. Bash and IdeaVim files are linked by the
 installer even if you do not use those apps. VS Code settings/keybindings are
-linked, as is the VS Code tasks file. On macOS,
-`install.sh` runs the existing Mac installer. On Linux, it detects Fedora/RHEL,
-Arch, or Debian/Ubuntu, installs portable CLI and development packages, and
-configures Bash, Zsh, tmux, Neovim, and IdeaVim. It installs the Linux Zsh and
-tmux plugins. Debian/Ubuntu releases receive optional packages only when they
-exist in enabled APT sources; old Neovim packages are supplemented with the
-official user-local release. Minikube and selected JavaScript and Rust command-
-line tools are installed for the current user. macOS-only window tools and app settings are not
-installed on Linux. See [`docs/PLANNING_FOR_LINUX.md`](docs/PLANNING_FOR_LINUX.md).
+optional on macOS and linked with `--module=vscode`; its shell-based tasks file
+is not linked there. `install.sh` sends macOS to the existing Mac installer.
+On Linux, it detects Fedora/RHEL, Arch, or Debian/Ubuntu, installs portable CLI
+and development packages, and configures Bash, Zsh, tmux, Neovim, and IdeaVim.
+It links the Linux VS Code tasks, installs the Linux Zsh and tmux plugins, and
+adds Minikube plus selected JavaScript and Rust command-line tools. Debian and
+Ubuntu optional packages install only when available from enabled sources;
+Neovim below 0.12 is supplemented with the official user-local release.
+macOS-only window tools and app settings are not installed on Linux. See
+[`docs/PLANNING_FOR_LINUX.md`](docs/PLANNING_FOR_LINUX.md).
 
-Review actions with `./install.sh --dry-run`, then run `./install.sh` from this
-checkout and enter your sudo password when prompted. Windows remains future
-work.
+Review Linux actions with `./install.sh --dry-run`, then run `./install.sh`.
+For macOS, use `./install_mac.sh --check` before repairing or extending that
+setup. Windows remains future work.
 
 ## Safety and review
 
 The user approved the live cutover on 2026-09-30. `~/dotfiles` on `main` is
-now the maintained setup. Live configs link into `stow/`; the old checkout
-is backed up outside this repository. Read
+the maintained setup. Live configs link into `stow/`; the prior tracked configs
+remain in `archive/legacy-root`. Read
 [`docs/CUTOVER_REPORT.md`](docs/CUTOVER_REPORT.md) for verification and recovery.
-Do not run the full installer on this configured Mac for routine maintenance.
+Use `./install_mac.sh --check` before a full rerun. A green check means the
+managed setup is already present; Homebrew may refresh its local metadata cache.
 
 ## Start here
+
+Use `./install_mac.sh --check` for a status report. Use
+`./install_mac.sh --module=nvim` to link one app. When the check is fully
+green, a full rerun skips matching links and installed packages. It also
+preserves native VS Code settings unless you explicitly select that module.
+TPM updates are opt-in. See [`INSTALL_MAC.md`](INSTALL_MAC.md) for details.
+
+On another configured Mac, `git pull --ff-only origin main` updates configs
+through the existing symbolic links; reload apps as needed. Run the installer
+when adding packages or repairing links.
 
 Read [`docs/MIGRATION_STATUS.md`](docs/MIGRATION_STATUS.md), then
 [`INSTALL_MAC.md`](INSTALL_MAC.md). Use the

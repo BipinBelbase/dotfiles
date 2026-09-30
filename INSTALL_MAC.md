@@ -4,73 +4,51 @@ The user approved the live config cutover on 2026-09-30; see
 [`docs/CUTOVER_REPORT.md`](docs/CUTOVER_REPORT.md). The full installer has not
 been run. Use the installation procedure below on a separate new Mac.
 
-## Review the working tree
+## Review and transfer the current setup
 
-The accepted setup lives in `~/dotfiles` on `main`. In Terminal:
+The maintained setup is `~/dotfiles` on `main`. Check local changes before
+pushing or carrying it to a new computer:
 
 ```sh
 cd ~/dotfiles
 git status --short --branch
-git diff legacy-pre-unification-2026-09-30 HEAD --stat
-git diff legacy-pre-unification-2026-09-30 HEAD --no-renames
+git diff --stat
 git diff
 ```
 
-You can also open that folder in VS Code and review each changed file. `git
-status` shows changed, added, and removed files. Git may label identical
-content as a rename from `dotfiles2.0`; `git diff legacy-pre-unification-2026-09-30 HEAD --no-renames` shows
-the recorded removals and new package files without that similarity guess.
-The candidate is saved as a local Git commit. Saving a commit is a review
-checkpoint; it does not approve installation. No remote push or full-installer run
-has been performed. The live config cutover is recorded separately. `archive/legacy-root/` and the
-`legacy-pre-unification-2026-09-30` tag preserve the previous setup.
+The migration and repeat-safe installer changes are pushed to `main`. Before
+transferring any later edits, review them and push the commit. The archive and
+pre-migration commit remain in Git history.
 
-## First installation on a separate Mac
+On a separate Apple Silicon Mac, clone the reviewed `main` branch into
+`~/dotfiles`:
 
-1. Review this guide, `README.md`, `docs/MIGRATION_STATUS.md`, and the full
-   candidate diff.
-2. Review the committed candidate. Transfer it with a Git bundle (below),
-   or explicitly publish the branch yourself after reviewing it:
+```sh
+git clone --branch main https://github.com/bipinbelbase/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
 
-   ```sh
-   git -C ~/dotfiles push origin main
-   ```
+Or transfer a Git bundle when you do not want to use GitHub for the transfer:
 
-   No push has been made for you.
-3. On the test Mac, make sure `~/dotfiles` does not contain anything you need,
-   then clone the reviewed branch there:
+```sh
+# On the source Mac
+git -C ~/dotfiles bundle create ~/dotfiles.bundle main legacy-pre-unification-2026-09-30
 
-   ```sh
-   git clone --branch main \
-     https://github.com/bipinbelbase/dotfiles.git ~/dotfiles
-   cd ~/dotfiles
-   ```
+# Transfer the bundle, then on the test Mac
+git clone --branch main /path/to/dotfiles.bundle ~/dotfiles
+```
 
-   If you do not want to push to GitHub, create a bundle,
-   transfer it to the test Mac, and clone from that file:
+The installer requires its reviewed checkout at `~/dotfiles`, a valid package
+layout, and an Apple Silicon Mac. Start by reading `README.md`, this guide,
+and `docs/NEW_MAC_CHECKLIST.md`. Run `./install_mac.sh --check` and
+`./install_mac.sh --dry-run` first. The dry run reports planned actions; it
+does not install or verify software. A Homebrew check may refresh Homebrew's
+local metadata cache.
 
-   ```sh
-   # On this Mac, create a portable copy of the local commit
-   git -C ~/dotfiles bundle create \
-     ~/dotfiles-current.bundle main
-
-   # On the test Mac, after transferring the bundle
-   git clone --branch main \
-     /path/to/dotfiles-current.bundle ~/dotfiles
-   ```
-
-   The installer requires its own reviewed checkout at `~/dotfiles`, a valid
-   package layout, and an Apple Silicon Mac before any installation begins.
-4. Run `./install_mac.sh --help` to see available options.
-5. Run `./install_mac.sh --dry-run` on the test Mac and inspect each target
-   and backup path it reports. A dry run does not prove the tools work.
-6. After your review, run `./install_mac.sh` on the test Mac. The install may
-   install Homebrew packages, Oh My Zsh, TPM and tmux plugins, and create home
-   symlinks. Existing conflicting destinations are moved to a unique backup
-   name before linking.
-
-Never point the first install at this current Mac. Do not link over
-ServBay's `~/.bash_profile`; it is not managed by this repository.
+After reviewing those results, run `./install_mac.sh` on the separate test
+Mac. Existing conflicting destinations are moved to timestamped backups.
+The full installation has not yet been proven on a clean Mac. Keep the
+ServBay-managed `~/.bash_profile` outside the managed paths.
 
 ## Restart after an interrupted stage
 
@@ -90,28 +68,76 @@ if a download fails, resume with `--from=links` after fixing the cause. Review t
 before choosing the restart point. `brew bundle` and symlinking are designed
 to tolerate reruns; review backups before repeating a link stage.
 
+## Check or manage one app
+
+```sh
+./install_mac.sh --check
+./install_mac.sh --check --module=nvim
+./install_mac.sh --module=nvim
+./install_mac.sh --module=wm
+```
+
+`--check` compares every default managed link and checks the Brewfile,
+Neovim/tmux/Zsh commands, Oh My Zsh, its vi-mode plugin, TPM, and the configured
+tmux plugin. It never installs packages, updates TPM, or changes links.
+Homebrew may refresh its local metadata cache while checking packages. A
+non-zero result lists the missing or mismatched items. `--check --module=NAME`
+checks only that app's links. Use plain `--check` for the full prerequisite
+report.
+
+`--module=NAME` manages only that module's links; it does not install its app
+or dependencies. Supported modules are `zsh`, `nvim`, `tmux`, `ghostty`,
+`yabai`, `skhd`, `wm`, `bash`, `ideavim`, and `vscode`. VS Code is opt-in;
+the full install preserves native Code settings. Existing conflicting
+files are moved to timestamped backups; links already resolving to the
+expected source are skipped. Raycast exports are imported manually.
+
+When all configured dependencies are present, the full install skips the
+package install step. If some are missing, it asks Homebrew Bundle to install
+without upgrading the rest; Homebrew may still upgrade a dependency required
+by a missing package. Existing pins, Oh My Zsh, its
+vi-mode plugin, TPM, and matching links are preserved. TPM is not updated
+automatically; pass `--update-tpm` when you deliberately want to update it.
+Missing tmux plugins can be installed by the full run. Linked config changes
+may still require restarting or reloading the related app.
+
+The full install has not been run end to end on this Mac or a separate Mac.
+A preview and temporary-home checks do not prove every dependency or GUI
+workflow succeeds on a clean machine.
+
+## Update an existing Mac after you push a config edit
+
+The home links already point into `~/dotfiles`. On a Mac with this repo set
+up, update the checkout first:
+
+```sh
+cd ~/dotfiles
+git pull --ff-only origin main
+./install_mac.sh --check
+```
+
+The pull updates the linked config files; it does not reinstall applications
+or recreate links. Reload or restart an app if it reads its config only at
+startup. If you added a package to `packages/Brewfile`, run the full installer
+or `./install_mac.sh --from=packages`; the package check skips already present
+dependencies. To repair one module's link, use `./install_mac.sh --module=nvim`
+with that module's name.
+
 Use [`docs/NEW_MAC_CHECKLIST.md`](docs/NEW_MAC_CHECKLIST.md) for the functional
 review of each config and shortcut. macOS may require Accessibility or Input
 Monitoring permission for yabai/skhd.
 
-Write down every issue and fix it in the maintained `~/dotfiles` checkout. Rerun the
-affected stage on the test Mac and repeat the relevant checks. Homebrew
+Write down every issue and fix it in the maintained `~/dotfiles` checkout.
+Rerun the affected stage on the test Mac and repeat the relevant checks. Homebrew
 downloads and macOS permission prompts can make the first install take from
 under an hour to several hours; the exact time depends on the machine and
 network.
 
-## Accepting the migration
+## After the separate-Mac test
 
-After the separate Mac checks pass, record the result and review any test
-fixes. Commit and push those fixes if needed. Keep the old `~/dotfiles`
-checkout available until you decide the candidate is ready for daily use.
-This document does not certify a successful fresh-machine installation; that
-result must be recorded after the test Mac run.
-
-The current Mac cutover has already been explicitly approved and applied.
-Its Git identity and legacy Code profile were preserved under
-`~/.config/dotfiles-local`, and `~/.local/bin` is now a real directory.
-The old checkout remains in the external backup described in the cutover report.
+Record the pass/fail results in `docs/NEW_MAC_CHECKLIST.md`. Make fixes in the
+maintained `stow/<app>` paths, commit and push them, then repeat the relevant
+checks. Keep the archived source and local Git/Code settings available.
 
 ## Maintain it simply
 
