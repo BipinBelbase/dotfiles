@@ -22,23 +22,23 @@ The historical migration branch remains in Git; use one active checkout.
 
 ## Active links
 
-| Home path | New target |
-| --- | --- |
-| `~/.zshrc` | `~/dotfiles/stow/zsh/.zshrc` |
-| `~/.zprofile` | `~/dotfiles/stow/zsh/.zprofile` |
-| `~/.p10k.zsh` | `~/dotfiles/stow/zsh/.p10k.zsh` |
-| `~/.tmux.conf` | `~/dotfiles/stow/tmux/.tmux.conf` |
-| `~/.bashrc` | `~/dotfiles/stow/bash/.bashrc` |
-| `~/.ideavimrc` | `~/dotfiles/stow/ideavim/.ideavimrc` |
-| `~/.config/nvim` | `~/dotfiles/stow/nvim/.config/nvim` |
-| `~/.config/skhd` | `~/dotfiles/stow/skhd/.config/skhd` |
-| `~/.config/yabai` | `~/dotfiles/stow/yabai/.config/yabai` |
-| `~/.config/ghostty` | `~/dotfiles/stow/ghostty/.config/ghostty` |
-| `~/.skhdrc` | `~/dotfiles/stow/skhd/.skhdrc` |
-| `~/.yabairc` | `~/dotfiles/stow/yabai/.yabairc` |
-| `~/.gitconfig` | `~/.config/dotfiles-local/gitconfig` |
-| `~/.config/Code` | `~/.config/dotfiles-local/Code` |
-| `~/.local/bin/tmux-sessionizer` | `~/dotfiles/stow/tmux/.local/bin/tmux-sessionizer` |
+| Home path                          | New target                                         |
+| ---------------------------------- | -------------------------------------------------- |
+| `~/.zshrc`                         | `~/dotfiles/stow/zsh/.zshrc`                       |
+| `~/.zprofile`                      | `~/dotfiles/stow/zsh/.zprofile`                    |
+| `~/.p10k.zsh`                      | `~/dotfiles/stow/zsh/.p10k.zsh`                    |
+| `~/.tmux.conf`                     | `~/dotfiles/stow/tmux/.tmux.conf`                  |
+| `~/.bashrc`                        | `~/dotfiles/stow/bash/.bashrc`                     |
+| `~/.ideavimrc`                     | `~/dotfiles/stow/ideavim/.ideavimrc`               |
+| `~/.config/nvim`                   | `~/dotfiles/stow/nvim/.config/nvim`                |
+| `~/.config/skhd`                   | `~/dotfiles/stow/skhd/.config/skhd`                |
+| `~/.config/yabai`                  | `~/dotfiles/stow/yabai/.config/yabai`              |
+| `~/.config/ghostty`                | `~/dotfiles/stow/ghostty/.config/ghostty`          |
+| `~/.skhdrc`                        | `~/dotfiles/stow/skhd/.skhdrc`                     |
+| `~/.yabairc`                       | `~/dotfiles/stow/yabai/.yabairc`                   |
+| `~/.gitconfig`                     | `~/.config/dotfiles-local/gitconfig`               |
+| `~/.config/Code`                   | `~/.config/dotfiles-local/Code`                    |
+| `~/.local/bin/tmux-sessionizer`    | `~/dotfiles/stow/tmux/.local/bin/tmux-sessionizer` |
 | `~/.local/bin/tmux_sessionizer.sh` | `~/dotfiles/stow/tmux/.local/bin/tmux-sessionizer` |
 
 All 16 links were checked for target existence and exact resolved destination.
@@ -51,18 +51,18 @@ in the inspected setup; the existing `.bash_profile` was preserved. The system
 
 ## Verification actually performed
 
-| Check | Result |
-| --- | --- |
-| Zsh config and installer syntax | Passed |
-| Bash sessionizer/yabai and shell WM doctor syntax | Passed |
-| Existing window-manager tests | 6 passed |
-| Existing Neovim debugger-mapping test | Passed |
-| Interactive login Zsh startup | Passed; vim alias resolves to Homebrew Neovim, Ctrl+F widget and sessionizer found |
-| Interactive Bash with existing Bash rc | Passed; non-terminal job-control notice expected |
-| Neovim startup and VeryLazy loading | Passed; Ctrl+F mapping found, LazyVim loaded |
-| Active Neovim plugin directories | None missing |
-| Separate temporary tmux server | Passed; Ctrl+Space prefix and Ctrl+F sessionizer binding |
-| Window-manager read-only doctor | skhd/yabai services running; yabai socket responsive |
+| Check                                             | Result                                                                             |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Zsh config and installer syntax                   | Passed                                                                             |
+| Bash sessionizer/yabai and shell WM doctor syntax | Passed                                                                             |
+| Existing window-manager tests                     | 6 passed                                                                           |
+| Existing Neovim debugger-mapping test             | Passed                                                                             |
+| Interactive login Zsh startup                     | Passed; vim alias resolves to Homebrew Neovim, Ctrl+F widget and sessionizer found |
+| Interactive Bash with existing Bash rc            | Passed; non-terminal job-control notice expected                                   |
+| Neovim startup and VeryLazy loading               | Passed; Ctrl+F mapping found, LazyVim loaded                                       |
+| Active Neovim plugin directories                  | None missing                                                                       |
+| Separate temporary tmux server                    | Passed; Ctrl+Space prefix and Ctrl+F sessionizer binding                           |
+| Window-manager read-only doctor                   | skhd/yabai services running; yabai socket responsive                               |
 
 Neovim was checked with temporary cache/state directories and automatic missing
 plugin downloads disabled for the probe. Three lockfile entries had no installed
