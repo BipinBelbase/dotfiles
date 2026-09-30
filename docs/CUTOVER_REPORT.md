@@ -4,7 +4,9 @@ Date: 2026-09-30 (Asia/Seoul)
 
 The user explicitly approved the live migration. The maintained repository is
 `~/dotfiles` on `main`, organized into `stow/<app>` and `packages/Brewfile`.
-The historical migration branch remains in Git; use one active checkout.
+The migration branch was deleted after its commit was merged into `main`. Its
+commit and the tagged pre-migration checkpoint remain in Git history; the former
+`main` is kept on a separate legacy recovery branch.
 
 ## What changed
 
@@ -114,6 +116,8 @@ manifests and this report before executing a rollback.
 
 Edit one source under `~/dotfiles/stow/<app>`, inspect `git diff`, and make a
 focused commit. Keep `archive/legacy-root` frozen. Git history provides comparison;
-there is no need to maintain a second editable dotfiles folder. No remote push has
-been made; review main before publishing it. Machine-local Git/Code settings are
+there is no need to maintain a second editable dotfiles folder. The local Git
+reflog records `origin/main` updated by a push at 18:03; I did not run a push,
+and this local record does not identify who pushed or confirm the hosting state.
+Review the published branch before making another push. Machine-local Git/Code settings are
 not included in a Git bundle; transfer them privately if needed on another Mac.
