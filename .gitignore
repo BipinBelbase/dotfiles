@@ -1,0 +1,10 @@
+# macOS and editor/runtime files
+.DS_Store
+.ipynb_checkpoints/
+*.swp
+*.swo
+
+# Secrets and machine-specific environment
+.env
+.env.*
+!.env.example
