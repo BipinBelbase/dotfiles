@@ -22,3 +22,5 @@ current setup.
   point elsewhere.
 
 Linux and Windows are later goals. macOS is the system to keep reliable first.
+
+For the planned Linux move, see [PLANNING_FOR_LINUX.md](PLANNING_FOR_LINUX.md).
