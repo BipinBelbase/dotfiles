@@ -89,6 +89,7 @@ if [[ $- == *i* ]]; then
         tmux-sessionizer
       fi
     }
+    bind -x '"\C-f": tmux-sessionizer'
   fi
 
   if command -v tmux >/dev/null 2>&1; then
@@ -106,7 +107,12 @@ if [[ $- == *i* ]]; then
     }
   fi
 
-  if command -v fzf >/dev/null 2>&1 && [[ -r /usr/share/fzf/shell/key-bindings.bash ]]; then
-    source /usr/share/fzf/shell/key-bindings.bash
+  if command -v fzf >/dev/null 2>&1; then
+    for fzf_init in /usr/share/fzf/shell/key-bindings.bash /usr/share/doc/fzf/examples/key-bindings.bash /usr/share/fzf/key-bindings.bash; do
+      if [[ -r "$fzf_init" ]]; then
+        source "$fzf_init"
+        break
+      fi
+    done
   fi
 fi

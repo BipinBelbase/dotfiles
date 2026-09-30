@@ -26,3 +26,10 @@ uv
 zsh-autosuggestions
 zsh-syntax-highlighting
 ttf-jetbrains-mono-nerd
+lazygit
+ghostty
+gimp
+fontconfig
+code
+podman
+podman-docker

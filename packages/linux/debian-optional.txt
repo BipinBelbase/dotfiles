@@ -23,7 +23,13 @@ cargo
 stow
 navi
 jupyterlab
-uv
 zsh-autosuggestions
 zsh-syntax-highlighting
 fonts-jetbrains-mono
+lazygit
+ghostty
+gimp
+fontconfig
+code
+podman
+podman-docker

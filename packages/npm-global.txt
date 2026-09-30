@@ -1,0 +1,6 @@
+# User-local npm command-line tools from packages/Brewfile.
+@anthropic-ai/claude-code
+live-server
+typescript
+typescript-language-server
+ts-node

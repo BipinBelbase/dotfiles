@@ -3,7 +3,7 @@
 [[ -r /etc/zshrc ]] && source /etc/zshrc
 [[ -r /etc/zsh/zshrc ]] && source /etc/zsh/zshrc
 
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.local/opt/nvim/bin:$PATH"
 export EDITOR="${DOTFILES_EDITOR:-$(command -v nvim || command -v vim || command -v nano || printf vi)}"
 export VISUAL="$EDITOR"
 
@@ -87,9 +87,26 @@ if command -v zoxide >/dev/null 2>&1; then
 fi
 
 if command -v fzf >/dev/null 2>&1; then
-  for fzf_init in /usr/share/fzf/key-bindings.zsh /usr/share/fzf/shell/key-bindings.zsh; do
+  for fzf_init in /usr/share/fzf/key-bindings.zsh /usr/share/fzf/shell/key-bindings.zsh /usr/share/doc/fzf/examples/key-bindings.zsh; do
     [[ -r "$fzf_init" ]] && source "$fzf_init" && break
   done
+fi
+
+if command -v tmux-sessionizer >/dev/null 2>&1; then
+  tmux_sessionizer_widget() {
+    BUFFER=''
+    tmux-sessionizer
+    zle reset-prompt
+  }
+  zle -N tmux_sessionizer_widget
+  bindkey '^F' tmux_sessionizer_widget
+  ff() {
+    if [[ -n "$TMUX" ]]; then
+      tmux new-window "$HOME/.local/bin/tmux-sessionizer"
+    else
+      tmux-sessionizer
+    fi
+  }
 fi
 
 if [[ -o interactive ]] && command -v tmux >/dev/null 2>&1 && [[ -z "$TMUX" ]]; then
