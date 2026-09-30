@@ -11,13 +11,13 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class Shortcuts(unittest.TestCase):
     def test_number_keys_use_only_yabai(self):
-        config = (ROOT / 'stow/skhd/.config/skhd/skhdrc').read_text()
+        config = (ROOT / 'skhd/skhdrc').read_text()
         for digit, space in [(str(i), i) for i in range(1, 10)] + [('0', 10)]:
             command = re.search(r'^cmd - ' + digit + r' : (.+)$', config, re.M)[1]
             self.assertEqual(command, f'/opt/homebrew/bin/yabai -m space --focus {space}')
 
     def test_follow_requires_successful_move(self):
-        config = (ROOT / 'stow/skhd/.config/skhd/skhdrc').read_text()
+        config = (ROOT / 'skhd/skhdrc').read_text()
         for digit, space in [(str(i), i) for i in range(1, 10)] + [('0', 10)]:
             command = re.search(r'^cmd \+ ctrl - ' + digit + r' : (.+)$', config, re.M)[1]
             for move_status in (0, 1, 42):
@@ -56,7 +56,7 @@ class Report(unittest.TestCase):
             executable('csrutil', '[ "$1" = status ] || exit 99\necho SIP-test\n')
             executable('defaults', '[ "$1" = read ] || { echo MUTATION >&2; exit 99; }\nexit 1\n')
             executable('sudo', 'echo MUTATION >&2\nexit 99\n')
-            source = (ROOT / 'stow/yabai/.config/yabai/wm-doctor.sh').read_text()
+            source = (ROOT / 'yabai/wm-doctor.sh').read_text()
             source = source.replace('YABAI=/opt/homebrew/bin/yabai', f'YABAI="{yabai}"')
             source = source.replace('SKHD=/opt/homebrew/bin/skhd', f'SKHD="{skhd}"')
             for name in ('yabai', 'skhd'):

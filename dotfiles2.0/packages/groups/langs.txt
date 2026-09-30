@@ -1,5 +1,0 @@
-python3
-node
-openjdk
-rust
-java

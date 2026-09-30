@@ -1,6 +1,6 @@
 -- Run from repo root with lua tests/test_debugging.lua, or:
 -- nvim --headless -u NONE -c 'luafile tests/test_debugging.lua' -c qa
-local specs = dofile('stow/nvim/.config/nvim/lua/plugins/debugging.lua')
+local specs = dofile('nvim/lua/plugins/debugging.lua')
 local count = 0
 for _, spec in ipairs(specs) do
     if spec.keys then

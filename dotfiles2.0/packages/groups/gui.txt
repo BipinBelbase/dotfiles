@@ -1,7 +1,0 @@
-visual-studio-code
-slack
-codex
-gimp
-zen
-ghostty
-docker-desktop

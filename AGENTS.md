@@ -1,25 +1,29 @@
-# Instructions for AI helpers
+# Instructions for work in this repository
 
-Read [`CURRENT_MAC_SETUP.md`](CURRENT_MAC_SETUP.md) and check Git status and
-the live home-directory links before changing this setup.
+- Make changes only in this migration worktree unless the user explicitly
+  changes scope. The user's normal `~/dotfiles` checkout is the trusted source
+  and must not be modified by migration work.
+- Use the root `main` configuration files as the source of behavior, shortcuts,
+  and settings. The `dotfiles2.0` project only informed the package layout;
+  do not copy its config content, installer, or package definitions.
+- Read `docs/MIGRATION_STATUS.md` before continuing migration work.
+- Preserve the original installer's artwork and style when updating the
+  candidate installer. Keep changes focused on the new paths, portability,
+  and restartable stages.
+- Do not run the installer, package managers, link-changing commands, or tests
+  on the user's current Mac. Installation validation is for a separate Mac.
+- Keep machine-generated state, credentials, ServBay's Bash profile, and
+  runtime history out of Git.
+- Explain consequential changes and never claim an install or test passed
+  unless it actually ran on the separate test Mac.
 
-## Scope
+## After migration acceptance
 
-- The user's current system is macOS. Keep work focused on the existing Mac
-  setup; Linux and Windows are later goals.
-- Treat `dotfiles2.0/` as future reference. Do not edit files in that subtree,
-  synchronize into it, or run its installer as part of current-setup work.
-- Check the symlink target before editing a config. A root-level duplicate
-  may not be the file the Mac currently loads.
-
-## Safe working rules
-
-- Preserve user changes. Inspect `git status` before and after each change.
-- Explain meaningful changes and their effects. Avoid unrelated cosmetic
-  edits or broad reformatting.
-- Do not run `install_mac.sh`, package installation, or link-changing
-  commands; do not move/delete config folders, replace backups, or change
-  home-directory symlinks without explicit approval for that action.
-- Do not add or run tests unless requested. Never claim a command succeeded
-  unless it was actually run.
-- Keep secrets and private assistant settings out of Git.
+The canonical maintained config is `stow/<app>` plus `packages/Brewfile`.
+`archive/legacy-root` is a frozen reference, not a second editable config.
+The source-main rule above records migration provenance; it does not require
+future changes to be duplicated into legacy files. Keep the migration status
+as history and record separate-Mac results before removing these restrictions.
+Prefer focused changes and commits. Add machine overrides or other platform
+installers only for actual requirements; preserve mappings and artwork unless
+the user asks to change them. Never switch this source Mac automatically.
