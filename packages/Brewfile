@@ -1,6 +1,6 @@
 tap "anomalyco/tap"
 tap "asmvik/formulae", "https://github.com/asmvik/homebrew-formulae.git"
-tap "jurplel/tap"
+tap "jurplel/tap", trusted: { casks: ["instant-space-switcher"] }
 tap "localstack/tap"
 tap "mhaeuser/mhaeuser"
 tap "nikitabobko/tap"
@@ -34,6 +34,8 @@ brew "node"
 brew "jupyterlab"
 # Simple terminal UI for git commands
 brew "lazygit"
+# TIFF library and utilities
+brew "libtiff"
 # Development kit for the Java programming language
 brew "openjdk"
 # Java-based project management
@@ -74,10 +76,14 @@ brew "zsh-completions"
 brew "zsh-syntax-highlighting"
 # Better and friendly vi(vim) mode plugin for ZSH
 brew "zsh-vi-mode"
+# The AI coding agent built for the terminal.
+brew "anomalyco/tap/opencode", trusted: true
 # Simple hotkey-daemon for macOS.
 brew "asmvik/formulae/skhd", args: ["HEAD"], trusted: true
 # A tiling window manager for macOS based on binary space partitioning.
 brew "asmvik/formulae/yabai", args: ["HEAD"], trusted: true
+# Terminal interface for Antigravity agents
+cask "antigravity-cli"
 # OpenAI's official ChatGPT desktop app
 cask "chatgpt"
 # OpenAI's coding agent that runs in your terminal
@@ -89,9 +95,6 @@ cask "font-jetbrains-mono-nerd-font"
 cask "ghostty"
 # Free and open-source image editor
 cask "gimp"
-# Native instant workspace switching
-# Keyboard customiser
-cask "karabiner-elements"
 # Open-source code editor
 cask "visual-studio-code"
 # Gecko based web browser
@@ -103,6 +106,7 @@ vscode "openai.chatgpt"
 vscode "platformio.platformio-ide"
 cargo "rustlings"
 npm "@anthropic-ai/claude-code"
+npm "@github/copilot"
 npm "live-server"
 npm "typescript-language-server"
 npm "typescript"

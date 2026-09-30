@@ -141,6 +141,34 @@ checks. Keep the archived source and local Git/Code settings available.
 
 ## Maintain it simply
 
+### Refresh the Homebrew package list
+
+Installing or uninstalling software with Homebrew does not automatically edit
+`packages/Brewfile`. Export a fresh snapshot to a temporary file, then compare
+it with the maintained list:
+
+```sh
+cd ~/dotfiles
+HOMEBREW_NO_AUTO_UPDATE=1 brew bundle dump --file=/tmp/dotfiles-current.Brewfile --force --no-vscode --no-npm --no-cargo --no-mas --no-go --no-uv --no-flatpak --no-winget --no-krew --no-restart
+diff -u packages/Brewfile /tmp/dotfiles-current.Brewfile
+```
+
+Review the differences and edit `packages/Brewfile`. Keep its existing npm,
+Cargo, and VS Code entries unless deliberately changing them; the command
+above only snapshots Homebrew taps, formulae, and casks. Homebrew normally
+omits packages installed only as dependencies because it restores dependencies
+when installing their parent packages. This list does not pin exact versions.
+
+Karabiner-Elements is deliberately excluded at the user's request, even if
+Homebrew still records it as installed. Deleting `~/.config/karabiner` removes
+settings, not the installed application. A fresh dump can include it again,
+so keep that entry out of the maintained list. Removing any package from the
+Brewfile does not uninstall it from an existing Mac.
+
+The package list was refreshed from this Mac on 2026-09-30. Added `libtiff`,
+OpenCode, and Antigravity CLI; retained the existing non-Homebrew entries and
+the Karabiner exclusion. No packages were installed, upgraded, or removed.
+
 Edit the relevant `stow/<app>` file, review `git diff`, then make one focused
 commit. Keep `archive/legacy-root` as the comparison reference. Do not edit
 both copies or add another nested dotfiles version. Keep secrets and local
