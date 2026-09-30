@@ -42,9 +42,11 @@ Mac. Record a date and notes beside any item that fails.
 - [ ] Check yabai/skhd. Grant macOS Accessibility and Input Monitoring
       permissions if requested; run the included WM doctor if available.
 - [ ] Open IdeaVim and check the settings you rely on.
-- [ ] Optionally check VS Code preferences and manually import a Raycast
-      export. VS Code tasks are retained but not automatically linked; Raycast
-      exports are not automatically imported.
+- [ ] If you want repository-managed VS Code settings, run
+      `./install_mac.sh --module=vscode`; this preserves conflicting settings
+      in a timestamped backup. Otherwise, leave VS Code out of managed links.
+- [ ] Manually import a Raycast export if you use Raycast. Tasks are not
+      automatically linked.
 - [ ] Confirm the ServBay-managed `~/.bash_profile` is not targeted.
 - [ ] Review symlink targets and confirm none are dangling.
 

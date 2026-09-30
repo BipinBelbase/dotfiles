@@ -24,10 +24,13 @@ its former candidate-only restrictions describe that historical phase.
 
 ## Changes and verification
 
-The completed cutover does not authorize future package reinstalls, service
-restarts, pushes, or replacement of backups. Ask before consequential new
-setup changes unless the user's current task authorizes them. Never run the
-full installer on this configured Mac for a routine edit. Tests were
+Use `./install_mac.sh --check` before considering a full rerun. When every
+managed link and dependency passes, rerunning skips matching setup. Homebrew
+may refresh local metadata during its check; a missing dependency or link can
+still cause the installer to act. The completed cutover does not authorize
+package reinstalls, service restarts, pushes, or replacement of backups. Ask
+before those consequential actions unless the user's current task authorizes
+them. Tests were
 requested for this cutover; future tests follow the user's requested scope.
 Report exactly what was checked and distinguish syntax/startup checks from
 manual GUI shortcuts and clean-machine installation. Keep backup instructions

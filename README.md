@@ -18,23 +18,34 @@ exist.
 - `archive/legacy-root/`: read-only snapshot of the previous root structure.
 - `tests/`: the two existing root checks, with repository paths updated.
 
-The older AI-created `dotfiles2.0` configuration and installer are not part of
-the candidate. Its former package organization is only a layout reference.
+The older AI-created `dotfiles2.0` settings and installer were not carried
+forward. Its former package organization informed the folder layout.
 The folders use a Stow-compatible shape, but `install_mac.sh` makes the links
 itself; GNU Stow is not required. Bash and IdeaVim files are linked by the
 installer even if you do not use those apps. VS Code settings/keybindings are
-linked; its tasks file is retained but not linked automatically. Linux and
-Windows remain future work.
+optional and only linked with `--module=vscode`; its tasks file is not linked.
+Linux and Windows remain future work.
 
 ## Safety and review
 
 The user approved the live cutover on 2026-09-30. `~/dotfiles` on `main` is
-now the maintained setup. Live configs link into `stow/`; the old checkout
-is backed up outside this repository. Read
+the maintained setup. Live configs link into `stow/`; the prior tracked configs
+remain in `archive/legacy-root`. Read
 [`docs/CUTOVER_REPORT.md`](docs/CUTOVER_REPORT.md) for verification and recovery.
-Do not run the full installer on this configured Mac for routine maintenance.
+Use `./install_mac.sh --check` before a full rerun. A green check means the
+managed setup is already present; Homebrew may refresh its local metadata cache.
 
 ## Start here
+
+Use `./install_mac.sh --check` for a status report. Use
+`./install_mac.sh --module=nvim` to link one app. When the check is fully
+green, a full rerun skips matching links and installed packages. It also
+preserves native VS Code settings unless you explicitly select that module.
+TPM updates are opt-in. See [`INSTALL_MAC.md`](INSTALL_MAC.md) for details.
+
+On another configured Mac, `git pull --ff-only origin main` updates configs
+through the existing symbolic links; reload apps as needed. Run the installer
+when adding packages or repairing links.
 
 Read [`docs/MIGRATION_STATUS.md`](docs/MIGRATION_STATUS.md), then
 [`INSTALL_MAC.md`](INSTALL_MAC.md). Use the
