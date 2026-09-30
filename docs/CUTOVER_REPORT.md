@@ -70,7 +70,10 @@ Neovim was checked with temporary cache/state directories and automatic missing
 plugin downloads disabled for the probe. Three lockfile entries had no installed
 directory (bufferline, flash, gitsigns), but none was a missing active plugin in
 the loaded config. No plugins were downloaded. Bufferline and flash are explicitly
-disabled. These results do not certify every lazy plugin action or LSP/debugger.
+disabled. These results do not certify every lazy plugin action or LSP/debugger. The
+installer preview used a temporary home and stubbed macOS identity/sleep/clear
+commands; it was a dry run, not an install or proof of clean-Mac behavior. The
+installer now creates both sessionizer command links used on this Mac.
 The sandbox initially blocked tmux/yabai sockets; the socket checks were repeated
 with approval outside the sandbox and passed. The temporary tmux server was killed.
 

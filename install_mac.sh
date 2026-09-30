@@ -16,6 +16,7 @@ FILES=(
     .ideavimrc "stow/ideavim/.ideavimrc"
     .tmux.conf "stow/tmux/.tmux.conf"
     .local/bin/tmux-sessionizer "stow/tmux/.local/bin/tmux-sessionizer"
+    .local/bin/tmux_sessionizer.sh "stow/tmux/.local/bin/tmux-sessionizer"
     .config/nvim "stow/nvim/.config/nvim"
     .config/skhd "stow/skhd/.config/skhd"
     .skhdrc "stow/skhd/.skhdrc"
