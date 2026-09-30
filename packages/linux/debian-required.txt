@@ -1,0 +1,8 @@
+# Required Debian and Ubuntu packages for the Linux profile.
+curl
+git
+tmux
+zsh
+fzf
+xdg-utils
+ncurses-term

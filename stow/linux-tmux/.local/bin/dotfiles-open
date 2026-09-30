@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if command -v xdg-open >/dev/null 2>&1; then
+  exec xdg-open "$@"
+elif command -v gio >/dev/null 2>&1; then
+  exec gio open "$@"
+fi
+
+printf '%s\n' 'Neither xdg-open nor gio is installed.' >&2
+exit 1

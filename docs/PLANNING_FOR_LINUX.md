@@ -1,9 +1,30 @@
 # Planning for Linux
 
-This is a staged plan for bringing the dotfiles to Linux, starting with Fedora
-in VMware and then using the lessons from that VM to prepare an Arch Linux
-install. The current Mac setup remains the reliable daily setup while this
-work is being explored.
+This is the staged plan for adding Linux support without changing the live Mac
+setup. Fedora is the first target; Arch can follow after the Fedora profile is
+working.
+
+## Fedora progress (2026-09-30)
+
+- Environment: Fedora 43 KDE Plasma, Wayland, Bash login shell; tmux and Git
+  are present.
+- First component: added `stow/fedora-bash/.bashrc` and linked it as
+  `~/.bashrc`. The previous Fedora file is backed up at
+  `~/.bashrc.before-dotfiles-20260930-185004`.
+- The Fedora tmux profile is linked at `~/.tmux.conf`. It uses the same
+  Ctrl+Space prefix and project picker workflow, with Linux clipboard and
+  file-opening commands. Its helper commands are linked under `~/.local/bin`.
+- The existing Neovim config is linked at `~/.config/nvim`; the config itself
+  stays shared, and a Fedora `open` helper covers its HTML runner.
+- Added `install_fedora.sh` and `packages/fedora-core.txt` for explicit,
+  independent package, Bash, tmux, and Neovim steps. The package step has not
+  been run because this account needs a sudo password.
+- The Fedora profile sources `/etc/bashrc`, keeps `~/.bashrc.d` support, uses
+  vi editing mode, sets a usable editor, and enables optional aliases/integrations
+  only when their commands are installed.
+- The macOS `stow/bash`, `install_mac.sh`, and live Mac links were not edited.
+- Next: install the CLI package group, start Neovim to check plugin setup, then
+  add only the GUI/application settings that fit this KDE desktop.
 
 ## What we can do together in a VM
 

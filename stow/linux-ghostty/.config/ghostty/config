@@ -1,0 +1,7 @@
+# Portable Ghostty settings. macOS-specific keys stay in stow/ghostty.
+font-family = JetBrainsMono Nerd Font
+theme = TokyoNight Storm
+window-padding-balance = true
+cursor-style = bar
+cursor-style-blink = true
+bold-is-bright = true

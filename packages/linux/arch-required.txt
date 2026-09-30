@@ -1,0 +1,9 @@
+# Required Arch Linux packages for the Linux profile.
+curl
+git
+tmux
+zsh
+fzf
+neovim
+xdg-utils
+ncurses

@@ -1,0 +1,9 @@
+# Required Fedora packages for the Linux profile.
+curl
+git
+tmux
+zsh
+fzf
+neovim
+xdg-utils
+ncurses-term
