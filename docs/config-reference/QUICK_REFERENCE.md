@@ -46,9 +46,16 @@ The default layout is BSP, similar to i3. New windows are placed as the second c
 
 - Prefix: `Ctrl + Space`.
 - Project picker: `Ctrl + F`.
-- Move between panes: Prefix, then `H/J/K/L`.
-- Split panes: Prefix, then `\\` or `-`.
-- Choose a session: Prefix, then `S` or `M`.
+- Last project session (toggle back): Prefix, then `Tab`.
+- Next / previous project session: Prefix, then `n` / `p`.
+- Choose a session: Prefix, then `s` or `m`.
+- Activity window inside the project: Prefix, then `1–9`.
+- Move between panes: Prefix, then `h/j/k/l`.
+- Split panes: Prefix, then `\` or `-`.
+
+Use one session per project; window 1 for code/Neovim, 2 for AI/Codex,
+and 3 for run/tests/server (create these as needed). Panes keep processes
+visible simultaneously. `n`/`p` navigate sessions, not windows.
 
 ## Recovery when something stops working
 
