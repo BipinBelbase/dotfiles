@@ -64,6 +64,10 @@ cmd - 8 : /opt/homebrew/bin/yabai -m space --focus 8
 cmd - 9 : /opt/homebrew/bin/yabai -m space --focus 9
 cmd - 0 : /opt/homebrew/bin/yabai -m space --focus 10
 
+# Adjacent Spaces: Option+[ / Option+] (ANSI bracket keycodes).
+alt - 0x21 : /opt/homebrew/bin/yabai -m space --focus prev
+alt - 0x1E : /opt/homebrew/bin/yabai -m space --focus next
+
 # Move window to space and focus
 cmd + shift - 1 : yabai -m window --space 1;
 cmd + shift - 2 : yabai -m window --space 2;

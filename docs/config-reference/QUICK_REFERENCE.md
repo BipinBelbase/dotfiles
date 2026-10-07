@@ -22,6 +22,10 @@ This is the short map. Use the detailed references for every setting and shortcu
 - `Cmd + Shift + number`: move the current window there and stay here.
 - `Cmd + Ctrl + number`: move the current window there and follow it.
 
+For adjacent Spaces, use `Option + [` for previous and `Option + ]` for next.
+From Space 3, these go to Space 2 and Space 4 respectively. They do not wrap
+at the first or last Space. Existing Command shortcuts are unchanged.
+
 ## The core window shortcuts
 
 These are the main i3-style controls. The letters follow the Vim/i3 direction pattern.
