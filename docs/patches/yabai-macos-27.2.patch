@@ -1,0 +1,504 @@
+--- a/CHANGELOG.md
++++ b/CHANGELOG.md
+@@ -6,6 +6,7 @@
+ 
+ ## [Unreleased]
+ ### Changed
++- Update scripting-addition for macOS 27 Apple Silicon arm64e (space focus, create, destroy and animation removal; moving spaces is not yet supported) [#2802](https://github.com/asmvik/yabai/issues/2802)
+ - Fixed scripting-addition *add_space* pattern for macOS 26.6 Apple Silicon arm64 [#2799](https://github.com/asmvik/yabai/issues/2799)
+ - Fixed minor memory leak on space destruction, and added a few missing null checks to SkyLight API calls [#2791](https://github.com/asmvik/yabai/issues/2791)
+ 
+--- a/makefile
++++ b/makefile
+@@ -27,7 +27,7 @@
+ install: BUILD_FLAGS=-std=c11 -Wall -Wextra -DNDEBUG -O3 -fvisibility=hidden -mmacosx-version-min=11.0 -fno-objc-arc -arch x86_64 -arch arm64 -sectcreate __TEXT __info_plist $(INFO_PLIST)
+ install: clean-build $(BINS)
+ 
+-$(OSAX_SRC): $(OSAX_PATH)/loader.m $(OSAX_PATH)/payload.m
++$(OSAX_SRC): $(OSAX_PATH)/loader.m $(OSAX_PATH)/payload.m $(OSAX_PATH)/common.h $(OSAX_PATH)/arm64_payload.m $(OSAX_PATH)/x64_payload.m
+ 	xcrun clang $(OSAX_PATH)/payload.m -shared -fPIC -O3 -mmacosx-version-min=11.0 -arch x86_64 -arch arm64e -o $(OSAX_PATH)/payload $(FRAMEWORK_PATH) -framework SkyLight -framework Foundation -framework Carbon
+ 	xcrun clang $(OSAX_PATH)/loader.m -O3 -mmacosx-version-min=11.0 -arch x86_64 -arch arm64e -o $(OSAX_PATH)/loader -framework Cocoa
+ 	xxd -i -a $(OSAX_PATH)/payload $(OSAX_PATH)/payload_bin.c
+--- a/src/event_loop.c
++++ b/src/event_loop.c
+@@ -18,7 +18,7 @@
+     int window_count = 0;
+     uint32_t window_list[1024] = {0};
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         // NOTE(asmvik): Subscribe to all windows because of window_destroyed (and ordered) notifications
+         table_for (struct window *window, g_window_manager.window, {
+             window_list[window_count++] = window->id;
+@@ -242,7 +242,7 @@
+         view_clear_flag(view, VIEW_IS_DIRTY);
+     }
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         update_window_notifications();
+     }
+ }
+@@ -336,7 +336,7 @@
+         view_clear_flag(view, VIEW_IS_DIRTY);
+     }
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         update_window_notifications();
+     }
+ 
+@@ -595,7 +595,7 @@
+         event_signal_push(SIGNAL_WINDOW_CREATED, window);
+     }
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         update_window_notifications();
+     }
+ }
+@@ -628,7 +628,7 @@
+     window_unobserve(window);
+     window_destroy(window);
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         update_window_notifications();
+     }
+ }
+@@ -1550,7 +1550,8 @@
+         workspace_is_macos_ventura() ||
+         workspace_is_macos_sonoma() ||
+         workspace_is_macos_sequoia() ||
+-        workspace_is_macos_tahoe()) {
++        workspace_is_macos_tahoe() ||
++        workspace_is_macos_goldengate()) {
+         mission_control_unobserve();
+         mission_control_observe();
+     }
+--- a/src/osax/arm64_payload.m
++++ b/src/osax/arm64_payload.m
+@@ -5,7 +5,9 @@
+     __asm__("mov x0, %0\n""mov x1, %1\n""mov x2, %2\n""mov x20, %3\n" : :"r"(v0), "r"(v1), "r"(v2), "r"(v3) :"x0", "x1", "x2", "x20"); ((void (*)())(func))();
+ 
+ uint64_t get_dock_spaces_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0x20000;
++    } else if (os_version.majorVersion == 26) {
+         return 0x30000;
+     } else if (os_version.majorVersion == 15) {
+         return os_version.minorVersion >= 4 ? 0x1f0000 : 0x200000;
+@@ -21,7 +23,9 @@
+ }
+ 
+ uint64_t get_dppm_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0;
++    } else if (os_version.majorVersion == 26) {
+         return 0x70000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x250000;
+@@ -37,7 +41,9 @@
+ }
+ 
+ uint64_t get_fix_animation_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0x160000;
++    } else if (os_version.majorVersion == 26) {
+         return 0x250000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x250000;
+@@ -53,7 +59,9 @@
+ }
+ 
+ uint64_t get_add_space_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0x160000;
++    } else if (os_version.majorVersion == 26) {
+         return 0x250000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x250000;
+@@ -69,7 +77,9 @@
+ }
+ 
+ uint64_t get_remove_space_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0x120000;
++    } else if (os_version.majorVersion == 26) {
+         return 0x1e0000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x1c0000;
+@@ -85,7 +95,9 @@
+ }
+ 
+ uint64_t get_move_space_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0;
++    } else if (os_version.majorVersion == 26) {
+         return 0x1c0000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x1c0000;
+@@ -101,7 +113,9 @@
+ }
+ 
+ uint64_t get_set_front_window_offset(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return 0;
++    } else if (os_version.majorVersion == 26) {
+         return 0x10000;
+     } else if (os_version.majorVersion == 15) {
+         return 0x35000;
+@@ -117,7 +131,9 @@
+ }
+ 
+ const char *get_dock_spaces_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return "?8 ?? ?? ?? 08 ?? ?? 91 00 01 40 F9 E2 03 13 AA ?? ?? ?? 94 ?? ?? ?? ?? 08";
++    } else if (os_version.majorVersion == 26) {
+         // Pulling out of doBindingCommand:display (search decompiled text in ghidra) function.
+         return "?8 ?? ?? ?? 08 ?? ?? 91 00 01 40 F9 E2 03 13 AA ?? ?? ?? 94 ?? ?? ?? ?? 08";
+     } else if (os_version.majorVersion == 15) {
+@@ -137,7 +153,10 @@
+ }
+ 
+ const char *get_dppm_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        // NOTE: DPDesktopPictureManager no longer exists as of macOS 27.2.
++        return NULL;
++    } else if (os_version.majorVersion == 26) {
+         //Pulling from function 'DPRemoteConnection::_handleEvent:'
+         return "?? ?? 00 ?? 08 ?? ?? 91 00 01 40 F9 E2 03 16 AA E3 03 19 AA ?? ?? ?? 94";
+     } else if (os_version.majorVersion == 15) {
+@@ -157,10 +176,12 @@
+ }
+ 
+ const char *get_fix_animation_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
+         return "00 10 6A 1E A8 ?? ?? D1 ?? 01 ?? F8";
+-    } else if (os_version.majorVersion == 15) {
++    } else if (os_version.majorVersion == 26) {
+         return "00 10 6A 1E A8 ?? ?? D1 ?? 01 ?? F8";
++    } else if (os_version.majorVersion == 15) {
++        return "00 10 6A 1E A8 ?? ?? D1 ?? 01 ?? F8";
+     } else if (os_version.majorVersion == 14) {
+         return "00 10 6A 1E E0 03 14 AA ?? 03 ?? AA";
+     } else if (os_version.majorVersion == 13) {
+@@ -173,7 +194,10 @@
+ }
+ 
+ const char *get_add_space_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        // NOTE: the first instruction is pacibsp or pacibsppc depending on the arm64e slice.
++        return "?? ?? ?? ?? E1 03 1E AA ?? ?? ?? 97 FE 03 01 AA FD 7B 05 A9 FD 43 01 91 F3 03 14 AA F5 03 00 AA 96 8E 43 F8";
++    } else if (os_version.majorVersion == 26) {
+         if (os_version.minorVersion >= 4) {
+             return "7F 23 03 D5 E1 03 1E AA ?? ?? ?? 97 FE 03 01 AA FD 7B 05 A9 FD 43 01 91 F3 03 14 AA F5 03";
+         }
+@@ -192,7 +216,9 @@
+ }
+ 
+ const char *get_remove_space_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return "?? ?? ?? ?? FF ?? ?? D1 FC ?? ?? A9 FA ?? ?? A9 F8 ?? ?? A9 F6 ?? ?? A9 F4 ?? ?? A9 FD ?? ?? A9 FD ?? ?? 91 ?? 03 03 AA F5 03 02 AA F4 03 01 AA";
++    } else if (os_version.majorVersion == 26) {
+         return "7F 23 03 D5 FF ?? ?? D1 FC ?? ?? A9 FA ?? ?? A9 F8 ?? ?? A9 F6 ?? ?? A9 F4 ?? ?? A9 FD ?? ?? A9 FD ?? ?? 91 ?? 03 03 AA F5 03 02 AA F4 03 01 AA";
+     } else if (os_version.majorVersion == 15) {
+         return "7F 23 03 D5 FF 83 ?? D1 FC 6F ?? A9 FA 67 ?? A9 F8 5F ?? A9 F6 57 ?? A9 F4 4F ?? A9 FD 7B ?? A9 FD 43 ?? 91 ?? 03 03 AA ?? 03 02 AA ?? 03 01 AA ?? 03 00 AA ?? ?? ?? AA";
+@@ -208,7 +234,9 @@
+ }
+ 
+ const char *get_move_space_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return NULL;
++    } else if (os_version.majorVersion == 26) {
+         return "7F 23 03 D5 E3 03 1E AA ?? ?? ?? 97 FE 03 03 AA FD 7B ?? A9 FD ?? ?? 91 F6 03 14 AA";
+     } else if (os_version.majorVersion == 15) {
+         return "7F 23 03 D5 E3 03 1E AA ?? ?? FF 97 FE 03 03 AA FD 7B 06 A9 FD 83 01 91 F6 03 14 AA F4 03 02 AA FB 03 01 AA FA 03 00 AA ?? 13 00 ?? E8 ?? ?? F9 19 68 68 F8 E0 03 19 AA E1 03 16 AA";
+@@ -228,7 +256,9 @@
+ }
+ 
+ const char *get_set_front_window_pattern(NSOperatingSystemVersion os_version) {
+-    if (os_version.majorVersion == 26) {
++    if (os_version.majorVersion == 27) {
++        return NULL;
++    } else if (os_version.majorVersion == 26) {
+         return "21 ?? ?? 34 7F 23 03 D5 FF ?? 01 D1 F6 ?? 04 A9 F4 ?? 05 A9 FD ?? 06 A9 FD ?? 01 91";
+     } else if (os_version.majorVersion == 15) {
+         return "7F 23 03 D5 FF ?? 02 D1 F6 57 ?? A9 F4 4F ?? A9 FD 7B ?? A9 FD ?? 02 91 ?? ?? 00 ?? 08 ?? ?? F9";
+--- a/src/osax/common.h
++++ b/src/osax/common.h
+@@ -4,7 +4,7 @@
+ #define SA_SOCKET_PATH_FMT "/tmp/yabai-sa_%s.socket"
+ #define SA_SOCKET_BUFF_LEN 0x1000
+ 
+-#define OSAX_VERSION                "2.1.30"
++#define OSAX_VERSION                "2.1.32"
+ 
+ #define OSAX_ATTRIB_DOCK_SPACES     0x01
+ #define OSAX_ATTRIB_DPPM            0x02
+--- a/src/osax/payload.m
++++ b/src/osax/payload.m
+@@ -256,9 +256,12 @@
+         NSLog(@"[yabai-sa] Detected Tahoe Preview... flagging 'macOSSequoia=true.'");
+         macOSSequoia = true;
+         return true; // Tahoe preview
+-    }
+-
+-    NSLog(@"[yabai-sa] spaces functionality is only supported on macOS Monterey 12.0.0+, and Ventura 13.0.0+, Sonoma 14.0.0+, and Sequoia 15.0");
++    } else if (os_version.majorVersion == 27) {
++        macOSSequoia = true;
++        return true; // Golden Gate 27.0
++    }
++
++    NSLog(@"[yabai-sa] spaces functionality is only supported on macOS Monterey 12.0.0+, and Ventura 13.0.0+, Sonoma 14.0.0+, Sequoia 15.0, Tahoe 26.0 and Golden Gate 27.0");
+ #endif
+ 
+     return false;
+@@ -431,6 +434,8 @@
+             id display_source_space = get_ivar_value(display_space, "_currentSpace");
+             uint64_t sid = get_space_id(display_source_space);
+             CFStringRef uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), sid);
++            if (!uuid) continue;
++
+             bool match = CFEqual(uuid, display_uuid);
+             CFRelease(uuid);
+             if (match) {
+@@ -470,10 +475,17 @@
+     unpack(focus_dest_space);
+ 
+     CFStringRef source_display_uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), source_space_id);
++    if (!source_display_uuid) return;
++
++    CFStringRef dest_display_uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), dest_space_id);
++    if (!dest_display_uuid) {
++        CFRelease(source_display_uuid);
++        return;
++    }
++
+     id source_space = space_for_display_with_id(source_display_uuid, source_space_id);
+     id source_display_space = display_space_for_display_uuid(source_display_uuid);
+ 
+-    CFStringRef dest_display_uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), dest_space_id);
+     id dest_space = space_for_display_with_id(dest_display_uuid, dest_space_id);
+     unsigned dest_display_id = ((unsigned (*)(id, SEL, id)) objc_msgSend)(dock_spaces, @selector(displayIDForSpace:), dest_space);
+     id dest_display_space = display_space_for_display_uuid(dest_display_uuid);
+@@ -521,10 +533,17 @@
+     unpack(space_id);
+ 
+     CFStringRef display_uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), space_id);
++    if (!display_uuid) return;
++
+     uint64_t active_space_id = SLSManagedDisplayGetCurrentSpace(SLSMainConnectionID(), display_uuid);
+ 
+     id space = space_for_display_with_id(display_uuid, space_id);
+     id display_space = display_space_for_display_uuid(display_uuid);
++
++    if (space == nil || display_space == nil) {
++        CFRelease(display_uuid);
++        return;
++    }
+ 
+     dispatch_sync(dispatch_get_main_queue(), ^{
+         ((remove_space_call) remove_space_fp)(space, display_space, dock_spaces, space_id, space_id);
+@@ -547,16 +566,41 @@
+     unpack(space_id);
+ 
+     CFStringRef __block display_uuid = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), space_id);
++    if (!display_uuid) return;
++
+     dispatch_sync(dispatch_get_main_queue(), ^{
+-        id new_space = macOSSequoia
+-                     ? [[objc_getClass("ManagedSpace") alloc] init]
+-                     : [[objc_getClass("Dock.ManagedSpace") alloc] init];
+         id display_space = display_space_for_display_uuid(display_uuid);
+-        asm__call_add_space(new_space, display_space, add_space_fp);
++        if (display_space != nil) {
++            id new_space = macOSSequoia
++                         ? [[objc_getClass("ManagedSpace") alloc] init]
++                         : [[objc_getClass("Dock.ManagedSpace") alloc] init];
++            asm__call_add_space(new_space, display_space, add_space_fp);
++        }
+         CFRelease(display_uuid);
+     });
+ }
+ 
++static inline id current_space_for_display(CFStringRef display_uuid, uint64_t space_id)
++{
++    SEL selector = macOSSequoia ? @selector(currentSpaceForDisplayUUID:) : @selector(currentSpaceforDisplayUUID:);
++    if ([dock_spaces respondsToSelector:selector]) {
++        return ((id (*)(id, SEL, CFStringRef)) objc_msgSend)(dock_spaces, selector, display_uuid);
++    }
++
++    //
++    // NOTE: macOS 27.2 replaced currentSpaceForDisplayUUID: with currentSpaceForDisplay:,
++    // which takes a CGDirectDisplayID instead of the display uuid.
++    //
++
++    if ([dock_spaces respondsToSelector:@selector(displayForSPID:)] &&
++        [dock_spaces respondsToSelector:@selector(currentSpaceForDisplay:)]) {
++        uint32_t display_id = ((uint32_t (*)(id, SEL, uint64_t)) objc_msgSend)(dock_spaces, @selector(displayForSPID:), space_id);
++        return ((id (*)(id, SEL, uint32_t)) objc_msgSend)(dock_spaces, @selector(currentSpaceForDisplay:), display_id);
++    }
++
++    return nil;
++}
++
+ static void do_space_focus(char *message)
+ {
+     if (dock_spaces == nil) return;
+@@ -566,9 +610,9 @@
+ 
+     if (dest_space_id) {
+         CFStringRef dest_display = SLSCopyManagedDisplayForSpace(SLSMainConnectionID(), dest_space_id);
+-        id source_space = macOSSequoia
+-                        ? ((id (*)(id, SEL, CFStringRef)) objc_msgSend)(dock_spaces, @selector(currentSpaceForDisplayUUID:), dest_display)
+-                        : ((id (*)(id, SEL, CFStringRef)) objc_msgSend)(dock_spaces, @selector(currentSpaceforDisplayUUID:), dest_display);
++        if (!dest_display) return;
++
++        id source_space = current_space_for_display(dest_display, dest_space_id);
+         uint64_t source_space_id = get_space_id(source_space);
+ 
+         if (source_space_id != dest_space_id) {
+--- a/src/sa.m
++++ b/src/sa.m
+@@ -279,7 +279,14 @@
+     }
+ 
+     if (string_equals(version, OSAX_VERSION)) {
+-        if ((attrib & OSAX_ATTRIB_ALL) == OSAX_ATTRIB_ALL) {
++        NSOperatingSystemVersion os_version = [[NSProcessInfo processInfo] operatingSystemVersion];
++        uint32_t required_attrib = OSAX_ATTRIB_ALL;
++        // Golden Gate removed DPPM/move-space integration. The old front-window
++        // function has no active caller. Require the four resolved capabilities.
++        if (os_version.majorVersion == 27) {
++            required_attrib &= ~(OSAX_ATTRIB_DPPM | OSAX_ATTRIB_MOV_SPACE | OSAX_ATTRIB_SET_WINDOW);
++        }
++        if ((attrib & required_attrib) == required_attrib) {
+             notify("scripting-addition", "payload v%s", version);
+             return 0;
+         }
+--- a/src/view.c
++++ b/src/view.c
+@@ -41,7 +41,7 @@
+         SLSReenableUpdate(g_connection);
+         SLSOrderWindow(g_connection, node->feedback_window.id, 1, node->window_order[0]);
+         table_add(&g_window_manager.insert_feedback, &node->window_order[0], node);
+-        if (!workspace_is_macos_sequoia() && !workspace_is_macos_tahoe()) {
++        if (!workspace_is_macos_sequoia() && !workspace_is_macos_tahoe() && !workspace_is_macos_goldengate()) {
+             update_window_notifications();
+         }
+     }
+@@ -107,7 +107,7 @@
+     if (node->feedback_window.id) {
+         table_remove(&g_window_manager.insert_feedback, &node->window_order[0]);
+ 
+-        if (!workspace_is_macos_sequoia() && !workspace_is_macos_tahoe()) {
++        if (!workspace_is_macos_sequoia() && !workspace_is_macos_tahoe() && !workspace_is_macos_goldengate()) {
+             update_window_notifications();
+         }
+ 
+--- a/src/window.c
++++ b/src/window.c
+@@ -900,7 +900,7 @@
+ {
+     int level = 0;
+ 
+-    if (workspace_is_macos_ventura() || workspace_is_macos_sonoma() || workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_ventura() || workspace_is_macos_sonoma() || workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         CFArrayRef window_ref = cfarray_of_cfnumbers(&wid, sizeof(uint32_t), 1, kCFNumberSInt32Type);
+ 
+         CFTypeRef query = SLSWindowQueryWindows(g_connection, window_ref, 1);
+@@ -945,7 +945,7 @@
+     msg.header.msgh_bits = 0x1513;
+     msg.header.msgh_remote_port = CGSGetConnectionPortById(cid);
+     msg.header.msgh_local_port = mig_get_special_reply_port();
+-    msg.header.msgh_id = workspace_is_macos_tahoe() ? 0x76E3 : 0x73C3;
++    msg.header.msgh_id = (workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) ? 0x76E3 : 0x73C3;
+     mach_msg(&msg.header, MACH_SEND_MSG|MACH_RCV_MSG, 0x24, 0x30, msg.header.msgh_local_port, 0, 0);
+ 
+     return msg.sub_level;
+--- a/src/window_manager.c
++++ b/src/window_manager.c
+@@ -2264,7 +2264,8 @@
+         workspace_is_macos_ventura() ||
+         workspace_is_macos_sonoma() ||
+         workspace_is_macos_sequoia() ||
+-        workspace_is_macos_tahoe()) {
++        workspace_is_macos_tahoe() ||
++        workspace_is_macos_goldengate()) {
+         while (!space_is_user(space_manager_active_space())) {
+ 
+             //
+--- a/src/workspace.h
++++ b/src/workspace.h
+@@ -2,12 +2,13 @@
+ #define WORKSPACE_H
+ 
+ #define SUPPORTED_MACOS_VERSION_LIST    \
+-    SUPPORT_MACOS_VERSION(tahoe,    26) \
+-    SUPPORT_MACOS_VERSION(sequoia,  15) \
+-    SUPPORT_MACOS_VERSION(sonoma,   14) \
+-    SUPPORT_MACOS_VERSION(ventura,  13) \
+-    SUPPORT_MACOS_VERSION(monterey, 12) \
+-    SUPPORT_MACOS_VERSION(bigsur,   11)
++    SUPPORT_MACOS_VERSION(goldengate, 27) \
++    SUPPORT_MACOS_VERSION(tahoe,      26) \
++    SUPPORT_MACOS_VERSION(sequoia,    15) \
++    SUPPORT_MACOS_VERSION(sonoma,     14) \
++    SUPPORT_MACOS_VERSION(ventura,    13) \
++    SUPPORT_MACOS_VERSION(monterey,   12) \
++    SUPPORT_MACOS_VERSION(bigsur,     11)
+ 
+ #define SUPPORT_MACOS_VERSION(name, major_version) \
+ static bool _workspace_is_macos_version_##name; \
+--- a/src/yabai.c
++++ b/src/yabai.c
+@@ -312,13 +312,15 @@
+         workspace_is_macos_ventura() ||
+         workspace_is_macos_sonoma() ||
+         workspace_is_macos_sequoia() ||
+-        workspace_is_macos_tahoe()) {
++        workspace_is_macos_tahoe() ||
++        workspace_is_macos_goldengate()) {
+         mission_control_observe();
+ 
+         if (workspace_is_macos_ventura() ||
+             workspace_is_macos_sonoma() ||
+             workspace_is_macos_sequoia() ||
+-            workspace_is_macos_tahoe()) {
++            workspace_is_macos_tahoe() ||
++            workspace_is_macos_goldengate()) {
+             SLSRegisterConnectionNotifyProc(g_connection, connection_handler, 1327, NULL);
+             SLSRegisterConnectionNotifyProc(g_connection, connection_handler, 1328, NULL);
+         }
+@@ -329,7 +331,7 @@
+     SLSRegisterConnectionNotifyProc(g_connection, connection_handler, 808, NULL);
+     SLSRegisterConnectionNotifyProc(g_connection, connection_handler, 1202, NULL);
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         SLSRegisterConnectionNotifyProc(g_connection, connection_handler, 804, NULL);
+     }
+ 
+@@ -337,7 +339,7 @@
+     space_manager_begin(&g_space_manager);
+     window_manager_begin(&g_space_manager, &g_window_manager);
+ 
+-    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe()) {
++    if (workspace_is_macos_sequoia() || workspace_is_macos_tahoe() || workspace_is_macos_goldengate()) {
+         update_window_notifications();
+     }
+ 

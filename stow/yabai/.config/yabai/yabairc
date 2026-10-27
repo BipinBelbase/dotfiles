@@ -1,7 +1,7 @@
 # The launch agent has no terminal; sudo must never attempt a password prompt here.
 # Run ~/.config/yabai/wm-doctor.sh after-upgrade in Terminal after replacing yabai.
 sudo -n /opt/homebrew/bin/yabai --load-sa ||
-    printf '%s\n' 'yabai: scripting addition not loaded; run ~/.config/yabai/wm-doctor.sh after-upgrade in Terminal' >&2
+    printf '%s\n' 'yabai: scripting-addition load/compatibility check failed; run ~/.config/yabai/wm-doctor.sh diagnose and read ~/dotfiles/docs/YABAI_TROUBLESHOOTING.md' >&2
 yabai -m signal --add event=dock_did_restart action="sudo -n /opt/homebrew/bin/yabai --load-sa"
 
 # TROUBLESHOOTING (if apps stop auto-tiling/fullscreen)

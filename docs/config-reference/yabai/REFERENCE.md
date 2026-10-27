@@ -22,7 +22,8 @@ See [yabai window commands](https://github.com/asmvik/yabai/wiki/Commands) for t
 - Window shadow: disabled.
 - Opacity: enabled, but both active and normal opacity are `1.0`, so windows are fully opaque.
 - Mouse follows focus: off.
-- macOS 27 scripting-addition patch: installed in the local Homebrew yabai binary.
+- macOS 27.2 patch: installed in the signed local yabai binary; Dock payload 2.1.32, required capabilities 0x4D.
+- Space switching: direct yabai through skhd, with the original Cmd+number shortcuts.
 - Dock restart recovery: configured through a yabai signal.
 
 ## Mouse controls
@@ -61,9 +62,7 @@ Run the normal diagnosis:
 
 `~/.config/yabai/wm-doctor.sh diagnose`
 
-The important success line is:
-
-`yabai socket: responsive`
+`yabai socket: responsive` checks daemon communication only. The doctor also reads the Dock payload version and capabilities. Actual Space focus and shortcuts must still be tested after an approved repair.
 
 For a fuller read-only report:
 
@@ -78,6 +77,8 @@ After replacing or upgrading the yabai binary, refresh the hash-pinned authoriza
 `~/.config/yabai/wm-doctor.sh after-upgrade`
 
 ## macOS 27 notes
+
+Read [the troubleshooting runbook](../../YABAI_TROUBLESHOOTING.md) before changing settings, rebuilding, or replacing the backend. It records the verified 27.2 repair, source patch, backups, and recovery steps.
 
 - The patched binary is `/opt/homebrew/bin/yabai`.
 - The active launchd service is `com.asmvik.yabai`.

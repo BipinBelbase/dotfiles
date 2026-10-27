@@ -45,7 +45,11 @@ diagnose() {
         printf 'yabai socket: FAILED (skhd shortcuts that call yabai cannot work)\n' >&2
     fi
 
-    printf 'Scripting addition and hotkey operation: not verified by the socket query.\n'
+    payload_checker="$(dirname "$0")/wm-payload-status.py"
+    if [ -r "$payload_checker" ] && command -v python3 >/dev/null 2>&1; then
+        python3 "$payload_checker" || true
+    fi
+    printf 'Hotkey operation and actual Space switching: not verified by socket queries.\n'
 
     # Logs can outlive a failure; a responsive socket does not prove SA works.
     if [ -s "$YABAI_ERR" ] || [ -s "$SKHD_ERR" ]; then

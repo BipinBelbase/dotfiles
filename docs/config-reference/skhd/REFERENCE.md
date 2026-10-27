@@ -51,10 +51,12 @@ For the difference between yabai zoom-fullscreen, native macOS Full Screen, and 
 
 - VMware Fusion, VMware Fusion Tech Preview, `vmware-vmx`, and GIMP are blacklisted from skhd processing.
 - This prevents those applications from interfering with the global shortcut daemon.
-- The active service is `com.koekeishiya.skhd`.
+- The active service is `com.asmvik.skhd`.
 - The active configuration is `~/.config/skhd/skhdrc`.
 
 ## Recovery
+
+Read [the yabai/skhd troubleshooting runbook](../../YABAI_TROUBLESHOOTING.md) first. Keep the original direct yabai mappings; do not silently replace them with native shortcuts.
 
 Run:
 

@@ -52,6 +52,8 @@ remain in `archive/legacy-root`. Read
 Use `./install_mac.sh --check` before a full rerun. A green check means the
 managed setup is already present; Homebrew may refresh its local metadata cache.
 
+For yabai/skhd failures, read the [diagnosis and recovery runbook](docs/YABAI_TROUBLESHOOTING.md) before changing shortcuts or macOS settings.
+
 ## Start here
 
 Use `./install_mac.sh --check` for a status report. Use
